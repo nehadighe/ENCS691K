@@ -3,9 +3,11 @@
     <v-row>
       <v-col class>
         <div class="d-flex justify-center align-center">
-          <v-card width="400" class="card-signing elevation-2">
-            
-          </v-card>
+          <h1>Hello World</h1>
+          <p>{{ authMode }}</p>
+          <!-- the width is going to have to be resizable -->
+          <!-- it is not going to look great for responsive web -->
+          <v-card width="400" class="card-signing elevation-2"></v-card>
         </div>
       </v-col>
       <!-- Banner -->
@@ -20,7 +22,15 @@
 </template>
 
 <script>
-export default {};
+import { mapState, mapActions } from "vuex";
+
+export default {
+  name: "Auth",
+  data: () => ({}),
+  computed: {
+    ...mapState(["authMode"])
+  }
+};
 </script>
 
 <style>
