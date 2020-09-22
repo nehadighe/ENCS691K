@@ -1,13 +1,22 @@
 <template>
   <v-container class="fill-height">
     <v-row>
-      <v-col class>
-        <div class="d-flex justify-center align-center">
+      <!-- <v-col cols="12">
+        <div class="d-flex flex-column justify-center align-center">
           <h1>Hello World</h1>
           <p>{{ authMode }}</p>
-          <!-- the width is going to have to be resizable -->
-          <!-- it is not going to look great for responsive web -->
-          <v-card width="400" class="card-signing elevation-2"></v-card>
+        </div>
+      </v-col> -->
+      <v-col cols="12">
+        <div class="d-flex justify-center align-center">
+          <div v-if="authMode === 'login'">
+            <!-- <p>Foo</p> -->
+            <LoginForm />
+          </div>
+          <div v-if="authMode === 'signup'">
+            <!-- <p>Bar</p> -->
+            <SignUpForm />
+          </div>
         </div>
       </v-col>
       <!-- Banner -->
@@ -22,10 +31,16 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState } from "vuex";
+import LoginForm from "@/components/LoginForm.vue";
+import SignUpForm from "@/components/SignUpForm.vue";
 
 export default {
   name: "Auth",
+  components: {
+    LoginForm,
+    SignUpForm
+  },
   data: () => ({}),
   computed: {
     ...mapState(["authMode"])
@@ -34,6 +49,8 @@ export default {
 </script>
 
 <style>
+@import "../assets/line.css";
+
 .card-signing {
   padding: 30px;
 }

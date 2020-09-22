@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app color="primary" dark>
+  <v-app-bar color="primary" dark>
     <div class="d-flex align-center">
       <v-img
         alt="Vuetify Logo"
@@ -23,18 +23,14 @@
     <v-spacer></v-spacer>
 
     <v-btn
-      href="https://github.com/vuetifyjs/vuetify/releases/latest"
-      target="_blank"
       text
-      @click="authMode('signup')"
+      @click="authModeLocal('signup')"
     >
       <span class="mr-2">Sign Up</span>
     </v-btn>
     <v-btn
-      href="https://github.com/vuetifyjs/vuetify/releases/latest"
-      target="_blank"
       text
-      @click="authMode('login')"
+      @click="authModeLocal('login')"
     >
       <span class="mr-2">Login</span>
     </v-btn>
@@ -49,8 +45,8 @@ export default {
   data: () => ({}),
   methods: {
     ...mapActions(["authMode"]),
-    authMode(event) {
-      console.log("verifying event", event);
+    authModeLocal(event) {
+    //   console.log("verifying event", event);
       this.authMode(event);
     }
   }
@@ -58,4 +54,5 @@ export default {
 </script>
 
 <style>
+@import "../assets/line.css";
 </style>
