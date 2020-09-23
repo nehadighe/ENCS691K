@@ -8,7 +8,7 @@ Vue.use(Vuex)
 
 export const getDefaultState = () => {
     return {
-        authMode: "",
+        authMode: "signup",
     }
 }
 

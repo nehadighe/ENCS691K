@@ -1,8 +1,9 @@
 import Vue from 'vue';
 import App from './App.vue';
-import vuetify from './plugins/vuetify';
-import store from './store/store';
-import router from './router';
+// libraries
+import vuetify from './plugins/vuetify'; // UI framework / library
+import store from './store/store'; // manage data within application
+import router from './router'; // interaction among pages
 
 Vue.config.productionTip = false
 
