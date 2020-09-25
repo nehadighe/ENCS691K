@@ -1,0 +1,10 @@
+{
+	"auth": {
+		"encs691kc459d71f": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [],
+			"customAuth": false
+		}
+	}
+}

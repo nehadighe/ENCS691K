@@ -1,31 +1,16 @@
 <template>
-  <v-container class="fill-height">
-    <v-row>
-      <!-- <v-col cols="12">
-        <div class="d-flex flex-column justify-center align-center">
-          <h1>Hello World</h1>
-          <p>{{ authMode }}</p>
-        </div>
-      </v-col> -->
+  <v-container class=" fill-height">
+    <v-row class="">
       <v-col cols="12">
         <div class="d-flex justify-center align-center">
           <div v-if="authMode === 'login'">
-            <!-- <p>Foo</p> -->
             <LoginForm />
           </div>
           <div v-if="authMode === 'signup'">
-            <!-- <p>Bar</p> -->
             <SignUpForm />
           </div>
         </div>
       </v-col>
-      <!-- Banner -->
-      <!-- <v-snackbar :color="bannerType" :timeout="timeout" v-model="alert">
-        {{ bannerText }}
-        <v-btn color="white" text @click="alert = false">
-          <v-icon>mdi-window-close</v-icon>
-        </v-btn>
-      </v-snackbar>-->
     </v-row>
   </v-container>
 </template>

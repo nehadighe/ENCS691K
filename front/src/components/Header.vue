@@ -12,8 +12,8 @@
         />
       </div>
       <div class="">
-        <p class="red-font text-left mb-0">Concordia</p>
-        <p class="red-font text-left mb-0">ENCS691K</p>
+        <p class="red-font concordia-title text-left mb-0">Concordia</p>
+        <p class="red-font class-title text-left mb-0">ENCS691K</p>
       </div>
       <!-- <v-img
         alt="Vuetify Logo"

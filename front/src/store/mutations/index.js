@@ -1,11 +1,14 @@
 import {
     authMode,
+    userLogIn,
+    userSignUp
 } from "./auth"
 
-// might be using something like this to
-// determine whether the user is signed in
-// import { userLoggedIn } from "./user";
+import { resetAppState } from "./resetState"
 
 export default {
-    authMode
+    authMode,
+    userLogIn,
+    userSignUp,
+    resetAppState
 }
