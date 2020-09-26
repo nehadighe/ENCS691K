@@ -25,12 +25,12 @@ resource "aws_security_group" "db-security-group" {
 }
 
 resource "aws_security_group_rule" "db-security-group-rule-01" {
-  type              = "ingress"
-  from_port         = 3306
-  to_port           = 3306
-  protocol          = "tcp"
-  cidr_blocks       = "${split(",", var.ips)}"
-  security_group_id = "${aws_security_group.db-security-group.id}"
+  type                     = "ingress"
+  from_port                = 3306
+  to_port                  = 3306
+  protocol                 = "tcp"
+  source_security_group_id = "${aws_security_group.ec2-security-group.id}"
+  security_group_id        = "${aws_security_group.db-security-group.id}"
 }
 
 resource "aws_security_group_rule" "db-security-group-rule-egress" {
