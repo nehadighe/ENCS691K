@@ -27,6 +27,9 @@
           @click:append="eye = !eye"
           @keyup.enter="login"
         ></v-text-field>
+        <div class="d-flex align-left">
+          <a class="mb text-left" @click="helloWorld()">Forgot Password?</a>
+        </div>
         <v-row>
           <v-col cols="12" class="d-flex justify-center">
             <v-btn
@@ -107,13 +110,16 @@ export default {
             (this.alert = true);
           console.log(error);
         });
+    },
+    helloWorld() {
+      console.log("Venezula!");
     }
   }
 };
 </script>
 
 <style>
-@import "../assets/colors.css";
+@import "../../assets/colors.css";
 
 .card-signing {
   padding: 30px;
