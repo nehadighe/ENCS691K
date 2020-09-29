@@ -10,14 +10,15 @@
       <Verification
         v-if="localSignUpState === 'verification'"
         v-on:verifyCode="verifyCode($event)"
+        v-on:resentVerification="resentVerification()"
         :themeColor="themeColor"
       />
     </v-card>
     <!-- Banner -->
-    <v-snackbar :color="color" v-model="alert">
+    <v-snackbar :color="color" :timeout="snacktimeout" v-model="alert">
       <div class="d-flex flex-row align-center justify-space-between">
-        <p class="mb-0">{{ text }}</p>
-        <v-btn color="white" text @click="banner.alert = false">
+        <p class="mb-0 white--text">{{ text }}</p>
+        <v-btn color="white" text @click="alert = false">
           <v-icon small>mdi-window-close</v-icon>
         </v-btn>
       </div>
@@ -38,11 +39,9 @@ export default {
     Verification
   },
   data: () => ({
-    // parameters to be sent as props to child
     themeColor: "#900028",
     username: "",
-    // Locally handled within class
-    timeout: 30000,
+    snacktimeout: 8000,
     alert: false,
     text: null,
     color: null,
@@ -50,19 +49,14 @@ export default {
   }),
   methods: {
     ...mapActions(["resetAppState", "userSignUp"]),
-    // DUMMY FUNCTIONS
-    // async signUp(event) {
-    //   console.log("Hello World from Sign Up", event); // so this event is undefined
-    //   this.localSignUpState = "verification";
-    // },
-    // async verifyCode(event) {
-    //   console.log("Hello World from verify code", event);
-    // },
-
-    // ACTUAL FUNCTIONS
     async signUp(event) {
       if (!event.valid) {
         (this.text = "Input some text"),
+          (this.color = "#900028"),
+          (this.alert = true);
+        return;
+      } else if (event.password != event.confirmPassword) {
+        (this.text = "Passwords must be same"),
           (this.color = "#900028"),
           (this.alert = true);
         return;
@@ -71,7 +65,7 @@ export default {
         this.username = event.user.username;
         let username, password, email;
         username = event.user.username;
-        password = event.user.password;
+        password = event.password;
         email = event.user.email;
         // sending this data to Cognito
         const { user } = await Auth.signUp({
@@ -82,8 +76,10 @@ export default {
           }
         });
         console.log(user);
-        // updating the user store
-        this.userSignUp(event.user);
+        this.userSignUp(event.user); // sending data to the store
+        (this.text = "Your account has been created successfully!"),
+          (this.color = "success"),
+          (this.alert = true);
         // changing local signUp state for account verification
         this.localSignUpState = "verification";
       } catch (error) {
@@ -104,6 +100,19 @@ export default {
         console.log("error confirming sign up", error.message);
       }
     },
+    async resentVerification() {
+      try {
+        await Auth.resendSignUp(this.username);
+        (this.text = "Code resent successfully"),
+          (this.color = "success"),
+          (this.alert = true);
+      } catch (err) {
+        (this.text = err.message),
+          (this.color = "#900028"),
+          (this.alert = true);
+        console.log("error resending code: ", err);
+      }
+    },
     resetState() {
       this.resetAppState();
     }
@@ -117,5 +126,15 @@ export default {
 
 .card-signing {
   padding: 30px;
+}
+
+.extraTextStyle {
+  transition: 0.3s ease;
+  color: #b08c62 !important;
+}
+
+.extraTextStyle:hover {
+  transition: 0.3s ease;
+  color: #ad712a !important;
 }
 </style>

@@ -7,24 +7,33 @@
         :color="themeColor"
         v-model="code"
         :rules="rules.required"
-        autocomplete="verification"
         name="verification-code"
         label="Verification Code"
         filled
       ></v-text-field>
-      <v-btn
-        :style="valid ? {transition: `0.3s ease`} : null"
-        :color="valid ? themeColor : null"
-        :class="[valid ? `white--text` : '']"
-        @click="verifyCode()"
-      >Verify</v-btn>
-      <!-- Conditional styling -->
-      <!-- <v-progress-circular
+      <div class="d-flex align-left">
+        <a
+          class="mb-2 text-left extraTextStyle"
+          @click="resentVerification()"
+        >Resent the verification?</a>
+      </div>
+      <v-row>
+        <v-col cols="12" class="d-flex justify-center">
+          <v-btn
+            :style="valid ? {transition: `0.3s ease`} : null"
+            :color="valid ? themeColor : null"
+            :class="[valid ? `white--text` : '']"
+            @click="verifyCode()"
+          >Verify</v-btn>
+          <!-- Conditional styling -->
+          <!-- <v-progress-circular
                   v-if="requestLoading"
                   :size="20"
                   :color="themeColor"
                   indeterminate
-      ></v-progress-circular>-->
+          ></v-progress-circular>-->
+        </v-col>
+      </v-row>
     </v-form>
   </div>
 </template>
@@ -49,6 +58,9 @@ export default {
         code: this.code
       };
       this.$emit("verifyCode", event);
+    },
+    resentVerification() {
+      this.$emit("resentVerification");
     }
   }
 };

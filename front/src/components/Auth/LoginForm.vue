@@ -1,60 +1,25 @@
 <template>
   <div>
     <v-card min-width="450" class="card-signing elevation-2">
-      <h1 class="pb-5 text-center dark-2-golden-font">Login</h1>
-      <v-form v-model="valid">
-        <v-text-field
-          :color="themeColor"
-          v-model="user.username"
-          :rules="rules"
-          autocomplete="username"
-          name="signin-username"
-          required
-          label="Username"
-          filled
-        ></v-text-field>
-        <v-text-field
-          v-model="user.password"
-          :color="themeColor"
-          :append-icon="eye ? 'mdi-eye' : 'mdi-eye-off'"
-          :type="eye ? 'text' : 'password'"
-          :rules="rules"
-          autocomplete="new-password"
-          required
-          filled
-          name="signin-password"
-          label="Password"
-          @click:append="eye = !eye"
-          @keyup.enter="login"
-        ></v-text-field>
-        <div class="d-flex align-left">
-          <a class="mb text-left" @click="helloWorld()">Forgot Password?</a>
-        </div>
-        <v-row>
-          <v-col cols="12" class="d-flex justify-center">
-            <v-btn
-              :style="valid ? {transition: `0.3s ease`} : null"
-              :color="valid ? themeColor : null"
-              :class="[valid ? `white--text` : '']"
-            >Login</v-btn>
-          </v-col>
-          <!-- <v-col cols="12" md="6" class="d-flex justify-center justify-md-start">
-                  <v-btn
-                    v-if="!requestLoading"
-                    :style="valid ? {transition: `0.3s ease`} : null"
-                    :color="valid ? themeColor : null"
-                    :class="[valid ? `white--black` : '']"
-                    @click="login"
-                  >Login</v-btn>
-          </v-col>-->
-        </v-row>
-      </v-form>
+      <Login
+        v-if="localLoginState === 'login'"
+        v-on:login="login($event)"
+        v-on:forgotPassword="forgotPassword()"
+        :themeColor="themeColor"
+      />
+      <ForgotPass
+        v-if="localLoginState === 'forgotPass'"
+        v-on:send="send($event)"
+        v-on:change="change($event)"
+        v-on:back="back()"
+        :themeColor="themeColor"
+      />
     </v-card>
-    <v-snackbar :color="color" v-model="alert">
+    <v-snackbar :color="color" :timeout="snacktimeout" v-model="alert">
       <!-- <v-snackbar :color="bannerColor" timeout="30000" :v-model="bannerAlert"> -->
       <div class="d-flex flex-row align-center justify-space-between">
         <p class="mb-0">{{ text }}</p>
-        <v-btn color="white" text @click="banner.alert = false">
+        <v-btn color="white" text @click="alert = false">
           <v-icon small>mdi-window-close</v-icon>
         </v-btn>
       </div>
@@ -64,45 +29,44 @@
 
 <script>
 import { Auth } from "aws-amplify";
+import { mapActions } from "vuex";
+import Login from "./Login";
+import ForgotPass from "./ForgotPass";
 
 export default {
   name: "LoginForm",
+  components: {
+    Login,
+    ForgotPass
+  },
   data: () => ({
     themeColor: "#900028",
     eye: false,
     valid: true,
-    emailRules: [
-      v => !!v || "E-mail is required",
-      v => /.+@.+\..+/.test(v) || "E-mail must be valid"
-    ],
-    rules: [v => !!v || "Input is required"],
-    user: {
-      username: "",
-      password: ""
+    rules: {
+      required: [v => !!v || "Required."]
     },
-    timeout: 30000,
+    snacktimeout: 8000,
     alert: false,
     text: null,
-    color: null
+    color: null,
+    localLoginState: "login"
   }),
   methods: {
-    async login() {
-      if (!this.valid) {
-        (this.text = "Input some text"),
-          (this.color = "#900028"),
-          (this.alert = true);
-      }
-      let username, password;
-      username = this.user.username;
-      password = this.user.password;
-      await Auth.signIn(username, password)
-        .then(() => {
-          this.user = {
-            username: "",
-            password: ""
-          };
-          this.$refs.form.reset();
-          this.$router.push({ name: "home" });
+    ...mapActions(["resetAppState", "userLogIn"]),
+    forgotPassword() {
+      this.localLoginState = "forgotPass";
+    },
+    // sending code to change password to username
+    async send(event) {
+      await Auth.forgotPassword(event.username)
+        .then(data => {
+          // once password has been reset
+          // go back to login again
+          (this.text = "Your code has been sent"),
+            (this.color = "success"),
+            (this.alert = true);
+          console.log("send method from forgot password", data);
         })
         .catch(error => {
           (this.text = error.message),
@@ -111,8 +75,57 @@ export default {
           console.log(error);
         });
     },
-    helloWorld() {
-      console.log("Venezula!");
+    // changing old password to a new password
+    async change(event) {
+      console.log('line 80 - change', event);
+      if (event.password != event.confirmPassword) {
+        (this.text = "Passwords must be same"),
+          (this.color = "#900028"),
+          (this.alert = true);
+        return;
+      }
+      await Auth.forgotPasswordSubmit(
+        event.user.username,
+        event.code,
+        event.password
+      )
+        .then(data => {
+          this.userLogIn(event.user); // sending data to the store
+          this.$router.push({ name: "home" });
+          console.log("change method from forgot password submit", data);
+        })
+        .catch(err => {
+          (this.text = err.message),
+            (this.color = "#900028"),
+            (this.alert = true);
+          console.log(err);
+        });
+    },
+    // going back from forgot password component
+    // to login component
+    back() {
+      this.localLoginState = "login";
+    },
+    async login(event) {
+      if (!event.valid) {
+        (this.text = "Input some text"),
+          (this.color = "#900028"),
+          (this.alert = true);
+      }
+      let username, password;
+      username = event.user.username;
+      password = event.password;
+      await Auth.signIn(username, password)
+        .then(() => {
+          this.userLogIn(event.user); // sending data to the store
+          this.$router.push({ name: "home" });
+        })
+        .catch(error => {
+          (this.text = error.message),
+            (this.color = "#900028"),
+            (this.alert = true);
+          console.log(error);
+        });
     }
   }
 };
@@ -123,5 +136,15 @@ export default {
 
 .card-signing {
   padding: 30px;
+}
+
+.extraTextStyle {
+  transition: 0.3s ease;
+  color: #b08c62 !important;
+}
+
+.extraTextStyle:hover {
+  transition: 0.3s ease;
+  color: #ad712a !important;
 }
 </style>

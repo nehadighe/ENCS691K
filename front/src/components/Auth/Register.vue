@@ -19,7 +19,7 @@
           <v-text-field
             :color="themeColor"
             v-model="user.email"
-            :rules="rules.emailRules"
+            :rules="rules.email"
             autocomplete="username"
             name="signin-username"
             label="Email"
@@ -61,7 +61,7 @@
             :color="themeColor"
             :append-icon="eyePass ? 'mdi-eye' : 'mdi-eye-off'"
             :type="eyePass ? 'text' : 'password'"
-            :rules="rules.required"
+            :rules="rules.password"
             autocomplete="new-password"
             filled
             name="signin-password"
@@ -72,13 +72,14 @@
         <!-- confirm password -->
         <v-col cols="12" md="6">
           <v-text-field
+            v-model="user.confirmPassword"
             :color="themeColor"
             :append-icon="eyeConfirmPass ? 'mdi-eye' : 'mdi-eye-off'"
             :type="eyeConfirmPass ? 'text' : 'password'"
-            :rules="rules.required"
-            autocomplete="new-password"
+            :rules="[passwordConfirmationRule]"
+            autocomplete="confirm-password"
             filled
-            name="signin-password"
+            name="confirm-signin-password"
             label="Confirm Password"
             @click:append="eyeConfirmPass = !eyeConfirmPass"
             @keyup.enter="signUp()"
@@ -89,10 +90,11 @@
         <v-col cols="12" class="d-flex justify-center">
           <!-- <v-col cols="12" md="6" class="d-flex justify-center"> -->
           <v-btn
-            :style="valid ? {transition: `0.3s ease`} : null"
+            :style="valid ? {transition: `0.3s ease`} : { cursor: `auto !important` }"
             :color="valid ? themeColor : null"
             :class="[valid ? `white--text` : '']"
-            @click="signUp()"
+            @click="valid ? signUp(): null"
+            :ripple="false"
           >Sign Up</v-btn>
         </v-col>
         <!-- <v-col cols="12" md="6" class="d-flex justify-center">
@@ -118,20 +120,32 @@ export default {
     eyePass: false,
     eyeConfirmPass: false,
     rules: {
-      emailRules: [
-        v => !!v || "E-mail is required",
+      email: [
+        v => !!v || "Required.",
         v => /.+@.+\..+/.test(v) || "E-mail must be valid."
       ],
-      required: [v => !!v || "Required."]
+      required: [v => !!v || "Required."],
+      password: [
+        v => !!v || "Required.",
+        v => (v && v.length >= 8) || "minimum 8 characters"
+      ]
     },
     user: {
       username: "",
       email: "",
       firstName: "",
       lastName: "",
-      password: ""
+      password: "",
+      confirmPassword: ""
     }
   }),
+  computed: {
+    passwordConfirmationRule() {
+      return () =>
+        this.user.password === this.user.confirmPassword ||
+        "Password must match";
+    }
+  },
   props: {
     themeColor: String
   },
@@ -140,16 +154,16 @@ export default {
       var event = {
         // constructing the event to pass to parent
         valid: this.valid,
-        user: this.user
+        user: {
+          username: this.user.username,
+          email: this.user.email,
+          firstName: this.user.firstName,
+          lastName: this.user.lastName
+        },
+        password: this.user.password,
+        confirmPassword: this.user.confirmPassword
       };
       this.$emit("signUp", event);
-      this.user = {
-        username: "",
-        email: "",
-        firstName: "",
-        lastName: "",
-        password: ""
-      };
       this.$refs.form.reset();
     }
   }
