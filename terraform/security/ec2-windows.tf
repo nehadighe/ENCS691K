@@ -19,7 +19,8 @@ resource "aws_security_group_rule" "ec2-security-group-rule-01" {
   from_port         = 3389
   to_port           = 3389
   protocol          = "tcp"
-  cidr_blocks       = "${split(",", var.ips)}"
+  cidr_blocks       = ["0.0.0.0/0"]
+  # cidr_blocks       = "${split(",", var.ips)}"
   security_group_id = "${aws_security_group.ec2-security-group.id}"
 }
 

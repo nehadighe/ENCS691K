@@ -17,8 +17,8 @@
 
 <script>
 import { mapState } from "vuex";
-import LoginForm from "@/components/LoginForm.vue";
-import SignUpForm from "@/components/SignUpForm.vue";
+import LoginForm from "@/components/Auth/LoginForm.vue";
+import SignUpForm from "@/components/Auth/SignUpForm.vue";
 
 export default {
   name: "Auth",

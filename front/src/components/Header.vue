@@ -11,62 +11,67 @@
           width="40"
         />
       </div>
-      <div class="">
+      <div class>
         <p class="red-font concordia-title text-left mb-0">Concordia</p>
         <p class="red-font class-title text-left mb-0">ENCS691K</p>
       </div>
-      <!-- <v-img
-        alt="Vuetify Logo"
-        class="shrink mr-2"
-        contain
-        src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-        transition="scale-transition"
-        width="40"
-      />-->
-      <!-- <v-img
-        alt="Vuetify Logo"
-        class="shrink mr-2"
-        contain
-        src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-        transition="scale-transition"
-        width="40"
-      />-->
-
-      <!-- <v-img
-        alt="Vuetify Name"
-        class="shrink mt-1 hidden-sm-and-down"
-        contain
-        min-width="100"
-        src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-        width="100"
-      />-->
     </div>
 
     <v-spacer></v-spacer>
 
-    <v-btn text @click="authModeLocal('signup')">
-      <span class="mr-2">Sign Up</span>
-    </v-btn>
-    <v-btn text @click="authModeLocal('login')">
-      <span class="mr-2">Login</span>
-    </v-btn>
+    <!-- Unauthenticated users -->
+    <div v-if="!user.authenticated">
+      <v-btn text @click="authModeLocal('signup')">
+        <span class="mr-2">Sign Up</span>
+      </v-btn>
+      <v-btn text @click="authModeLocal('login')">
+        <span class="mr-2">Login</span>
+      </v-btn>
+    </div>
+    <!-- User Login -->
+    <div v-if="user.authenticated">
+      <v-btn text @click="authModeLocal('login')">
+        <span class="mr-2">{{ user.username }}</span>
+      </v-btn>
+      <v-btn text @click="logOut()">
+        <span class="mr-2">Logout</span>
+      </v-btn>
+    </div>
   </v-app-bar>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { Auth } from "aws-amplify";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "Header",
   data: () => ({
-    headerColor: "#CDB394"
+    headerColor: "#CDB394",
+    authenticate: null
   }),
+  computed: {
+    ...mapState(["user"])
+  },
   methods: {
-    ...mapActions(["authMode"]),
+    ...mapActions(["resetAppState", "authMode"]),
     authModeLocal(event) {
       //   console.log("verifying event", event);
       this.authMode(event);
+    },
+    async logOut() {
+      try {
+        await Auth.signOut({ global: true });
+        this.resetAppState();
+        this.$router.push({ name: "auth" });
+      } catch (error) {
+        console.log("error signing out: ", error);
+      }
     }
+  },
+  mounted() {
+    // this.authenticate = user;
+    console.log(this.user);
   }
 };
 </script>

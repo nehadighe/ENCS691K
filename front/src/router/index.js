@@ -1,19 +1,31 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-// import store from '../store/store.js';
+import store from '../store/store';
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/auth',
     name: 'auth',
     component: () => import(/* webpackChunkName: "about" */ '../views/Auth.vue')
   },
   {
-    path: '/home',
+    path: '/',
     name: 'home',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Home.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/Home.vue'),
+    beforeEnter: (to, from, next) => {
+      if (!store.state.user.authenticated) {
+        next({
+          path: '/auth',
+          name: 'auth',
+          component: () => import('../views/Auth.vue')
+        })
+      }
+      else {
+        next()
+      }
+    }
   },
   {
     path: '/about',
