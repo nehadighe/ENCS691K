@@ -4,11 +4,11 @@ export const authMode = (context, authModeValue) => {
 }
 
 export const userLogIn = (context, userInfo) => {
-    console.log('store - action userLogin: ', userInfo)
+    // console.log('store - action userLogin: ', userInfo)
     context.commit("userLogIn", userInfo)
 }
 
 export const userSignUp = (context, userInfo) => {
-    console.log('store - action userSignUp: ', userInfo)
+    // console.log('store - action userSignUp: ', userInfo)
     context.commit("userSignUp", userInfo)
 }

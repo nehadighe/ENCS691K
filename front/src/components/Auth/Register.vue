@@ -90,24 +90,16 @@
         <v-col cols="12" class="d-flex justify-center">
           <!-- <v-col cols="12" md="6" class="d-flex justify-center"> -->
           <v-btn
+            v-if="!requestLoading"
             :style="valid ? {transition: `0.3s ease`} : { cursor: `auto !important` }"
             :color="valid ? themeColor : null"
             :class="[valid ? `white--text` : '']"
             @click="valid ? signUp(): null"
             :ripple="false"
           >Sign Up</v-btn>
+          <v-progress-circular v-if="requestLoading" :size="25" :color="themeColor" indeterminate></v-progress-circular>
         </v-col>
-        <!-- <v-col cols="12" md="6" class="d-flex justify-center">
-            <v-btn @click="resetState()">Reset State</v-btn>
-        </v-col>-->
       </v-row>
-      <!-- Conditional styling -->
-      <!-- <v-progress-circular
-                  v-if="requestLoading"
-                  :size="20"
-                  :color="themeColor"
-                  indeterminate
-      ></v-progress-circular>-->
     </v-form>
   </div>
 </template>
@@ -137,7 +129,7 @@ export default {
       lastName: "",
       password: "",
       confirmPassword: ""
-    }
+    },
   }),
   computed: {
     passwordConfirmationRule() {
@@ -147,7 +139,8 @@ export default {
     }
   },
   props: {
-    themeColor: String
+    themeColor: String,
+    requestLoading: Boolean
   },
   methods: {
     signUp() {

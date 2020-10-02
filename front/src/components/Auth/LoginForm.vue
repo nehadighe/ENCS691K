@@ -5,6 +5,7 @@
         v-if="localLoginState === 'login'"
         v-on:login="login($event)"
         v-on:forgotPassword="forgotPassword()"
+        :requestLoading="requestLoading"
         :themeColor="themeColor"
       />
       <ForgotPass
@@ -12,6 +13,7 @@
         v-on:send="send($event)"
         v-on:change="change($event)"
         v-on:back="back()"
+        :requestLoading="requestLoading"
         :themeColor="themeColor"
       />
     </v-card>
@@ -50,6 +52,7 @@ export default {
     alert: false,
     text: null,
     color: null,
+    requestLoading: false,
     localLoginState: "login"
   }),
   methods: {
@@ -59,29 +62,33 @@ export default {
     },
     // sending code to change password to username
     async send(event) {
+      this.requestLoading = true;
       await Auth.forgotPassword(event.username)
-        .then(data => {
+        .then(() => {
           // once password has been reset
           // go back to login again
           (this.text = "Your code has been sent"),
             (this.color = "success"),
             (this.alert = true);
-          console.log("send method from forgot password", data);
+          this.requestLoading = false;
+          // console.log("line 69, send method from forgot password", data);
         })
         .catch(error => {
           (this.text = error.message),
             (this.color = "#900028"),
             (this.alert = true);
-          console.log(error);
+          this.requestLoading = false;
         });
     },
     // changing old password to a new password
     async change(event) {
-      console.log('line 80 - change', event);
+      // console.log('line 80 - change', event);
+      this.requestLoading = true;
       if (event.password != event.confirmPassword) {
         (this.text = "Passwords must be same"),
           (this.color = "#900028"),
           (this.alert = true);
+        this.requestLoading = false;
         return;
       }
       await Auth.forgotPasswordSubmit(
@@ -89,16 +96,17 @@ export default {
         event.code,
         event.password
       )
-        .then(data => {
+        .then(() => {
           this.userLogIn(event.user); // sending data to the store
+          this.requestLoading = false;
           this.$router.push({ name: "home" });
-          console.log("change method from forgot password submit", data);
+          // console.log("line 95, change method from forgot password submit", data);
         })
         .catch(err => {
           (this.text = err.message),
             (this.color = "#900028"),
             (this.alert = true);
-          console.log(err);
+          this.requestLoading = false;
         });
     },
     // going back from forgot password component
@@ -107,10 +115,13 @@ export default {
       this.localLoginState = "login";
     },
     async login(event) {
+      this.requestLoading = true;
       if (!event.valid) {
         (this.text = "Input some text"),
           (this.color = "#900028"),
           (this.alert = true);
+        this.requestLoading = false;
+        return;
       }
       let username, password;
       username = event.user.username;
@@ -118,13 +129,14 @@ export default {
       await Auth.signIn(username, password)
         .then(() => {
           this.userLogIn(event.user); // sending data to the store
+          this.requestLoading = false;
           this.$router.push({ name: "home" });
         })
         .catch(error => {
           (this.text = error.message),
             (this.color = "#900028"),
             (this.alert = true);
-          console.log(error);
+          this.requestLoading = false;
         });
     }
   }

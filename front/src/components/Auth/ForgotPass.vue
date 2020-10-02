@@ -13,8 +13,12 @@
           filled
         ></v-text-field>
         <v-row>
-          <v-col cols="12" md="6" class="d-flex justify-center justify-md-end">
+          <v-col v-if="requestLoading" cols="12" class="d-flex justify-center">
+            <v-progress-circular :size="25" :color="themeColor" indeterminate></v-progress-circular>
+          </v-col>
+          <v-col v-if="!requestLoading" cols="12" md="6" class="d-flex justify-center justify-md-end">
             <v-btn
+              v-if="!requestLoading"
               :style="validForgotPass ? {transition: `0.3s ease`} : { cursor: `auto !important` }"
               :color="validForgotPass ? themeColor : null"
               :class="[validForgotPass ? `white--text` : '']"
@@ -23,7 +27,7 @@
             >Send</v-btn>
           </v-col>
           <v-col cols="12" md="6" class="d-flex justify-center justify-md-start">
-            <v-btn :ripple="false" @click="back">Back</v-btn>
+            <v-btn v-if="!requestLoading" :ripple="false" @click="back">Back</v-btn>
           </v-col>
         </v-row>
       </v-form>
@@ -87,12 +91,14 @@
         <v-row>
           <v-col cols="12" class="d-flex justify-center">
             <v-btn
+              v-if="!requestLoading"
               :style="validChangePass ? {transition: `0.3s ease`} : { cursor: `auto !important` }"
               :color="validChangePass ? themeColor : null"
               :class="[validChangePass ? `white--text` : '']"
               :ripple="false"
               @click="[validChangePass ? change() : null]"
             >Change Password</v-btn>
+            <v-progress-circular v-if="requestLoading" :size="25" :color="themeColor" indeterminate></v-progress-circular>
           </v-col>
         </v-row>
       </v-form>
@@ -135,7 +141,8 @@ export default {
     }
   },
   props: {
-    themeColor: String
+    themeColor: String,
+    requestLoading: Boolean
   },
   methods: {
     // sending code to change password to username

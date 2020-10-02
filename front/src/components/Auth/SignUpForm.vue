@@ -5,6 +5,7 @@
       <Register
         v-if="localSignUpState === 'register'"
         v-on:signUp="signUp($event)"
+        :requestLoading="requestLoading"
         :themeColor="themeColor"
       />
       <Verification
@@ -45,20 +46,24 @@ export default {
     alert: false,
     text: null,
     color: null,
+    requestLoading: false,
     localSignUpState: "register"
   }),
   methods: {
     ...mapActions(["resetAppState", "userSignUp"]),
     async signUp(event) {
+      this.requestLoading = true;
       if (!event.valid) {
         (this.text = "Input some text"),
           (this.color = "#900028"),
           (this.alert = true);
+        this.requestLoading = false;
         return;
       } else if (event.password != event.confirmPassword) {
         (this.text = "Passwords must be same"),
           (this.color = "#900028"),
           (this.alert = true);
+        this.requestLoading = false;
         return;
       }
       try {
@@ -82,25 +87,29 @@ export default {
           (this.alert = true);
         // changing local signUp state for account verification
         this.localSignUpState = "verification";
+        this.requestLoading = false;
       } catch (error) {
         (this.text = error.message),
           (this.color = "#900028"),
           (this.alert = true);
-        console.log("error signing up", error.message);
+        this.requestLoading = false;
       }
     },
     async verifyCode(event) {
+      this.requestLoading = true;
       try {
         await Auth.confirmSignUp(this.username, event.code);
+        this.requestLoading = false;
         this.$router.push({ name: "home" });
       } catch (error) {
         (this.text = error.message),
           (this.color = "#900028"),
           (this.alert = true);
-        console.log("error confirming sign up", error.message);
+        this.requestLoading = false;
       }
     },
     async resentVerification() {
+      // this avoid overloading the resend of events without the HTTP error
       try {
         await Auth.resendSignUp(this.username);
         (this.text = "Code resent successfully"),

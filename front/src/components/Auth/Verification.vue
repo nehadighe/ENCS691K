@@ -16,22 +16,22 @@
           class="mb-2 text-left extraTextStyle"
           @click="resentVerification()"
         >Resent the verification?</a>
+        <p
+          style="padding-left:10px"
+          :class="counter >= 3 ? `verification-max` : `verification-resent`"
+          class="mb-0"
+        >{{ counter }}/3</p>
       </div>
       <v-row>
         <v-col cols="12" class="d-flex justify-center">
           <v-btn
+            v-if="!requestLoading"
             :style="valid ? {transition: `0.3s ease`} : null"
             :color="valid ? themeColor : null"
             :class="[valid ? `white--text` : '']"
             @click="verifyCode()"
           >Verify</v-btn>
-          <!-- Conditional styling -->
-          <!-- <v-progress-circular
-                  v-if="requestLoading"
-                  :size="20"
-                  :color="themeColor"
-                  indeterminate
-          ></v-progress-circular>-->
+          <v-progress-circular v-if="requestLoading" :size="25" :color="themeColor" indeterminate></v-progress-circular>
         </v-col>
       </v-row>
     </v-form>
@@ -46,10 +46,12 @@ export default {
     rules: {
       required: [v => !!v || "Required."]
     },
-    code: ""
+    code: "",
+    counter: 0
   }),
   props: {
-    themeColor: String
+    themeColor: String,
+    requestLoading: Boolean
   },
   methods: {
     verifyCode() {
@@ -60,6 +62,9 @@ export default {
       this.$emit("verifyCode", event);
     },
     resentVerification() {
+      if (this.counter < 3) {
+        this.counter++;
+      }
       this.$emit("resentVerification");
     }
   }
@@ -67,4 +72,12 @@ export default {
 </script>
 
 <style>
+.verification-max {
+  color: #900028;
+  font-weight: 700;
+}
+
+.verification-resent {
+  color: #b08c62 !important;
+}
 </style>

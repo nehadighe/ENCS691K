@@ -4,11 +4,11 @@ export const authMode = (state, authModeAction) => {
 }
 
 export const userLogIn = (state, userInfo) => {
-    console.log('store - mutations: userLogin', userInfo)
+    // console.log('store - mutations: userLogin', userInfo)
     state.user = userInfo
 }
 
 export const userSignUp = (state, userInfo) => {
-    console.log('store - mutations: userSignUp', userInfo)
+    // console.log('store - mutations: userSignUp', userInfo)
     state.user = userInfo
 }
