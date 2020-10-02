@@ -5,6 +5,7 @@
         v-if="localLoginState === 'login'"
         v-on:login="login($event)"
         v-on:forgotPassword="forgotPassword()"
+        v-on:resetState="resetState()"
         :requestLoading="requestLoading"
         :themeColor="themeColor"
       />
@@ -97,6 +98,7 @@ export default {
         event.password
       )
         .then(() => {
+          event.user.authenticated = true // adding authentication property
           this.userLogIn(event.user); // sending data to the store
           this.requestLoading = false;
           this.$router.push({ name: "home" });
@@ -128,6 +130,7 @@ export default {
       password = event.password;
       await Auth.signIn(username, password)
         .then(() => {
+          event.user.authenticated = true // adding authentication property
           this.userLogIn(event.user); // sending data to the store
           this.requestLoading = false;
           this.$router.push({ name: "home" });
@@ -138,6 +141,9 @@ export default {
             (this.alert = true);
           this.requestLoading = false;
         });
+    },
+    resetState() {
+      this.resetAppState();
     }
   }
 };

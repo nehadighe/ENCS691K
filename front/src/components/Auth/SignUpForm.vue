@@ -5,6 +5,7 @@
       <Register
         v-if="localSignUpState === 'register'"
         v-on:signUp="signUp($event)"
+        v-on:resetState="resetState()"
         :requestLoading="requestLoading"
         :themeColor="themeColor"
       />
@@ -80,7 +81,8 @@ export default {
             email // optional
           }
         });
-        console.log(user);
+        console.log('line 84- ', user);
+        event.user.authenticated = true // adding authentication property
         this.userSignUp(event.user); // sending data to the store
         (this.text = "Your account has been created successfully!"),
           (this.color = "success"),

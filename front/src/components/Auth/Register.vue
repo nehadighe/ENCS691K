@@ -87,8 +87,8 @@
         </v-col>
       </v-row>
       <v-row>
+        <!-- <v-col cols="12" md="6" class="d-flex justify-center"> -->
         <v-col cols="12" class="d-flex justify-center">
-          <!-- <v-col cols="12" md="6" class="d-flex justify-center"> -->
           <v-btn
             v-if="!requestLoading"
             :style="valid ? {transition: `0.3s ease`} : { cursor: `auto !important` }"
@@ -99,6 +99,9 @@
           >Sign Up</v-btn>
           <v-progress-circular v-if="requestLoading" :size="25" :color="themeColor" indeterminate></v-progress-circular>
         </v-col>
+        <!-- <v-col cols="12" md="6">
+          <v-btn @click="resetState()">Reset State</v-btn>
+        </v-col>-->
       </v-row>
     </v-form>
   </div>
@@ -129,7 +132,7 @@ export default {
       lastName: "",
       password: "",
       confirmPassword: ""
-    },
+    }
   }),
   computed: {
     passwordConfirmationRule() {
@@ -158,6 +161,9 @@ export default {
       };
       this.$emit("signUp", event);
       this.$refs.form.reset();
+    },
+    resetState() {
+      this.$emit("resetState");
     }
   }
 };

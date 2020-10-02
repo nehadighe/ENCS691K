@@ -28,6 +28,7 @@
         <a class="mb-2 text-left extraTextStyle" @click="forgotPassword()">Forgot Password?</a>
       </div>
       <v-row>
+        <!-- <v-col cols="12" md="6" class="d-flex justify-center"> -->
         <v-col cols="12" class="d-flex justify-center">
           <v-btn
             v-if="!requestLoading"
@@ -39,6 +40,9 @@
           >Login</v-btn>
           <v-progress-circular v-if="requestLoading" :size="25" :color="themeColor" indeterminate></v-progress-circular>
         </v-col>
+        <!-- <v-col cols="12" md="6">
+          <v-btn @click="resetState()">Reset State</v-btn>
+        </v-col>-->
       </v-row>
     </v-form>
   </div>
@@ -85,6 +89,9 @@ export default {
       };
       this.$emit("login", event);
       this.$refs.form.reset();
+    },
+    resetState() {
+      this.$emit("resetState");
     }
   }
 };
