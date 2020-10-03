@@ -1,22 +1,22 @@
 const { create } = require("../models/model");
 
 module.exports = {
-  createUser: (req, res)=>{
-    const body = req.body;
-    create(body, (err, results)=>{
-      if(err){
-        console.log(err);
-        return res.status(500).json({
-          success:0,
-          message: "Database connection error"
+    createUser: (req, res) => {
+        const body = req.body;
+        create(body, (err, results) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).json({
+                    success: 0,
+                    message: "Database connection error"
+                });
+            }
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
         });
-      }
-      return res.status(200).json({
-        success:1,
-        data: results
-      });
-    });
-  }
+    }
 };
 
 
@@ -58,25 +58,55 @@ module.exports = {
 
 // // Retrieve all users from the database.
 // exports.findAll = (req, res) => {
-  
+
 // };
 
 // // Find a single user with an id
 // exports.findOne = (req, res) => {
-  
+
 // };
 
 // // Update a user by the id in the request
 // exports.update = (req, res) => {
-  
+
 // };
 
 // // Delete a user with the specified id in the request
 // exports.delete = (req, res) => {
-  
+
 // };
 
 // // Delete all users from the database.
 // exports.deleteAll = (req, res) => {
-  
+
 // };
+
+// -------------------------- Item Routes --------------------------
+
+//// Create Item
+//exports.item.create(req,res){
+//
+//}
+
+//// Retrieve Items
+//exports.item.getItems = (req, res) => {
+
+// };
+
+//// Retrieve user items
+//exports.item.getUserItems = (req, res) => {
+
+// };
+
+//// Delete Item
+//exports.item.deleteItems = (req, res) => {
+
+// };
+
+//// Update Item
+//exports.item.deleteItems = (req, res) => {
+
+// };
+
+
+// -------------------------- Item Routes --------------------------
