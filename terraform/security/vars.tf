@@ -2,14 +2,29 @@ variable "AWS_REGIONS" {
   default = "us-east-1"
 }
 
-variable "sg-name-db-pri" {
+variable "sg-mysql-rds" {
   type    = "string"
-  default = "database-sg-private"
+  default = "database-sg"
 }
 
-variable "sg-name-ec2-pri" {
+variable "sg-windows-ec2" {
   type    = "string"
-  default = "ec2-sg-private"
+  default = "windows-sg"
+}
+
+variable "sg-nodejs-ec2" {
+  type    = "string"
+  default = "nodejs-sg"
+}
+
+variable "sg-bastion-ec2" {
+  type    = "string"
+  default = "bastion-sg"
+}
+
+variable "sg-elb" {
+  type    = "string"
+  default = "elb-sg"
 }
 
 variable "ips" {
