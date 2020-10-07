@@ -1,21 +1,22 @@
 {
-  "name": "events-api",
+  "name": "back",
   "version": "1.0.0",
-  "description": "Node.js Rest Apis with Express, Sequelize & MySQL",
-  "main": "server.js",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "./node_modules/nodemon/bin/nodemon.js src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "mysql": "^2.18.1",
+    "morgan": "^1.10.0",
     "mysql2": "^2.2.5",
-    "nodemon": "^1.19.4",
+    "nodemon": "^2.0.4",
     "sequelize": "^6.3.5"
   }
 }
