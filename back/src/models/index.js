@@ -21,7 +21,8 @@ fs
     )
     .forEach((file) => { 
         const model = sequelize.import(path.join(__dirname, file)) // for each file, declare a model
-        db[model.name] = model
+        //db[model.name] = model
+        db.User = model
     })
 
 
