@@ -1,4 +1,4 @@
-const RegisterUserController = require('./RegisterUserController')
+const RegisterUserController = require('../src/controllers/RegisterUserController')
 
 module.exports = (app) => {
      app.get('/', (req, res) => {
