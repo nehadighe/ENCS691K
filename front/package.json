@@ -9,9 +9,10 @@
     "deploy": "vue-cli-service s3-deploy"
   },
   "dependencies": {
-    "@aws-amplify/cli": "^4.29.2",
+    "@aws-amplify/cli": "^4.29.6",
     "aws-amplify": "^3.3.1",
     "aws-amplify-vue": "^2.1.2",
+    "axios": "^0.20.0",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-cli-plugin-s3-deploy": "^4.0.0-rc4",

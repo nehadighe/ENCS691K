@@ -1,5 +1,5 @@
 module.exports = {
-    port: 3306,
+    port: 8081,
     db: {
         database: 'auctionsystem',
         user: 'admin',

@@ -30,6 +30,7 @@
 
 <script>
 import { Auth } from "aws-amplify";
+import UserService from "@/services/User";
 import { mapActions } from "vuex";
 import Register from "./Register";
 import Verification from "./Verification";
@@ -60,7 +61,7 @@ export default {
           (this.alert = true);
         this.requestLoading = false;
         return;
-      } else if (event.password != event.confirmPassword) {
+      } else if (event.user.password != event.confirmPassword) {
         (this.text = "Passwords must be same"),
           (this.color = "#900028"),
           (this.alert = true);
@@ -71,19 +72,23 @@ export default {
         this.username = event.user.username;
         let username, password, email;
         username = event.user.username;
-        password = event.password;
+        password = event.user.password;
         email = event.user.email;
         // sending this data to Cognito
-        const { user } = await Auth.signUp({
+        await Auth.signUp({
           username,
           password,
           attributes: {
             email // optional
           }
         });
-        console.log('line 84- ', user);
-        event.user.authenticated = true // adding authentication property
-        this.userSignUp(event.user); // sending data to the store
+        // Making API call in the try clause
+        await UserService.post(event.user).then(() => {
+          event.user.authenticated = true // adding authentication property
+          this.userSignUp(event.user); // sending data to the store
+        }).catch(err => {
+          console.log('line 91 err from API call- ',err)
+        });
         (this.text = "Your account has been created successfully!"),
           (this.color = "success"),
           (this.alert = true);

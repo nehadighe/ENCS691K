@@ -154,9 +154,9 @@ export default {
           username: this.user.username,
           email: this.user.email,
           firstName: this.user.firstName,
-          lastName: this.user.lastName
+          lastName: this.user.lastName,
+          password: this.user.password
         },
-        password: this.user.password,
         confirmPassword: this.user.confirmPassword
       };
       this.$emit("signUp", event);
