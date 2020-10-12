@@ -1,12 +1,12 @@
 module.exports = {
-    port: 8081,
+    port: 3306,
     db: {
-        database: '',
-        user: '',
-        password: '',
+        database: 'auctionsystem',
+        user: 'admin',
+        password: 'encs691k!',
         options: {
             dialect: 'mysql',
-            host: ''
+            host: 'encs691k-dev.ccyynx7z7er3.us-east-1.rds.amazonaws.com'
         }
     },
 }
