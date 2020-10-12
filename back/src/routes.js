@@ -1,11 +1,16 @@
-const RegisterUserController = require('../src/controllers/RegisterUserController')
+const UserController = require('./controllers/UserController')
 
 module.exports = (app) => {
-     app.get('/', (req, res) => {
-         res.send({
-             message: 'Hello World'
-         })
-     })
+      app.get('/', (req, res) => {
+          res.send({
+              message: 'Hello World'
+          })
+      })
 
-    app.post('/register', RegisterUserController.register)
+    app.post('/users/register', UserController.registerUser)
+
+    app.get('/users/:id',UserController.getUser)
+
+    app.get('/users',UserController.getAllUsers)
+
 }
