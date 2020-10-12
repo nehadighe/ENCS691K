@@ -1,4 +1,5 @@
 const UserController = require('./controllers/UserController')
+const ItemController = require('./controllers/ItemController')
 
 module.exports = (app) => {
     app.get('/', (req, res) => {
@@ -15,4 +16,11 @@ module.exports = (app) => {
     app.get('/users', UserController.getAllUsers)
 
     // Product Routes
+    app.post('/items/AddItem', ItemController.addItem)
+
+    app.get('/items/getItemById/:ItemID', ItemController.getItemById)
+
+    app.get('/items/getAllUserItems/:username', ItemController.getAllUserItems)
+
+    app.get('/items/getAllItems', ItemController.getAllItems)
 }
