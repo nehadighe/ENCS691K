@@ -1,11 +1,12 @@
 {
-  "name": "front",
+  "name": "encs691k",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "deploy": "vue-cli-service s3-deploy"
   },
   "dependencies": {
     "@aws-amplify/cli": "^4.29.2",
@@ -13,6 +14,7 @@
     "aws-amplify-vue": "^2.1.2",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
+    "vue-cli-plugin-s3-deploy": "^4.0.0-rc4",
     "vue-router": "^3.2.0",
     "vuetify": "^2.2.11",
     "vuex": "^3.4.0",

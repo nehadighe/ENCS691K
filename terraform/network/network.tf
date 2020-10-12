@@ -12,6 +12,26 @@ module "new-vpc" {
   }
 }
 
+module "vpc-flow-logs" {
+  source                   = "/Users/elchoco/aws/terraform_infrastructure_as_code/modules/network/flow-log"
+  vpc-id                   = "${module.new-vpc.vpc-id}"
+  traffic-type             = "${var.traffic-type}"
+  log-destination          = "${var.log-destination}"
+  max-aggregation-interval = "${var.max-aggregation-interval}"
+  #roles
+  role-policy-name         = "${var.role-policy-name}"
+  role-name                = "${var.role-name}"
+  #Tags
+  tags = {
+    Name          = "flow-logs"
+    Environment   = "${terraform.workspace}"
+    Template      = "${var.template}"
+    Application   = "${var.application}"
+    Purpose       = "${var.purpose}"
+    Creation_Date = "${var.created-on}"
+  }
+}
+
 ### INTERNET GATEWAY ###
 module "igw-vpc" {
   source = "/Users/elchoco/aws/terraform_infrastructure_as_code/modules/network/igw"

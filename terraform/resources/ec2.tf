@@ -65,7 +65,7 @@ module "web-server" {
   )}"
   #   user-data = "${file("build.sh")}"
   tags = {
-    Name          = "NodeJs_server_a"
+    Name          = "NodeJs_server_b"
     Template      = "encs_691k"
     Environment   = "${terraform.workspace}"
     Application   = "auction_system"

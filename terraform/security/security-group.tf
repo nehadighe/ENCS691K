@@ -116,8 +116,25 @@ resource "aws_security_group_rule" "bastion-security-group-rule-01" {
   from_port   = 22
   to_port     = 22
   protocol    = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
-  # cidr_blocks       = "${split(",", var.ips)}"
+  cidr_blocks       = "${split(",", var.ips)}"
+  security_group_id = "${aws_security_group.bastion-security-group.id}"
+}
+
+resource "aws_security_group_rule" "bastion-security-group-rule-02" {
+  type        = "ingress"
+  from_port   = 80
+  to_port     = 80
+  protocol    = "tcp"
+  cidr_blocks = ["10.0.0.64/27", "10.0.0.128/27"]
+  security_group_id = "${aws_security_group.bastion-security-group.id}"
+}
+
+resource "aws_security_group_rule" "bastion-security-group-rule-03" {
+  type        = "ingress"
+  from_port   = 443
+  to_port     = 443
+  protocol    = "tcp"
+  cidr_blocks = ["10.0.0.64/27", "10.0.0.128/27"]
   security_group_id = "${aws_security_group.bastion-security-group.id}"
 }
 
@@ -157,9 +174,9 @@ resource "aws_security_group_rule" "node-security-group-rule-01" {
 
 resource "aws_security_group_rule" "node-security-group-rule-02" {
   type                     = "ingress"
-  from_port                = 0
-  to_port                  = 0
-  protocol                 = "-1"
+  from_port                = 22
+  to_port                  = 22
+  protocol                 = "tcp"
   source_security_group_id = "${aws_security_group.bastion-security-group.id}"
   security_group_id        = "${aws_security_group.node-security-group.id}"
 }
