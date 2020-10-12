@@ -23,4 +23,5 @@ module.exports = (app) => {
     app.get('/items/getAllUserItems/:username', ItemController.getAllUserItems)
 
     app.get('/items/getAllItems', ItemController.getAllItems)
+
 }
