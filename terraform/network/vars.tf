@@ -30,7 +30,7 @@ variable "flow-logs-name" {
 
 variable "log-destination" {
   type    = "string"
-  default = "/aws/log-groups" #for now this would be example
+  default = "/vpc/encs691/flow-logs" #for now this would be example
 }
 
 variable "traffic-type" {

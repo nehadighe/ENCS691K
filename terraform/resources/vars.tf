@@ -36,7 +36,7 @@ variable "AWS_REGIONS" {
 
   variable "tg-target-type" {
     type    = "string"
-    default = "instance"
+    default = "ip"
   }
 
   variable "tg-deregister" {

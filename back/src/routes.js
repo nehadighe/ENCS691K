@@ -16,7 +16,7 @@ module.exports = (app) => {
     app.get('/users', UserController.getAllUsers)
 
     // Product Routes
-    app.post('/items/AddItem', ItemController.addItem)
+    app.post('/items/addItem', ItemController.addItem)
 
     app.get('/items/getItemById/:ItemID', ItemController.getItemById)
 

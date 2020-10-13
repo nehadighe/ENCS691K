@@ -17,8 +17,8 @@ module "elb" {
     Template      = "encs_691k"
     Environment   = "${terraform.workspace}"
     Application   = "auction_system"
-    Purpose       = "Load Balance requests coming into web server"
-    Creation_Date = "October_5_2020"
+    Purpose       = "Load Balance requests coming into application layer"
+    Creation_Date = "October_13_2020"
   }
 }
 
@@ -32,12 +32,12 @@ module "target-group" {
   tg-target-type = "${var.tg-target-type}"
 }
 
-module "target-group-attachment" {
-  source           = "/Users/elchoco/aws/terraform_infrastructure_as_code/modules/compute/load-balancer/tgAttachment"
-  tg-id            = "${module.web-server.ec2-id}"
-  target-group-arn = "${module.target-group.target-arn}"
-  port             = "${var.tg-port}"
-}
+# module "target-group-attachment" {
+#   source           = "/Users/elchoco/aws/terraform_infrastructure_as_code/modules/compute/load-balancer/tgAttachment"
+#   tg-id            = "${module.web-server.ec2-id}"
+#   target-group-arn = "${module.target-group.target-arn}"
+#   port             = "${var.tg-port}"
+# }
 
 module "listener" {
   source            = "/Users/elchoco/aws/terraform_infrastructure_as_code/modules/compute/load-balancer/listener"
@@ -79,7 +79,7 @@ POLICY
     Template      = "encs_691k"
     Environment   = "${terraform.workspace}"
     Application   = "auction_system"
-    Purpose       = "Load Balance requests coming into web server"
-    Creation_Date = "October_5_2020"
+    Purpose       = "Load Balance requests coming into application layer"
+    Creation_Date = "October_13_2020"
   }
 }

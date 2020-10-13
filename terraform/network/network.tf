@@ -28,7 +28,7 @@ module "vpc-flow-logs" {
     Template      = "${var.template}"
     Application   = "${var.application}"
     Purpose       = "${var.purpose}"
-    Creation_Date = "${var.created-on}"
+    Creation_Date = "October_13_2020"
   }
 }
 

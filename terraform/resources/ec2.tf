@@ -13,18 +13,18 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
-data "aws_ami" "windows" {
-  most_recent = true
+# data "aws_ami" "windows" {
+#   most_recent = true
 
-  owners = ["self"]
+#   owners = ["self"]
 
-  filter {
-    name = "name"
-    values = [
-      "windows-ami",
-    ]
-  }
-}
+#   filter {
+#     name = "name"
+#     values = [
+#       "windows-ami",
+#     ]
+#   }
+# }
 
 ## EC2 BASTION ##
 module "bastion-server" {
@@ -49,30 +49,30 @@ module "bastion-server" {
   }
 }
 
-## EC2 NODE ##
-module "web-server" {
-  source             = "/Users/elchoco/aws/terraform_infrastructure_as_code/modules/compute/ec2"
-  ami                = "${var.ami}"
-  instance-type      = "t2.micro"
-  key-name           = "encs691k_keys"
-  public-ip          = "" # emtpy values signifiy false
-  sourceCheck        = "true"
-  user-data          = "${file("file.sh")}"
-  security-group-ids = "${split(",", data.terraform_remote_state.security.outputs.node-security-group)}"
-  subnet-ids = "${element(
-    element(data.terraform_remote_state.vpc.outputs.pri-subnet-id-b, 1),
-    0,
-  )}"
-  #   user-data = "${file("build.sh")}"
-  tags = {
-    Name          = "NodeJs_server_b"
-    Template      = "encs_691k"
-    Environment   = "${terraform.workspace}"
-    Application   = "auction_system"
-    Purpose       = "Backend server for auction system"
-    Creation_Date = "October_5_2020"
-  }
-}
+# ## EC2 NODE ##
+# module "web-server" {
+#   source             = "/Users/elchoco/aws/terraform_infrastructure_as_code/modules/compute/ec2"
+#   ami                = "${var.ami}"
+#   instance-type      = "t2.micro"
+#   key-name           = "encs691k_keys"
+#   public-ip          = "" # emtpy values signifiy false
+#   sourceCheck        = "true"
+#   user-data          = "${file("file.sh")}"
+#   security-group-ids = "${split(",", data.terraform_remote_state.security.outputs.node-security-group)}"
+#   subnet-ids = "${element(
+#     element(data.terraform_remote_state.vpc.outputs.pri-subnet-id-b, 1),
+#     0,
+#   )}"
+#   #   user-data = "${file("build.sh")}"
+#   tags = {
+#     Name          = "NodeJs_server_b"
+#     Template      = "encs_691k"
+#     Environment   = "${terraform.workspace}"
+#     Application   = "auction_system"
+#     Purpose       = "Backend server for auction system"
+#     Creation_Date = "October_5_2020"
+#   }
+# }
 
 ## EC2 WINDOWS ##
 # module "windows-server" {

@@ -31,6 +31,7 @@ resource "aws_security_group_rule" "db-security-group-rule-01" {
   protocol                 = "tcp"
   source_security_group_id = "${aws_security_group.windows-security-group.id}"
   security_group_id        = "${aws_security_group.db-security-group.id}"
+  description = "rules to allow MYSQL traffic from windows server"
 }
 
 resource "aws_security_group_rule" "db-security-group-rule-02" {
@@ -40,6 +41,7 @@ resource "aws_security_group_rule" "db-security-group-rule-02" {
   protocol                 = "tcp"
   source_security_group_id = "${aws_security_group.bastion-security-group.id}"
   security_group_id        = "${aws_security_group.db-security-group.id}"
+  description = "rules to allow MYSQL traffic from bastion NAT server"
 }
 
 resource "aws_security_group_rule" "db-security-group-rule-03" {
@@ -49,6 +51,7 @@ resource "aws_security_group_rule" "db-security-group-rule-03" {
   protocol                 = "tcp"
   source_security_group_id = "${aws_security_group.node-security-group.id}"
   security_group_id        = "${aws_security_group.db-security-group.id}"
+  description = "rules to allow MYSQL traffic from cluster"
 }
 
 resource "aws_security_group_rule" "db-security-group-rule-egress" {
@@ -117,6 +120,7 @@ resource "aws_security_group_rule" "bastion-security-group-rule-01" {
   to_port     = 22
   protocol    = "tcp"
   cidr_blocks       = "${split(",", var.ips)}"
+  description = "rules from our local ips"
   security_group_id = "${aws_security_group.bastion-security-group.id}"
 }
 
@@ -126,6 +130,7 @@ resource "aws_security_group_rule" "bastion-security-group-rule-02" {
   to_port     = 80
   protocol    = "tcp"
   cidr_blocks = ["10.0.0.64/27", "10.0.0.128/27"]
+  description = "rules to allow HTTP traffic flow to subnets - app a and b"
   security_group_id = "${aws_security_group.bastion-security-group.id}"
 }
 
@@ -136,6 +141,7 @@ resource "aws_security_group_rule" "bastion-security-group-rule-03" {
   protocol    = "tcp"
   cidr_blocks = ["10.0.0.64/27", "10.0.0.128/27"]
   security_group_id = "${aws_security_group.bastion-security-group.id}"
+  description = "rules to allow HTTPS traffic flow to subnets - app a and b"
 }
 
 resource "aws_security_group_rule" "bastion-security-group-rule-egress" {
@@ -165,20 +171,22 @@ resource "aws_security_group" "node-security-group" {
 
 resource "aws_security_group_rule" "node-security-group-rule-01" {
   type                     = "ingress"
-  from_port                = 80
-  to_port                  = 80
+  from_port                = 8081
+  to_port                  = 8081
   protocol                 = "tcp"
   source_security_group_id = "${aws_security_group.elb-security-group.id}"
   security_group_id        = "${aws_security_group.node-security-group.id}"
+  description = "rules to allow traffic from load balancer to the cluster"
 }
 
 resource "aws_security_group_rule" "node-security-group-rule-02" {
   type                     = "ingress"
-  from_port                = 22
-  to_port                  = 22
+  from_port                = 80
+  to_port                  = 80
   protocol                 = "tcp"
   source_security_group_id = "${aws_security_group.bastion-security-group.id}"
   security_group_id        = "${aws_security_group.node-security-group.id}"
+  description = "rules to allow traffic coming into the cluster through the NAT host"
 }
 
 resource "aws_security_group_rule" "node-security-group-rule-egress" {
@@ -213,6 +221,7 @@ resource "aws_security_group_rule" "ec2-security-group-rule-01" {
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.elb-security-group.id}"
+  description = "rules to allow all incoming HTTP traffic to the load balancer"
 }
 
 resource "aws_security_group_rule" "ec2-security-group-rule-egress" {
