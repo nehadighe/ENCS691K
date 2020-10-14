@@ -12,6 +12,23 @@ const routes = [
   },
   {
     path: '/',
+    name: 'user',
+    component: () => import(/* webpackChunkName: "about" */ '../views/User.vue'),
+    beforeEnter: (to, from, next) => {
+      if (!store.state.user.authenticated) {
+        next({
+          path: '/auth',
+          name: 'auth',
+          component: () => import('../views/Auth.vue')
+        })
+      }
+      else {
+        next()
+      }
+    }
+  },
+  {
+    path: '/',
     name: 'home',
     component: () => import(/* webpackChunkName: "about" */ '../views/Home.vue'),
     beforeEnter: (to, from, next) => {

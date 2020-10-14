@@ -6,14 +6,14 @@ module.exports = (app) => {
         res.send({
             message: 'Hello World'
         })
-    })
+    }) // hello world
 
     // User Routes
-    app.post('/users/register', UserController.registerUser)
+    app.post('/users/register', UserController.registerUser) // register a user
 
     app.get('/users/:username', UserController.getUser)
 
-    app.get('/users', UserController.getAllUsers)
+    app.get('/users', UserController.getAllUsers) // get all the users
 
     // Product Routes
     app.post('/items/addItem', ItemController.addItem)

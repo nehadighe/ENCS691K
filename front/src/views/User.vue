@@ -4,7 +4,7 @@
     <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
     <v-row>
       <v-col cols="12">
-        <h1>Welcome Home, {{ user.username }}!</h1>
+        <h1>Welcome User Page, {{ user.username }}!</h1>
       </v-col>
     </v-row>
   </v-container>

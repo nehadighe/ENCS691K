@@ -26,7 +26,7 @@
 # #   }
 # # }
 
-# ## EC2 BASTION ##
+## EC2 BASTION ##
 # module "bastion-server" {
 #   source        = "/Users/elchoco/aws/terraform_infrastructure_as_code/modules/compute/ec2"
 #   ami           = "${data.aws_ami.amazon_linux.id}"

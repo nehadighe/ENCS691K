@@ -30,7 +30,7 @@
 
 <script>
 import { Auth } from "aws-amplify";
-import UserService from "@/services/User";
+// import UserService from "@/services/User";
 import { mapActions } from "vuex";
 import Register from "./Register";
 import Verification from "./Verification";
@@ -83,12 +83,12 @@ export default {
           }
         });
         // Making API call in the try clause
-        await UserService.post(event.user).then(() => {
-          event.user.authenticated = true // adding authentication property
-          this.userSignUp(event.user); // sending data to the store
-        }).catch(err => {
-          console.log('line 91 err from API call- ',err)
-        });
+        // await UserService.post(event.user).then(() => {
+        event.user.authenticated = true; // adding authentication property
+        this.userSignUp(event.user); // sending data to the store
+        // }).catch(err => {
+        //   console.log('line 91 err from API call- ',err)
+        // });
         (this.text = "Your account has been created successfully!"),
           (this.color = "success"),
           (this.alert = true);

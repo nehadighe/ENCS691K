@@ -82,7 +82,7 @@
             name="confirm-signin-password"
             label="Confirm Password"
             @click:append="eyeConfirmPass = !eyeConfirmPass"
-            @keyup.enter="signUp()"
+            @keyup.enter="[valid ? signUp() : null]"
           ></v-text-field>
         </v-col>
       </v-row>

@@ -22,7 +22,7 @@
         name="signin-password"
         label="Password"
         @click:append="eye = !eye"
-        @keyup.enter="login"
+        @keyup.enter="[valid ? login() : null]"
       ></v-text-field>
       <div class="d-flex align-left">
         <a class="mb-2 text-left extraTextStyle" @click="forgotPassword()">Forgot Password?</a>

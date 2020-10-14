@@ -11,6 +11,7 @@
           name="username"
           label="Username"
           filled
+          @keyup.enter="[valid ? signUp() : null]"
         ></v-text-field>
         <v-row>
           <v-col v-if="requestLoading" cols="12" class="d-flex justify-center">

@@ -1,6 +1,6 @@
 <template>
   <v-app-bar :color="headerColor" dark>
-    <div class="d-flex align-center justify-start">
+    <div class="d-flex align-center justify-start clickButton" @click="homeVue()">
       <div>
         <v-img
           alt="Concordia Logo"
@@ -30,7 +30,7 @@
     </div>
     <!-- User Login -->
     <div v-if="user.authenticated">
-      <v-btn text @click="authModeLocal('login')">
+      <v-btn text @click="userVue()">
         <span class="mr-2">{{ user.username }}</span>
       </v-btn>
       <v-btn text @click="logOut()">
@@ -59,6 +59,12 @@ export default {
       //   console.log("verifying event", event);
       this.authMode(event);
     },
+    userVue() {
+      this.$router.push({ name: "user" });
+    },
+    homeVue() {
+      this.$router.push({ name: "home" });
+    },
     async logOut() {
       try {
         await Auth.signOut({ global: true });
@@ -80,4 +86,8 @@ export default {
 @import "../assets/line.css";
 @import "../assets/colors.css";
 @import "../assets/font.css";
+
+.clickButton {
+  cursor: pointer;
+}
 </style>

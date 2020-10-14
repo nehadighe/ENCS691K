@@ -37,10 +37,18 @@
 #   elb-arn           = "${module.elb.elb-arn}"
 #   listener-port     = "${var.tg-port}"
 #   target-group-arn  = "${module.target-group.target-arn}"
-#   ssl-policy        = "ELBSecurityPolicy-2016-08"
-#   listener-protocol = "HTTPS"
-#   certificate-arn   = "arn:aws:acm:us-east-1:109139691401:certificate/97031fb3-bc26-4123-8e1d-f1b395204461"
+#   listener-protocol = "HTTP"
 # }
+
+# # module "listener" {
+# #   source            = "/Users/elchoco/aws/terraform_infrastructure_as_code/modules/compute/load-balancer/listener"
+# #   elb-arn           = "${module.elb.elb-arn}"
+# #   listener-port     = "${var.tg-port}"
+# #   target-group-arn  = "${module.target-group.target-arn}"
+# #   ssl-policy        = "ELBSecurityPolicy-2016-08"
+# #   listener-protocol = "HTTPS"
+# #   certificate-arn   = "arn:aws:acm:us-east-1:109139691401:certificate/97031fb3-bc26-4123-8e1d-f1b395204461"
+# # }
 
 # resource "aws_s3_bucket" "s3" {
 #   bucket        = "${var.bucket-name}"
@@ -79,17 +87,17 @@
 #   }
 # }
 
-# resource "aws_route53_record" "elb_record" {
-#   zone_id = "Z02263174XWJY3JJ7BCP"
-#   name    = "elb"
-#   type    = "A"
-#   alias {
-#     name = "${module.elb.elb-dns-name}"
+# # resource "aws_route53_record" "elb_record" {
+# #   zone_id = "Z02263174XWJY3JJ7BCP"
+# #   name    = "elb"
+# #   type    = "A"
+# #   alias {
+# #     name = "${module.elb.elb-dns-name}"
 
-#     # name                   = "${aws_elb.main.dns_name}"
-#     zone_id = "${module.elb.elb-zone-id}"
+# #     # name                   = "${aws_elb.main.dns_name}"
+# #     zone_id = "${module.elb.elb-zone-id}"
 
-#     # zone_id                = "${aws_elb.main.zone_id}"
-#     evaluate_target_health = true
-#   }
-# }
+# #     # zone_id                = "${aws_elb.main.zone_id}"
+# #     evaluate_target_health = true
+# #   }
+# # }

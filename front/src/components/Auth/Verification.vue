@@ -10,6 +10,7 @@
         name="verification-code"
         label="Verification Code"
         filled
+        @keyup.enter="[valid ? verifyCode() : null]"
       ></v-text-field>
       <div class="d-flex align-left">
         <a
@@ -29,7 +30,7 @@
             :style="valid ? {transition: `0.3s ease`} : null"
             :color="valid ? themeColor : null"
             :class="[valid ? `white--text` : '']"
-            @click="verifyCode()"
+            @click="[valid ? verifyCode() : null]"
           >Verify</v-btn>
           <v-progress-circular v-if="requestLoading" :size="25" :color="themeColor" indeterminate></v-progress-circular>
         </v-col>
