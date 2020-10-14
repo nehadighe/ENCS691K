@@ -41,3 +41,11 @@ resource "aws_db_subnet_group" "rds-subnet-group-private" {
     Creation_Date = "September_25_2020"
   }
 }
+
+# resource "aws_route53_record" "db_record" {
+#   zone_id = "Z02263174XWJY3JJ7BCP"
+#   name    = "pubdb"
+#   type    = "CNAME"
+#   ttl     = "300"
+#   records = ["${module.new-rds.rds-address}"]
+# }

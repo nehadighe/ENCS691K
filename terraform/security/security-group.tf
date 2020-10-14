@@ -216,9 +216,9 @@ resource "aws_security_group" "elb-security-group" {
 
 resource "aws_security_group_rule" "ec2-security-group-rule-01" {
   type              = "ingress"
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
+  from_port         = 8081
+  to_port           = 8081
+  protocol          = "https"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.elb-security-group.id}"
   description = "rules to allow all incoming HTTP traffic to the load balancer"

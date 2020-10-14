@@ -26,12 +26,12 @@ variable "AWS_REGIONS" {
 
   variable "tg-port" {
     type    = "string"
-    default = "80"
+    default = "8081"
   }
 
   variable "tg-protocol" {
     type    = "string"
-    default = "HTTP"
+    default = "HTTPS"
   }
 
   variable "tg-target-type" {
@@ -144,12 +144,12 @@ variable "AWS_REGIONS" {
 
   variable "username" {
     type    = "string"
-    default = ""
+    default = "admin"
   }
 
   variable "password" {
     type    = "string"
-    default = ""
+    default = "encs691k!"
   }
 
 ## SUBNET GROUPS ##
