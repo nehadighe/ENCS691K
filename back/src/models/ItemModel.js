@@ -22,8 +22,14 @@ module.exports = (sequelize, DataTypes) =>
         StartingBidTime: {
             type: DataTypes.STRING
         },
-        //We need to add this
-        UserID: {
-            type: DataTypes.STRING
+        CreatedAt: {
+            type: DataTypes.DATETIME
+        },
+        UpdatedAt: {
+            type: DataTypes.DATETIME
         }
+        //We need to add this
+        //UserID: {
+        //  type: DataTypes.STRING
+        //}
     })
