@@ -11,11 +11,28 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/Auth.vue')
   },
   {
-    path: '/',
+    path: '/user',
     name: 'user',
     component: () => import(/* webpackChunkName: "about" */ '../views/User.vue'),
     beforeEnter: (to, from, next) => {
-      if (!store.state.user.authenticated) {
+      if (!store.state.authUser.authenticated) {
+        next({
+          path: '/auth',
+          name: 'auth',
+          component: () => import('../views/Auth.vue')
+        })
+      }
+      else {
+        next()
+      }
+    }
+  },
+  {
+    path: '/items/newItem',
+    name: 'newItem',
+    component: () => import(/* webpackChunkName: "about" */ '../views/NewItem.vue'),
+    beforeEnter: (to, from, next) => {
+      if (!store.state.authUser.authenticated) {
         next({
           path: '/auth',
           name: 'auth',
@@ -32,7 +49,7 @@ const routes = [
     name: 'home',
     component: () => import(/* webpackChunkName: "about" */ '../views/Home.vue'),
     beforeEnter: (to, from, next) => {
-      if (!store.state.user.authenticated) {
+      if (!store.state.authUser.authenticated) {
         next({
           path: '/auth',
           name: 'auth',
@@ -44,14 +61,6 @@ const routes = [
       }
     }
   },
-  {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
 ]
 
 const router = new VueRouter({

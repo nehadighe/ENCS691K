@@ -1,14 +1,16 @@
 import {
     authMode,
-    userLogIn,
-    userSignUp
+    userLookUp,
+    userSignUp,
+    userLogOut
 } from "./auth"
 
 import { resetAppState } from "./resetState"
 
 export default {
     authMode,
-    userLogIn,
+    userLookUp,
     userSignUp,
+    userLogOut,
     resetAppState
 }

@@ -17,7 +17,7 @@
       />
     </v-card>
     <!-- Banner -->
-    <v-snackbar :color="color" :timeout="snacktimeout" v-model="alert">
+    <v-snackbar :color="color" v-model="alert">
       <div class="d-flex flex-row align-center justify-space-between">
         <p class="mb-0 white--text">{{ text }}</p>
         <v-btn color="white" text @click="alert = false">
@@ -30,6 +30,7 @@
 
 <script>
 import { Auth } from "aws-amplify";
+import avatar from "@/store/avatar";
 // import UserService from "@/services/User";
 import { mapActions } from "vuex";
 import Register from "./Register";
@@ -84,6 +85,8 @@ export default {
         });
         // Making API call in the try clause
         // await UserService.post(event.user).then(() => {
+        var randomAvatar = avatar[Math.floor(Math.random() * avatar.length)];
+        event.user.avatar = randomAvatar;
         event.user.authenticated = true; // adding authentication property
         this.userSignUp(event.user); // sending data to the store
         // }).catch(err => {

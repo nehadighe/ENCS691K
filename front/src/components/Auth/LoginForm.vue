@@ -57,7 +57,7 @@ export default {
     localLoginState: "login"
   }),
   methods: {
-    ...mapActions(["resetAppState", "userLogIn"]),
+    ...mapActions(["resetAppState", "userLookUp"]),
     forgotPassword() {
       this.localLoginState = "forgotPass";
     },
@@ -130,8 +130,15 @@ export default {
       password = event.password;
       await Auth.signIn(username, password)
         .then(() => {
-          event.user.authenticated = true // adding authentication property
-          this.userLogIn(event.user); // sending data to the store
+          // should look at the pool of users in the store, and should
+          // get that user to display in the application
+          
+          // adding authentication property: logical issue!
+          // if adding it before, the header will
+          // load first before even going to the
+          // home
+          event.user.authenticated = true
+          this.userLookUp(event.user); // looking up user information
           this.requestLoading = false;
           this.$router.push({ name: "home" });
         })
