@@ -73,12 +73,12 @@ variable "db-name" {
 
 variable "username" {
   type    = "string"
-  default = ""
+  default = "admin"
 }
 
 variable "password" {
   type    = "string"
-  default = ""
+  default = "encs691k!"
 }
 
 ## SUBNET GROUPS ##

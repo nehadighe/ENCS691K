@@ -50,7 +50,8 @@ export default {
     text: null,
     color: null,
     requestLoading: false,
-    localSignUpState: "register"
+    localSignUpState: "register",
+    authUser: {}
   }),
   methods: {
     ...mapActions(["resetAppState", "userSignUp"]),
@@ -83,15 +84,9 @@ export default {
             email // optional
           }
         });
-        // Making API call in the try clause
-        // await UserService.post(event.user).then(() => {
         var randomAvatar = avatar[Math.floor(Math.random() * avatar.length)];
         event.user.avatar = randomAvatar;
-        event.user.authenticated = true; // adding authentication property
-        this.userSignUp(event.user); // sending data to the store
-        // }).catch(err => {
-        //   console.log('line 91 err from API call- ',err)
-        // });
+        this.authUser = event.user;
         (this.text = "Your account has been created successfully!"),
           (this.color = "success"),
           (this.alert = true);
@@ -109,6 +104,13 @@ export default {
       this.requestLoading = true;
       try {
         await Auth.confirmSignUp(this.username, event.code);
+        // Making API call in the try clause
+        // await UserService.post(event.user).then(() => {
+        // }).catch(err => {
+        //   console.log('line 91 err from API call- ',err)
+        // });
+        this.authUser.authenticated = true;
+        this.userSignUp(this.authUser); // sending data to the store
         this.requestLoading = false;
         this.$router.push({ name: "home" });
       } catch (error) {
