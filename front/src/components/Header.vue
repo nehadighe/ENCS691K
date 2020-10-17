@@ -1,98 +1,91 @@
 <template>
   <v-app-bar :color="headerColor" dark>
-    <div class="d-flex align-center justify-start clickButton" @click="homeVue()">
-      <div>
-        <v-img
-          alt="Concordia Logo"
-          class="shrink mr-2"
-          contain
-          src="https://encs691k-assets.s3.amazonaws.com/logo.png"
-          transition="scale-transition"
-          width="40"
-        />
-      </div>
-      <div class="d-flex align-center flex-row hidden-sm-and-down">
-        <div id="university_and_class">
-          <p class="red-font concordia-title text-left mb-0">Concordia</p>
-          <p class="red-font class-title text-left mb-0">ENCS691K</p>
-        </div>
-        <!-- Search functionality should be done here -->
-        <div id="search_bar" v-if="authUser.authenticated">
-          <v-text-field
-            hide-details
-            light
-            :color="themeColor"
-            class="ml-10 search-area-style"
-            placeholder="Search For Items"
-            prepend-inner-icon="mdi-magnify"
-            solo
+    <!-- v-left-icon -->
+      <div class="d-flex align-center justify-start clickButton" @click="homeVue()">
+        <div>
+          <v-img
+            alt="Concordia Logo"
+            class="shrink mr-2"
+            contain
+            src="https://encs691k-assets.s3.amazonaws.com/logo.png"
+            transition="scale-transition"
+            width="40"
           />
         </div>
+        <div class="d-flex align-center flex-row hidden-sm-and-down">
+          <div id="university_and_class">
+            <p class="red-font concordia-title text-left mb-0">Concordia</p>
+            <p class="red-font class-title text-left mb-0">ENCS691K</p>
+          </div>
+          <!-- Search functionality should be done here -->
+          <div id="search_bar" v-if="authUser.authenticated">
+            <Search class="ml-10 search-area-style"/>
+          </div>
+        </div>
+        <div v-if="authUser.authenticated" id="username" class="hidden-md-and-up">
+          <v-btn text @click="userVue()" class="user-style">
+            <!-- 
+              avatar: for now, this is going to be static
+              but in teh end, it would be dynamic obtained
+              from the store
+            -->
+            <v-avatar color="indigo" size="36">
+              <!-- <v-img src="https://encs691k-assets.s3.amazonaws.com/avatar/Avatar.svg" alt="avatar" /> -->
+              <v-img :src="authUser.avatar" alt="avatar" />
+            </v-avatar>
+            <span class="mx-2">{{ authUser.username }}</span>
+          </v-btn>
+        </div>
       </div>
-      <div v-if="authUser.authenticated" id="username" class="hidden-md-and-up">
-        <v-btn text @click="userVue()" class="user-style">
-          <!-- 
-            avatar: for now, this is going to be static
-            but in teh end, it would be dynamic obtained
-            from the store
-          -->
-          <v-avatar color="indigo" size="36">
-            <!-- <v-img src="https://encs691k-assets.s3.amazonaws.com/avatar/Avatar.svg" alt="avatar" /> -->
-            <v-img :src="authUser.avatar" alt="avatar" />
-          </v-avatar>
-          <span class="mx-2">{{ authUser.username }}</span>
-        </v-btn>
-      </div>
-    </div>
 
-    <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
 
     <!-- Unauthenticated users -->
       <div v-if="!authUser.authenticated">
         <!-- Desktop menu -->
-          <div class="hidden-sm-and-down">
-            <v-btn text @click="authModeLocal('signup')">
-              <span class="mr-2">Sign Up</span>
-            </v-btn>
-            <v-btn text @click="authModeLocal('login')">
-              <span class="mr-2">Login</span>
-            </v-btn>
-          </div>
+        <div class="hidden-sm-and-down">
+          <v-btn text @click="authModeLocal('signup')">
+            <span class="mr-2">Sign Up</span>
+          </v-btn>
+          <v-btn text @click="authModeLocal('login')">
+            <span class="mr-2">Login</span>
+          </v-btn>
+        </div>
         <!-- Mobile menu -->
-          <v-menu left bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn class="hidden-md-and-up" icon v-on="on">
-                <v-icon class="white--text">mdi-dots-vertical</v-icon>
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item>
-                <v-list-item-title @click="authModeLocal('signup')">
-                  <v-list-item-item class="clickButton">
-                    <span class="mr-2">Sign Up</span>
-                  </v-list-item-item>
+        <v-menu left bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn class="hidden-md-and-up" icon v-on="on">
+              <v-icon class="white--text">mdi-dots-vertical</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item>
+              <v-list-item-title @click="authModeLocal('signup')">
+                <v-list-item-item class="clickButton">
+                  <span class="mr-2">Sign Up</span>
+                </v-list-item-item>
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+          <v-list>
+            <v-list-item>
+              <v-list-item-title @click="authModeLocal('login')">
+                <v-list-item-title class="clickButton">
+                  <span class="mr-2">Login</span>
                 </v-list-item-title>
-              </v-list-item>
-            </v-list>
-            <v-list>
-              <v-list-item>
-                <v-list-item-title @click="authModeLocal('login')">
-                  <v-list-item-title class="clickButton">
-                    <span class="mr-2">Login</span>
-                  </v-list-item-title>
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </div>
     <!-- User Login -->
       <div v-if="authUser.authenticated" class="d-flex flex-row align-center">
         <div id="username" class="hidden-sm-and-down">
           <v-btn text @click="userVue()" class="user-style">
             <!-- 
-            avatar: for now, this is going to be static
-            but in teh end, it would be dynamic obtained
-            from the store
+              avatar: for now, this is going to be static
+              but in teh end, it would be dynamic obtained
+              from the store
             -->
             <v-avatar color="indigo" size="36">
               <!-- <v-img src="https://encs691k-assets.s3.amazonaws.com/avatar/Avatar.svg" alt="avatar" /> -->
@@ -115,7 +108,7 @@
             </v-btn>
           </template>
           <v-list>
-            <div flat v-for="(item, index) in items" :key="index">
+            <div flat v-for="(item, index) in itemsFunction" :key="index">
               <v-list-item @click="vListItemFunction(item.option)">
                 <v-list-item-title class="clickButton">{{ item.title }}</v-list-item-title>
               </v-list-item>
@@ -129,6 +122,7 @@
 <script>
 import { Auth } from "aws-amplify";
 import { mapActions, mapState } from "vuex";
+import Search from "@/components/Header/Search.vue";
 
 export default {
   name: "Header",
@@ -139,10 +133,14 @@ export default {
     on: null,
     authenticate: null,
     closeOnContentClick: true,
-    items: [{ title: "Log Out", option: "1" }]
+    itemsFunction: [{ title: "Log Out", option: "1" }],
+
   }),
+  components: {
+    Search
+  },
   computed: {
-    ...mapState(["authUser"])
+    ...mapState(["authUser"]),
   },
   methods: {
     ...mapActions(["resetAppState", "authMode", "userLogOut"]),
@@ -184,6 +182,7 @@ export default {
         console.log("error signing out: ", error);
       }
     }
+
   },
   mounted() {
     // this.authenticate = user;
@@ -210,8 +209,7 @@ export default {
 }
 
 .search-area-style {
-  width:20rem;
+  width: 20rem;
   /* background-color:red !important; */
 }
-
 </style>
