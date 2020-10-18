@@ -10,6 +10,7 @@
             <SignUpForm />
           </div>
         </div>
+        <p> Hello World {{ url }}</p>
       </v-col>
     </v-row>
   </v-container>
@@ -26,7 +27,9 @@ export default {
     LoginForm,
     SignUpForm
   },
-  data: () => ({}),
+  data: () => ({
+    url: process.env.VUE_APP_URL,
+  }),
   computed: {
     ...mapState(["authMode"])
   }
