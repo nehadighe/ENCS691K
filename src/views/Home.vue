@@ -15,14 +15,14 @@
               Card Component:
               All props need to be passed to child component
            -->
-          <ItemCards />
-
-          <!-- Real Data -->
-          <!-- <p>Image: {{ item.image }}</p>
-          <p>Name: {{ item.name }}</p>
-          <p>Description: {{ item.description }}</p>
-          <p>Availability: {{ item.availability }}</p>
-          <p>Current Bidding: {{ item.currentNumberOfBidding }}</p>-->
+          <ItemCards 
+            :name="item.name"
+            :images="item.image"
+            :description="item.description"
+            :availability="item.availability"
+            :basePrice="item.basePrice"
+            :category="item.category"
+          />
         </div>
       </v-col>
     </v-row>
