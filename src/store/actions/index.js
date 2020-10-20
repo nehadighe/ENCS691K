@@ -2,8 +2,12 @@ import {
     authMode,
     userLookUp,
     userSignUp,
-    userLogOut
+    userLogOut,
 } from "./auth"
+
+import {
+    getAllItems
+} from "./items"
 
 import { resetAppState } from "./resetState"
 
@@ -12,5 +16,6 @@ export default {
     userLookUp,
     userSignUp,
     userLogOut,
+    getAllItems,
     resetAppState
 }

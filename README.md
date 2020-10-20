@@ -1,4 +1,4 @@
-# front
+# ENCS 691k Front End
 
 ## Project setup
 ```

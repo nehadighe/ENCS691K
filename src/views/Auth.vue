@@ -10,7 +10,6 @@
             <SignUpForm />
           </div>
         </div>
-        <p> Hello World {{ url }}</p>
       </v-col>
     </v-row>
   </v-container>
