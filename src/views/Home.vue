@@ -22,6 +22,7 @@
             :availability="item.availability"
             :basePrice="item.basePrice"
             :category="item.category"
+            :currentNumberOfBidding="item.currentNumberOfBidding"
           />
         </div>
       </v-col>
