@@ -3,6 +3,8 @@ import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import actions from "./actions/index"
 import mutations from "./mutations/index"
+import mockItems from "./mockItems"
+
 
 Vue.use(Vuex)
 
@@ -20,6 +22,7 @@ export const getDefaultState = () => {
             authenticated: true,
         },
         // authUser: {},
+        mockItems: mockItems,
         items: []
     }
 }

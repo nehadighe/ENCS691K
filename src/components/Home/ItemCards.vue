@@ -21,8 +21,8 @@
       <div>{{ name }}</div>
 
       <!-- <div class="one-minute"> -->
-      <div v-if="currentNumberOfBidding > 1" :class="minutes < 1 ? `one-minute` : null">
-      <!-- <div :class="minutes < 1 ? `one-minute` : null"> -->
+      <!-- <div v-if="currentNumberOfBidding > 1" :class="minutes < 1 ? `one-minute` : null"> -->
+      <div :class="minutes < 1 ? `one-minute` : null">
         <!-- <div :colors="minutes < 1 ? 'pink' : null"> -->
         <span id="minutes">{{ minutes }}</span>
         <span id="middle">:</span>
@@ -33,12 +33,7 @@
     <v-card-text class>
       <div class="d-flex align-center justify-space-between">
         <div class>
-          <v-chip
-            class
-            :color="activeItem ? 'green' : 'pink'"
-            label
-            text-color="white"
-          >
+          <v-chip class :color="activeItem ? 'green' : 'pink'" label text-color="white">
             <v-icon small left>mdi-circle</v-icon>
             {{ availability }}
           </v-chip>
@@ -51,7 +46,7 @@
       <div class>{{ description }}</div>
     </v-card-text>
     <v-card-actions class="d-flex justify-end">
-      <v-btn text-right :color="darkRed" text @click="startTimer">Bid</v-btn>
+      <v-btn text-right :color="darkRed" text @click="bid(id)">Bid</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -61,59 +56,74 @@ export default {
   name: "ItemCards",
   data: () => ({
     cycle: false,
-    selection: null,
     darkRed: "#900028",
-    timer: null,
-    totalTime: 2 * 60, // This should be dynamic!
-    activeItem: true,
+    // timer: null,
+    // totalTime: 2 * 60, // This should be dynamic!
+    // activeItem: true
   }),
-  computed: {
-    minutes() {
-      const minutes = Math.floor(this.totalTime / 60);
-      return this.padTime(minutes);
-    },
-    seconds() {
-      const seconds = this.totalTime - this.minutes * 60;
-      return this.padTime(seconds);
-    }
-  },
+  // computed: {
+  //   minutes() {
+  //     const minutes = Math.floor(this.totalTime / 60);
+  //     return this.padTime(minutes);
+  //   },
+  //   seconds() {
+  //     const seconds = this.totalTime - this.minutes * 60;
+  //     return this.padTime(seconds);
+  //   }
+  // },
   methods: {
-    bid() {
-      console.log("Hello");
+    bid(event) {
+      this.$emit("startTimer", event);
+      // console.log("Hello");
     },
     // should this be here?
     // passing components to children (this component)
     // from props
-    startTimer() {
-      this.timer = setInterval(() => this.countdown(), 1000);
-    },
-    countdown() {
-      if (this.totalTime >= 1) {
-        this.totalTime--;
-      } else {
-        this.totalTime = 0;
-        this.activeItem = false;
-        // clearing the interval of time so that it doesn't
-        // keep calling the countdown function.
-        // there should be another function here where it
-        // disables the bidding button, or at least
-        // should present a modal that the auction has been
-        // closed
-        clearInterval(this.timer);
-      }
-    },
-    padTime(time) {
-      return (time < 10 ? "0" : "") + time;
-    }
+    // startTimer() {
+    //   // this.$emit("startTimer");
+    //   this.timer = setInterval(() => this.countdown(), 1000);
+    // },
+    // countdown() {
+    //   if (this.totalTime >= 1) {
+    //     this.totalTime--;
+    //   } else {
+    //     this.totalTime = 0;
+    //     this.activeItem = false;
+    //     // clearing the interval of time so that it doesn't
+    //     // keep calling the countdown function.
+    //     // there should be another function here where it
+    //     // disables the bidding button, or at least
+    //     // should present a modal that the auction has been
+    //     // closed
+
+    //     // API call to the Item Service saying that the item
+    //     // state should be changed to not avalilable
+
+    //     // await TransactionService.post(event.user)
+    //     //   .then(() => {})
+    //     //   .catch(err => {
+    //     //     console.log("line 91 err from API call- ", err);
+    //     //   });
+    //     clearInterval(this.timer);
+    //   }
+    // },
+    // padTime(time) {
+    //   return (time < 10 ? "0" : "") + time;
+    // }
   },
   props: {
+    id: String,
     name: String,
     images: Array,
     description: String,
     availability: String,
     category: String,
     basePrice: Number,
-    currentNumberOfBidding: Number
+    currentNumberOfBidding: Number,
+    // will this work?
+    minutes: String,
+    seconds: String,
+    activeItem: Boolean
   }
 };
 </script>

@@ -31,7 +31,7 @@
 <script>
 import { Auth } from "aws-amplify";
 import avatar from "@/store/avatar";
-// import UserService from "@/services/User";
+import UserService from "@/services/User";
 import { mapActions } from "vuex";
 import Register from "./Register";
 import Verification from "./Verification";
@@ -105,10 +105,11 @@ export default {
       try {
         await Auth.confirmSignUp(this.username, event.code);
         // Making API call in the try clause
-        // await UserService.post(event.user).then(() => {
-        // }).catch(err => {
-        //   console.log('line 91 err from API call- ',err)
-        // });
+        await UserService.post(event.user)
+          .then(() => {})
+          .catch(err => {
+            console.log("line 91 err from API call- ", err);
+          });
         this.authUser.authenticated = true;
         this.userSignUp(this.authUser); // sending data to the store
         this.requestLoading = false;
