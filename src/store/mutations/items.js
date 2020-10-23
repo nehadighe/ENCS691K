@@ -1,6 +1,12 @@
+import _ from "lodash";
+
 export const getAllItems = async (state, data) => {
     console.log('line 2- mutations: getAllItems', data)
-    state.items = data
+    // you need to order by the availability
+    const sortedItems = _.orderBy(data, function (o) {
+        return o.availability
+    }, ['asc']);
+    state.items = sortedItems
 }
 
 export const changeItemAvailability = (state, itemId) => {

@@ -47,7 +47,8 @@
       <div class>{{ description }}</div>
     </v-card-text>
     <v-card-actions class="d-flex justify-end">
-      <v-btn text-right :color="darkRed" text @click="startTimer(id)">Bid</v-btn>
+      <!-- <v-btn v-if="enableBidding" text-right :disabled="disableBidding" :color="darkRed" text @click="startTimer(id)">Bid</v-btn> -->
+      <v-btn text-right :disabled="disableBidding" :color="darkRed" text @click="startTimer(id)">Bid</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -58,6 +59,8 @@ export default {
   data: () => ({
     cycle: false,
     darkRed: "#900028",
+    enableBidding: true,
+    disableBidding: false,
     itemId: "",
     timer: null,
     totalTime: 2 * 60, // This should be dynamic!
@@ -95,6 +98,8 @@ export default {
         // disables the bidding button, or at least
         // should present a modal that the auction has been
         // closed
+        this.disableBidding = true
+        this.enableBidding = false
         this.itemSold();
         clearInterval(this.timer);
       }

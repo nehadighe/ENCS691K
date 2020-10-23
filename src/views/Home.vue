@@ -34,12 +34,14 @@
 // @ is an alias to /src
 import ItemCards from "@/components/Home/ItemCards.vue";
 import { mapState, mapActions } from "vuex";
+import _ from "lodash";
 // import mockItems from "@/store/mockItems.js";
 // import HelloWorld from '@/components/HelloWorld.vue'
 
 export default {
   name: "Home",
   data: () => ({
+    // itemsAvailable: []
     // mockItems: mockItems
   }),
   components: {
@@ -66,17 +68,23 @@ export default {
       //     console.log("line 91 err from API call- ", err);
       //   });
     }
+  },
+  async mounted() {
+    // order mockItems by availability
+    const sortedItems = _.orderBy(this.mockItems, function (o) {
+      return o.availability
+    }, ['asc']);
+    this.itemsAvailable = sortedItems
+    console.log('line 78, items sorted', this.itemsAvailable)
+
+    // get all the items data from the db as soon as logged in
+    // if (this.authUser.authenticated) {
+    //   // making sure user is authenticated
+    //   this.getAllItems();
+    // } else {
+    //   alert("Need to authenticate");
+    // }
   }
-  // async mounted() {
-  // get all the items data from the db as soon as logged in
-  // if (this.authUser.authenticated) {
-  // making sure user is authenticated
-  // console.log('line 38 - home - Hello World')
-  //   this.getAllItems();
-  // } else {
-  //   alert("Need to authenticate");
-  // }
-  // }
 };
 </script>
 
