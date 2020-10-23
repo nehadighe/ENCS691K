@@ -6,7 +6,8 @@ import {
 } from "./auth"
 
 import {
-    getAllItems
+    getAllItems,
+    changeItemAvailability,
 } from "./items"
 
 import { resetAppState } from "./resetState"
@@ -17,5 +18,6 @@ export default {
     userSignUp,
     userLogOut,
     getAllItems,
+    changeItemAvailability,
     resetAppState
 }

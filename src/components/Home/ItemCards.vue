@@ -33,8 +33,9 @@
     <v-card-text class>
       <div class="d-flex align-center justify-space-between">
         <div class>
-          <v-chip class :color="activeItem ? 'green' : 'pink'" label text-color="white">
+          <v-chip class :color="availability == 'Active' ? 'green' : 'pink'" label text-color="white">
             <v-icon small left>mdi-circle</v-icon>
+            <!-- this should be dynamic mano! -->
             {{ availability }}
           </v-chip>
         </div>
@@ -46,7 +47,7 @@
       <div class>{{ description }}</div>
     </v-card-text>
     <v-card-actions class="d-flex justify-end">
-      <v-btn text-right :color="darkRed" text @click="bid(id)">Bid</v-btn>
+      <v-btn text-right :color="darkRed" text @click="startTimer(id)">Bid</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -57,59 +58,53 @@ export default {
   data: () => ({
     cycle: false,
     darkRed: "#900028",
-    // timer: null,
-    // totalTime: 2 * 60, // This should be dynamic!
-    // activeItem: true
+    itemId: "",
+    timer: null,
+    totalTime: 2 * 60, // This should be dynamic!
   }),
-  // computed: {
-  //   minutes() {
-  //     const minutes = Math.floor(this.totalTime / 60);
-  //     return this.padTime(minutes);
-  //   },
-  //   seconds() {
-  //     const seconds = this.totalTime - this.minutes * 60;
-  //     return this.padTime(seconds);
-  //   }
-  // },
-  methods: {
-    bid(event) {
-      this.$emit("startTimer", event);
-      // console.log("Hello");
+  computed: {
+    minutes() {
+      const minutes = Math.floor(this.totalTime / 60);
+      return this.padTime(minutes);
     },
+    seconds() {
+      const seconds = this.totalTime - this.minutes * 60;
+      return this.padTime(seconds);
+    }
+  },
+  methods: {
     // should this be here?
     // passing components to children (this component)
     // from props
-    // startTimer() {
-    //   // this.$emit("startTimer");
-    //   this.timer = setInterval(() => this.countdown(), 1000);
-    // },
-    // countdown() {
-    //   if (this.totalTime >= 1) {
-    //     this.totalTime--;
-    //   } else {
-    //     this.totalTime = 0;
-    //     this.activeItem = false;
-    //     // clearing the interval of time so that it doesn't
-    //     // keep calling the countdown function.
-    //     // there should be another function here where it
-    //     // disables the bidding button, or at least
-    //     // should present a modal that the auction has been
-    //     // closed
-
-    //     // API call to the Item Service saying that the item
-    //     // state should be changed to not avalilable
-
-    //     // await TransactionService.post(event.user)
-    //     //   .then(() => {})
-    //     //   .catch(err => {
-    //     //     console.log("line 91 err from API call- ", err);
-    //     //   });
-    //     clearInterval(this.timer);
-    //   }
-    // },
-    // padTime(time) {
-    //   return (time < 10 ? "0" : "") + time;
-    // }
+    startTimer(event) {
+      // this.$emit("startTimer");
+      console.log('line 82- Item', event)
+      // this is probably not the best implementation
+      // two events might be happening at the same time
+      // and one value might just be overwritten
+      // but for now, let's just go with this implementation
+      this.itemId = event;
+      this.timer = setInterval(() => this.countdown(), 1000);
+    },
+    countdown() {
+      if (this.totalTime >= 1) {
+        this.totalTime--;
+      } else {
+        this.totalTime = 0;
+        // there should be another function here where it
+        // disables the bidding button, or at least
+        // should present a modal that the auction has been
+        // closed
+        this.itemSold();
+        clearInterval(this.timer);
+      }
+    },
+    padTime(time) {
+      return (time < 10 ? "0" : "") + time;
+    },
+    itemSold() {
+      this.$emit("itemSold", this.itemId);
+    }
   },
   props: {
     id: String,
@@ -119,11 +114,7 @@ export default {
     availability: String,
     category: String,
     basePrice: Number,
-    currentNumberOfBidding: Number,
-    // will this work?
-    minutes: String,
-    seconds: String,
-    activeItem: Boolean
+    currentNumberOfBidding: Number
   }
 };
 </script>

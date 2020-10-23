@@ -13,11 +13,7 @@ export const mockItems = [
         description: "5 months of use, includes a lock and keys. Trying to get some extra cash for the winter to sky.",
         availability: "Active",
         basePrice: 5.0,
-        startingBidTime: "test",
-        timer: {
-            minutes: "relajao como quien dise",
-            seconds: "",
-        },
+        startingBidTime: "test", // what is this for again?
         currentNumberOfBidding: 0
     },
     {
@@ -34,11 +30,7 @@ export const mockItems = [
         description: "5 months of use, includes a lock and keys. Trying to get some extra cash for the winter to sky.",
         availability: "Active",
         basePrice: 5.0,
-        startingBidTime: "test",
-        timer: {
-            minutes: "",
-            seconds: "",
-        },
+        startingBidTime: "test", // what is this for again?
         currentNumberOfBidding: 0
     },
 ]
