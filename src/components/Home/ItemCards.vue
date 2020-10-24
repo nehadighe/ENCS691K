@@ -10,8 +10,6 @@
     >
       <v-carousel-item v-for="(image, i) in images" :key="i">
         <v-row class="fill-height" align="center" justify="center">
-          <!-- <v-img :src="image"/> -->
-          <!-- <v-img class="test-1" aspect-ratio="1.9" contain :src="image" /> -->
           <v-img height="250" :src="image" />
         </v-row>
       </v-carousel-item>
@@ -19,16 +17,6 @@
 
     <v-card-title class="d-flex align-cetner justify-space-between">
       <div>{{ name }}</div>
-
-      <!-- <div class="one-minute"> -->
-      <div v-if="currentNumberOfBidding > 0 && minutes < 1 && seconds < 1" :class="minutes < 1 ? `one-minute` : null">
-      <!-- <div v-if="currentNumberOfBidding > 0 && minutes != 0" :class="minutes < 1 ? `one-minute` : null"> -->
-      <!-- <div :class="minutes < 1 ? `one-minute` : null"> -->
-        <!-- <div :colors="minutes < 1 ? 'pink' : null"> -->
-        <span id="minutes">{{ minutes }}</span>
-        <span id="middle">:</span>
-        <span id="seconds">{{ seconds }}</span>
-      </div>
     </v-card-title>
 
     <v-card-text class>
@@ -48,8 +36,6 @@
       <div class>{{ description }}</div>
     </v-card-text>
     <v-card-actions class="d-flex justify-end">
-      <!-- <v-btn v-if="enableBidding" text-right :disabled="disableBidding" :color="darkRed" text @click="startTimer(id)">Bid</v-btn> -->
-      <!-- <v-btn text-right :disabled="disableBidding" :color="darkRed" text @click="startTimer(id)">Bid</v-btn> -->
       <v-btn text-right :disabled="disableBidding" :color="darkRed" text @click="bid(id)">Bid</v-btn>
     </v-card-actions>
   </v-card>
@@ -61,66 +47,12 @@ export default {
   data: () => ({
     cycle: false,
     darkRed: "#900028",
-    enableBidding: true,
     disableBidding: false,
-    itemId: "",
-    timer: null,
-    totalTime: 2 * 60, // This should be dynamic!
   }),
-  computed: {
-    minutes() {
-      const minutes = Math.floor(this.totalTime / 60);
-      return this.padTime(minutes);
-    },
-    seconds() {
-      const seconds = this.totalTime - this.minutes * 60;
-      return this.padTime(seconds);
-    }
-  },
   methods: {
-    // should this be here?
-    // passing components to children (this component)
-    // from props
     bid (id) {
-      // if(this.currentNumberOfBidding < 1) {
-      //   this.startTimer(id)
-      // }
-      // incrementing the bidding by 1.
       this.$emit("bid", id);
     },
-    startTimer(id) {
-      // this.$emit("startTimer");
-      // console.log('line 82- Item', id)
-      // this is probably not the best implementation
-      // two events might be happening at the same time
-      // and one value might just be overwritten
-      // but for now, let's just go with this implementation
-      this.itemId = id;
-      // need to be able to have some logic here where there
-      // is a validation whether the process started or not.
-      this.timer = setInterval(() => this.countdown(), 1000);
-    },
-    countdown() {
-      if (this.totalTime >= 1) {
-        this.totalTime--;
-      } else {
-        this.totalTime = 0;
-        // there should be another function here where it
-        // disables the bidding button, or at least
-        // should present a modal that the auction has been
-        // closed
-        this.disableBidding = true
-        this.enableBidding = false
-        this.itemSold(this.itemId);
-        clearInterval(this.timer);
-      }
-    },
-    padTime(time) {
-      return (time < 10 ? "0" : "") + time;
-    },
-    itemSold() {
-      this.$emit("itemSold", this.itemId);
-    }
   },
   props: {
     id: String,
