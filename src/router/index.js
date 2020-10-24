@@ -50,6 +50,23 @@ const routes = [
     }
   },
   {
+    path: '/item/:itemId',
+    name: 'item',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Item.vue'),
+    beforeEnter: (to, from, next) => {
+      if (!store.state.authUser.authenticated) {
+        next({
+          path: '/auth',
+          name: 'auth',
+          component: () => import('../views/Auth.vue')
+        })
+      }
+      else {
+        next()
+      }
+    }
+  },
+  {
     path: '/',
     name: 'home',
     component: () => import(/* webpackChunkName: "about" */ '../views/Home.vue'),

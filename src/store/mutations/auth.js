@@ -9,7 +9,7 @@ export const userLookUp = (state, userInfo) => {
     state.user.map((item) => {
         // console.log('line 9- username in mutations', item.username, index)
         if (item.username == userInfo.username) { // this is going to the user name
-            state.authUser = item // setting the authUser as the 
+            state.authUser = item // setting the authUser as the item
         }
     })
 }

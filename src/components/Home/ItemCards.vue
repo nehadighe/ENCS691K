@@ -21,8 +21,9 @@
       <div>{{ name }}</div>
 
       <!-- <div class="one-minute"> -->
-      <!-- <div v-if="currentNumberOfBidding > 1" :class="minutes < 1 ? `one-minute` : null"> -->
-      <div :class="minutes < 1 ? `one-minute` : null">
+      <div v-if="currentNumberOfBidding > 0 && minutes < 1 && seconds < 1" :class="minutes < 1 ? `one-minute` : null">
+      <!-- <div v-if="currentNumberOfBidding > 0 && minutes != 0" :class="minutes < 1 ? `one-minute` : null"> -->
+      <!-- <div :class="minutes < 1 ? `one-minute` : null"> -->
         <!-- <div :colors="minutes < 1 ? 'pink' : null"> -->
         <span id="minutes">{{ minutes }}</span>
         <span id="middle">:</span>
@@ -48,7 +49,8 @@
     </v-card-text>
     <v-card-actions class="d-flex justify-end">
       <!-- <v-btn v-if="enableBidding" text-right :disabled="disableBidding" :color="darkRed" text @click="startTimer(id)">Bid</v-btn> -->
-      <v-btn text-right :disabled="disableBidding" :color="darkRed" text @click="startTimer(id)">Bid</v-btn>
+      <!-- <v-btn text-right :disabled="disableBidding" :color="darkRed" text @click="startTimer(id)">Bid</v-btn> -->
+      <v-btn text-right :disabled="disableBidding" :color="darkRed" text @click="bid(id)">Bid</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -79,14 +81,23 @@ export default {
     // should this be here?
     // passing components to children (this component)
     // from props
-    startTimer(event) {
+    bid (id) {
+      // if(this.currentNumberOfBidding < 1) {
+      //   this.startTimer(id)
+      // }
+      // incrementing the bidding by 1.
+      this.$emit("bid", id);
+    },
+    startTimer(id) {
       // this.$emit("startTimer");
-      console.log('line 82- Item', event)
+      // console.log('line 82- Item', id)
       // this is probably not the best implementation
       // two events might be happening at the same time
       // and one value might just be overwritten
       // but for now, let's just go with this implementation
-      this.itemId = event;
+      this.itemId = id;
+      // need to be able to have some logic here where there
+      // is a validation whether the process started or not.
       this.timer = setInterval(() => this.countdown(), 1000);
     },
     countdown() {
@@ -100,7 +111,7 @@ export default {
         // closed
         this.disableBidding = true
         this.enableBidding = false
-        this.itemSold();
+        this.itemSold(this.itemId);
         clearInterval(this.timer);
       }
     },

@@ -8,6 +8,9 @@ import {
 import {
     getAllItems,
     changeItemAvailability,
+    addingBid,
+    showItem,
+    makeBid,
 } from "./items"
 
 import { resetAppState } from "./resetState"
@@ -19,5 +22,8 @@ export default {
     userLogOut,
     getAllItems,
     changeItemAvailability,
+    addingBid,
+    showItem,
+    makeBid,
     resetAppState
 }

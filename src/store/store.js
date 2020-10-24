@@ -22,7 +22,9 @@ export const getDefaultState = () => {
             authenticated: true,
         },
         // authUser: {},
+        bids: [], // this is where the bids will be held
         mockItems: mockItems,
+        detailItem: {},
         items: []
     }
 }

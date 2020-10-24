@@ -2,14 +2,14 @@
   <v-container class="fill-height">
     <!-- <img alt="Vue logo" src="../assets/logo.png"> -->
     <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
-    <v-row class>
+    <!-- <v-row class>
       <v-col class cols="12">
         <h1 class="text-center">Welcome Home, {{ authUser.username }}!</h1>
       </v-col>
-    </v-row>
+    </v-row>-->
     <v-row class>
       <!-- defining the items -->
-      <v-col class v-for="(item,index) in mockItems" :key="index" cols="12" sm="6" md="4">
+      <v-col class v-for="(item,index) in mockItems" :key="index" cols="12" md="6" lg="4">
         <!-- 
               Card Component:
               All props need to be passed to child component
@@ -23,6 +23,7 @@
           :basePrice="item.basePrice"
           :category="item.category"
           :currentNumberOfBidding="item.currentNumberOfBidding"
+          v-on:bid="bid($event)"
           v-on:itemSold="itemSold($event)"
         />
       </v-col>
@@ -53,29 +54,51 @@ export default {
     // ...mapState(["authUser", "items"])
   },
   methods: {
-    ...mapActions(["getAllItems", "changeItemAvailability"]),
+    ...mapActions([
+      "getAllItems",
+      "changeItemAvailability",
+      "addingBid",
+      "removeItem"
+    ]),
     itemSold(event) {
-      console.log("line 58, item has been sold", event); // event = itemId
+      // console.log("line 58, item has been sold", event); // event = itemId
       // this is supposed to change the availability property in the store
       // this can potentially be named as itemSold
       this.changeItemAvailability(event);
+      // this.removeItem(event);
 
-      // API call to the Item Service saying that the item
-      // state should be changed to not avalilable
+      // API call to the Transaction Service finalizaing the auction
       // await TransactionService.post()
       //   .then(() => {})
       //   .catch(err => {
       //     console.log("line 91 err from API call- ", err);
       //   });
+    },
+    bid(event) {
+      // console.log(event)
+      this.$router.push({ 
+        name: "item",
+        params: { itemId: event }
+      });
+      // this.$router.resolve({
+      //   name: "item",
+      //   params: { itemId: event }
+      // });
+      // this.addingBid(event);
+      // API call to the Item Service adding a bid row into the table
     }
   },
   async mounted() {
     // order mockItems by availability
-    const sortedItems = _.orderBy(this.mockItems, function (o) {
-      return o.availability
-    }, ['asc']);
-    this.itemsAvailable = sortedItems
-    console.log('line 78, items sorted', this.itemsAvailable)
+    const sortedItems = _.orderBy(
+      this.mockItems,
+      function(o) {
+        return o.availability;
+      },
+      ["asc"]
+    );
+    this.itemsAvailable = sortedItems;
+    // console.log('line 78, items sorted', this.itemsAvailable)
 
     // get all the items data from the db as soon as logged in
     // if (this.authUser.authenticated) {
