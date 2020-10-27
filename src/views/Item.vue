@@ -33,38 +33,37 @@
         <v-row>
           <v-col class cols="12" md="6">
             <!-- <v-col cols="12" class="d-flex justify-center mt-8 " md="6"> -->
-            <div class="text-left">
-              <div class="d-flex flex-row justify-space-between align-center">
-                <h1 class>{{ detailItem.name }}</h1>
-                <v-card
-                  v-if="bids.length > 0"
-                  :class="minutes < 1 ? `one-minute` : null"
-                  style="padding:8px 15px"
-                >
-                  <!-- <div
-                    v-if="minutes < 1 && seconds < 1"
-                    :class="minutes < 1 ? `one-minute` : null"
-                  >-->
-                  <!-- <div> -->
-                  <span id="minutes">{{ minutes }}</span>
-                  <span id="middle">:</span>
-                  <span id="seconds">{{ seconds }}</span>
-                </v-card>
-                <!-- Hello -->
+            <v-container>
+              <div class="text-left d-flex flex-column justify-center">
+                <div class="d-flex flex-row justify-space-between align-center">
+                  <h1 class>{{ detailItem.name }}</h1>
+                  <v-card v-if="bids.length > 0" style="padding:8px 15px">
+                    <div :class="minutes < 1 ? `one-minute` : null">
+                      <span id="minutes">{{ minutes }}</span>
+                      <span id="middle">:</span>
+                      <span id="seconds">{{ seconds }}</span>
+                    </div>
+                  </v-card>
+                  <!-- Hello -->
+                </div>
+                <div id="item_information">
+                  <h3 class>${{ detailItem.basePrice }}</h3>
+                  <p class>{{ detailItem.category }}</p>
+                  <p class>{{ detailItem.description }}</p>
+                </div>
               </div>
-
-              <h3 class>${{ detailItem.basePrice }}</h3>
-              <p class>{{ detailItem.category }}</p>
-              <p class>{{ detailItem.description }}</p>
-            </div>
-            <div id="bid_panel" class="mt-5">
-              <v-card class="pa-5 d-flex flex-column">
+            </v-container>
+            <!-- <div id="bid_panel" class="mt-5 d-flex justify-center "> -->
+            <!-- <v-card class="pa-5 d-flex flex-column"> -->
+            <div id="bid_panel" class="mt-5 d-flex justify-center">
+              <v-card max-width="450" width="900" class="pa-5 d-flex flex-column">
                 <div id="text-field">
                   <v-form ref="form" v-model="valid">
                     <v-text-field
                       :color="darkRed"
                       v-model="itemPrice"
                       :rules="rules.required"
+                      type="number"
                       autocomplete="itemPrice"
                       prepend-inner-icon="mdi-currency-usd"
                       name="item-price"
@@ -88,14 +87,10 @@
           </v-col>
           <v-col cols="12" class="d-flex flex-column" md="6">
             <!-- outer layer -->
-            <div class="mb-3 mx-14">
-              <h2>
+            <div class="mb-3">
+              <h2 class="text-center text-md-left">
                 <span v-if="bids.length < 1">No</span> User Engagement
               </h2>
-              <p>Order By:</p>
-              <v-btn class="mx-3" @click="orderBy('bid')">Price</v-btn>
-              <v-btn class="mx-3" @click="orderBy('time')">Date</v-btn>
-              <v-btn class="mx-3" @click="orderBy('username')">User</v-btn>
             </div>
             <EngagedUsers :bids="bids" />
           </v-col>
@@ -109,9 +104,7 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import EngagedUsers from "@/components/Item/EngagedUsers.vue";
-import _ from "lodash";
 
-// should be passing the id from the screen
 export default {
   data: () => ({
     localBids: [],
@@ -149,9 +142,9 @@ export default {
         // show card
         this.buttonCardShow = true;
       } else {
-        if (this.bids.length < 1) {
-          this.startTimer(id);
-        }
+        // if (this.bids.length < 1) {
+        //   this.startTimer(id);
+        // }
         // date functions
         const date = new Date();
         const currentDate = date.toDateString();
@@ -160,13 +153,17 @@ export default {
         const seconds = date.getSeconds();
         const time = `${currentDate}, ${hour}:${minute}:${seconds}`;
         var event = {
+          // generate bidId
           itemId: id,
+          // images:
           image: this.authUser.avatar,
           username: this.authUser.username,
           bid: this.itemPrice,
           time: time
         };
+        // console.log(event)
         this.itemId = id;
+        // API call to Bid entity/table
         this.makeBid(event);
         this.$refs.form.reset();
       }
@@ -189,6 +186,7 @@ export default {
         // should present a modal that the auction has been
         // closed
         // this.disableBidding = true;
+        // API call to Transation entity/table
         this.itemSold(this.itemId);
         clearInterval(this.timer);
       }
@@ -198,24 +196,15 @@ export default {
     },
     itemSold() {
       this.changeItemAvailability(this.itemId);
-    },
-    orderBy(elementToSort) {
-      console.log(elementToSort)
-      const sortedItems = _.orderBy(
-        this.bids,
-        function(o) {
-          // this is not going to be using the function
-          return o.elementToSort;
-        },
-        ["asc"]
-      );
-      this.localBids = sortedItems;
+      this.disableBidding = true;
     }
   },
   mounted() {
     const itemId = this.$route.params.itemId;
     // API call to request the specific Item
     this.showItem(itemId);
+    // this localBids to handle the data locally
+    // without changing the store
     this.localBids = this.bids;
   }
 };

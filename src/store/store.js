@@ -4,6 +4,7 @@ import createPersistedState from 'vuex-persistedstate'
 import actions from "./actions/index"
 import mutations from "./mutations/index"
 import mockItems from "./mockItems"
+import mockBids from "./mockBids"
 
 
 Vue.use(Vuex)
@@ -22,10 +23,13 @@ export const getDefaultState = () => {
             authenticated: true,
         },
         // authUser: {},
-        bids: [], // this is where the bids will be held
+        // mockBids
+        bids: mockBids, // this is where the bids will be held
+        // bids: [], // this is where the bids will be held
+        items: [],
+        // mockItems
         mockItems: mockItems,
-        detailItem: {},
-        items: []
+        detailItem: {}, // detailItem which will be used to render separate items
     }
 }
 

@@ -15,6 +15,7 @@
           :basePrice="item.basePrice"
           :category="item.category"
           :currentNumberOfBidding="item.currentNumberOfBidding"
+          v-on:bid="bid($event)"
         />
       </v-col>
     </v-row>
