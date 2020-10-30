@@ -12,15 +12,16 @@
             width="40"
           />
         </div>
-        <div class="d-flex align-center flex-row hidden-sm-and-down">
+        <div class="hidden-sm-and-down">
+        <!-- <div class="d-flex align-center flex-row hidden-md-and-down"> -->
           <div id="university_and_class">
             <p class="red-font concordia-title text-left mb-0">Concordia</p>
             <p class="red-font class-title text-left mb-0">ENCS691K</p>
           </div>
           <!-- Search functionality should be done here -->
-          <div id="search_bar" v-if="authUser.authenticated">
+          <!-- <div id="search_bar" v-if="authUser.authenticated">
             <Search class="ml-10 search-area-style"/>
-          </div>
+          </div> -->
         </div>
         <div v-if="authUser.authenticated" id="username" class="hidden-md-and-up">
           <v-btn text @click="userVue()" class="user-style">
@@ -33,7 +34,6 @@
               <!-- <v-img src="https://encs691k-assets.s3.amazonaws.com/avatar/Avatar.svg" alt="avatar" /> -->
               <v-img :src="authUser.avatar" alt="avatar" />
             </v-avatar>
-            <span class="mx-2">{{ authUser.username }}</span>
           </v-btn>
         </div>
       </div>
@@ -122,7 +122,7 @@
 <script>
 import { Auth } from "aws-amplify";
 import { mapActions, mapState } from "vuex";
-import Search from "@/components/Header/Search.vue";
+// import Search from "@/components/Header/Search.vue";
 
 export default {
   name: "Header",
@@ -137,7 +137,7 @@ export default {
 
   }),
   components: {
-    Search
+    // Search
   },
   computed: {
     ...mapState(["authUser"]),

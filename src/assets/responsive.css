@@ -1,0 +1,31 @@
+
+/* extra small */
+@media (max-width: 599px) {
+    .custom-padding-item-detail {
+        padding: 0px 25px !important;
+    }
+}
+
+/* small */
+@media (min-width: 600px) and (max-width: 959px) {
+    .custom-padding-item-detail {
+        padding: 0px 95px !important;
+    }
+}
+
+/* medium */
+@media (min-width: 960px) and (max-width: 1263px) {
+
+}
+
+/* large */
+@media (min-width: 1264px) and (max-width: 1904px) {
+    .custom-padding-width-user-engagement {
+        padding: 0px 50px !important;
+    }    
+}
+
+/* extra large */
+@media (min-width: 1904px) {
+   
+}

@@ -1,12 +1,6 @@
 <template>
   <v-app>
     <div id="app">
-      <!-- <div id="nav">
-      Header component might be over here, but still
-      deciding. Not definite answer
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-      </div>-->
       <Header />
       <router-view />
     </div>
