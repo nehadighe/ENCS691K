@@ -16,7 +16,7 @@
     </v-carousel>
 
     <v-card-title class="d-flex align-cetner justify-space-between">
-      <div>{{ name }}</div>
+      <div>{{ title }}</div>
     </v-card-title>
 
     <v-card-text class>
@@ -56,12 +56,12 @@ export default {
   },
   props: {
     id: String,
-    name: String,
+    title: String,
     images: Array,
     description: String,
     availability: String,
     category: String,
-    basePrice: Number,
+    basePrice: String, // this should be number
     currentNumberOfBidding: Number
   }
 };

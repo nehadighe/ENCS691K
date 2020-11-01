@@ -1,6 +1,6 @@
 node_modules/
 deploy.sh
-src/views/cp-item.txt
+src/views/copies/
 src/components/Home/cards.txt
 src/components/Test/autocomplete-copy.txt
 src/components/Test/timer-copy.txt

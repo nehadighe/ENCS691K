@@ -33,9 +33,9 @@ const routes = [
     }
   },
   {
-    path: '/items/newItem',
+    path: '/item/newItem',
     name: 'newItem',
-    component: () => import(/* webpackChunkName: "about" */ '../views/NewItem.vue'),
+    component: () => import(/* webpackChunkName: "about" */ '../views/PostItem.vue'),
     beforeEnter: (to, from, next) => {
       if (!store.state.authUser.authenticated) {
         next({

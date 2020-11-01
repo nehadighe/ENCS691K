@@ -10,6 +10,7 @@ import {
     changeItemAvailability,
     showItem,
     makeBid,
+    postItem,
 } from "./items"
 
 import { resetAppState } from "./resetState"
@@ -23,5 +24,6 @@ export default {
     changeItemAvailability,
     showItem,
     makeBid,
+    postItem,
     resetAppState
 }

@@ -1,7 +1,7 @@
 <template>
   <v-container class="fill-height">
     <v-row class>
-      <v-col class v-for="(item,index) in mockItems" :key="index" cols="12" md="6" lg="4">
+      <v-col class v-for="(item,index) in items" :key="index" cols="12" md="6" lg="4">
         <!-- 
               Card Component:
               All props need to be passed to child component
@@ -51,12 +51,12 @@ export default {
     // console.log('line 78, items sorted', this.itemsAvailable)
 
     // get all the items data from the db as soon as logged in
-    // if (this.authUser.authenticated) {
-    //   // making sure user is authenticated
-    //   this.getAllItems();
-    // } else {
-    //   alert("Need to authenticate");
-    // }
+    if (this.authUser.authenticated) {
+      // making sure user is authenticated
+      this.getAllItems();
+    } else {
+      alert("Need to authenticate");
+    }
   }
 };
 </script>

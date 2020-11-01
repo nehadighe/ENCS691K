@@ -4,8 +4,8 @@ export default {
     // publish should be changed to post
     post(item) {
         // console.log('line 6- item service api',item)
-        // console.log('is this going through: ', item)
-        return Api().post('/item/addItem', item)
+        // console.log('line 7 - API call: ', item)
+        return Api().post('/items/addItem', item)
     },
     getItemById(id) {
         return Api().get(`/items/getItemById/${id}`)

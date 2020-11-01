@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import actions from "./actions/index"
 import mutations from "./mutations/index"
-import mockItems from "./mockItems"
+// import mockItems from "./mockItems"
 // import mockBids from "./mockBids"
 
 
@@ -28,7 +28,7 @@ export const getDefaultState = () => {
         bids: [], // this is where the bids will be held
         items: [],
         // mockItems
-        mockItems: mockItems,
+        // mockItems: mockItems,
         detailItem: {}, // detailItem which will be used to render separate items
     }
 }

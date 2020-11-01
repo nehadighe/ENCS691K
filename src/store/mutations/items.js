@@ -1,8 +1,6 @@
 import _ from "lodash";
 
 export const getAllItems = async (state, data) => {
-    console.log('line 2- mutations: getAllItems', data)
-    // you need to order by the availability
     const sortedItems = _.orderBy(data, function (o) {
         return o.availability
     }, ['asc']);
@@ -22,7 +20,8 @@ export const changeItemAvailability = (state, itemId) => {
 }
 
 export const showItem = (state, itemId) => {
-    state.mockItems.map(item => {
+    // state.mockItems.map(item => {
+    state.items.map(item => {
         if (item.id == itemId) {
             state.detailItem = item
         }
@@ -40,4 +39,9 @@ export const makeBid = (state, userBid) => {
             item.currentNumberOfBidding++;
         }
     })
+}
+
+export const postItem = (state, item) => {
+    // console.log('line 50 - postItem', item)
+    state.items.push(item);
 }

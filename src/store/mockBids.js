@@ -1,18 +1,18 @@
-export const mockBids = [
+export const mockamounts = [
     {
         itemId: "test",
         username: "edreinoso",
-        image: "https://encs691k-assets.s3.amazonaws.com/avatar/Avatar-1.svg",
-        bid: "32",
+        userProfilePicture: "https://encs691k-assets.s3.amazonaws.com/avatar/Avatar-1.svg",
+        amount: "32",
         time: "hello world"
     },
     {
         itemId: "test",
         username: "batool",
-        image: "https://encs691k-assets.s3.amazonaws.com/avatar/Avatar-1.svg",
-        bid: "40",
+        userProfilePicture: "https://encs691k-assets.s3.amazonaws.com/avatar/Avatar-1.svg",
+        amount: "40",
         time: "hello world"
     },
 ]
 
-export default mockBids
+export default mockamounts

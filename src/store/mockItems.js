@@ -1,7 +1,7 @@
 export const mockItems = [
     {
         id: "test",
-        name: "City Bike",
+        title: "City Bike",
         image: [
             "https://encs691k-assets.s3.ca-central-1.amazonaws.com/item_images/test_images/bikes1.jpg",
             "https://encs691k-assets.s3.ca-central-1.amazonaws.com/item_images/test_images/bikes2.jpg",
@@ -18,7 +18,7 @@ export const mockItems = [
     },
     {
         id: "test2",
-        name: "AirPods",
+        title: "AirPods",
         image: [
             "https://encs691k-assets.s3.ca-central-1.amazonaws.com/item_images/test_images/airpods.jpg",
             "https://encs691k-assets.s3.ca-central-1.amazonaws.com/item_images/test_images/airpods2.jpg",

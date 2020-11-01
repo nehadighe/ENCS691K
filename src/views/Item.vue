@@ -1,18 +1,18 @@
 <template>
   <div class="mt-8">
     <v-col cols="12" class="d-flex justify-center">
-        <v-carousel
-          :continuous="false"
-          :cycle="cycle"
-          :show-arrows="false"
-          hide-delimiter-background
-          delimiter-icon="mdi-circle"
-          height="100%"
-        >
-          <v-carousel-item v-for="(image, i) in detailItem.image" :key="i">
-            <v-img contain :aspect-ratio="imageDimensions" :src="image" />
-          </v-carousel-item>
-        </v-carousel>
+      <v-carousel
+        :continuous="false"
+        :cycle="cycle"
+        :show-arrows="false"
+        hide-delimiter-background
+        delimiter-icon="mdi-circle"
+        height="100%"
+      >
+        <v-carousel-item v-for="(image, i) in detailItem.image" :key="i">
+          <v-img contain :aspect-ratio="imageDimensions" :src="image" />
+        </v-carousel-item>
+      </v-carousel>
     </v-col>
     <v-container>
       <v-row class>
@@ -53,6 +53,7 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import BidService from "@/services/Bid"; // API
 import EngagedUsers from "@/components/Item/EngagedUsers.vue";
 import BidPanel from "@/components/Item/BidPanel.vue";
 
@@ -65,7 +66,7 @@ export default {
     buttonCardShow: false,
     itemId: "",
     timer: null,
-    totalTime: 5 * 60 // This should be dynamic!
+    totalTime: 2 * 60 // This should be dynamic!
   }),
   components: {
     BidPanel,
@@ -100,14 +101,14 @@ export default {
   },
   methods: {
     ...mapActions(["showItem", "makeBid", "changeItemAvailability"]),
-    bid(initialBidState, id) {
-      if (initialBidState) {
+    async bid(event) {
+      if (event.initialBidState) {
         // show card
         this.buttonCardShow = true;
       } else {
-        // if (this.bids.length < 1) {
-        //   this.startTimer(id);
-        // }
+        if (this.bids.length < 1) {
+          this.startTimer(this.detailItem.id);
+        }
         // date functions
         const date = new Date();
         const currentDate = date.toDateString();
@@ -115,19 +116,24 @@ export default {
         const minute = date.getMinutes();
         const seconds = date.getSeconds();
         const time = `${currentDate}, ${hour}:${minute}:${seconds}`;
-        var event = {
-          // generate bidId
+        var storeEvent = {
           itemId: this.detailItem.id,
-          // images:
-          image: this.authUser.avatar,
           username: this.authUser.username,
-          bid: this.itemPrice,
-          time: time
+          userProfilePicture: this.authUser.avatar,
+          amount: event.itemPrice,
+          time: time // this data type has to be changed to datetime
         };
         // console.log(event)
-        this.itemId = id;
+        this.itemId = this.detailItem.id;
         // API call to Bid entity/table
-        this.makeBid(event);
+        await BidService.makeBid(storeEvent)
+        .then(() => {
+          this.makeBid(storeEvent);
+        })
+        .catch(err => {
+          console.log("line 134 err from API call- ", err);
+        });
+        
         // this.$refs.form.reset();
       }
     },

@@ -12,6 +12,7 @@
             prepend-inner-icon="mdi-currency-usd"
             name="item-price"
             label="Price for item"
+            @keyup.enter="bid(false)"
             filled
           ></v-text-field>
         </v-form>
@@ -42,7 +43,11 @@ export default {
   }),
   methods: {
     bid(initialBidState) {
-      this.$emit("bid", initialBidState);
+      var event = {
+        state: initialBidState,
+        itemPrice: this.itemPrice
+      };
+      this.$emit("bid", event);
       this.$refs.form.reset();
     }
   },
