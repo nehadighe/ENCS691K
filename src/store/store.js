@@ -14,15 +14,15 @@ export const getDefaultState = () => {
         authMode: "signup",
         user: [],
         // mockUser
-        authUser: {
-            avatar: 'https://encs691k-assets.s3.amazonaws.com/avatar/Avatar-1.svg',
-            username: 'edreinoso',
-            email: 'edgardo_CJ@hotmail.com',
-            firstName: 'Ed',
-            lastName: 'Reinoso',
-            authenticated: true,
-        },
-        // authUser: {},
+        // authUser: {
+        //     avatar: 'https://encs691k-assets.s3.amazonaws.com/avatar/Avatar-1.svg',
+        //     username: 'edreinoso',
+        //     email: 'edgardo_CJ@hotmail.com',
+        //     firstName: 'Ed',
+        //     lastName: 'Reinoso',
+        //     authenticated: true,
+        // },
+        authUser: {},
         // mockBids
         // bids: mockBids, // this is where the bids will be held
         bids: [], // this is where the bids will be held

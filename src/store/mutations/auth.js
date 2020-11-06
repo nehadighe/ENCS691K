@@ -10,8 +10,10 @@ export const userLookUp = (state, userInfo) => {
         // console.log('line 9- username in mutations', item.username, index)
         if (item.username == userInfo.username) { // this is going to the user name
             state.authUser = item // setting the authUser as the item
+            state.authUser.authenticated = true // setting the authUser as the item
         }
     })
+    // console.log('line 15- auth mutations', state.authUser)
 }
 
 export const userSignUp = (state, userInfo) => {
@@ -23,4 +25,9 @@ export const userSignUp = (state, userInfo) => {
 
 export const userLogOut = (state) => {
     state.authUser = {}
+}
+
+export const loadUserToState = (state, userData) => {
+    // console.log('line 29, state: mutation- ', userData)
+    state.user = userData
 }

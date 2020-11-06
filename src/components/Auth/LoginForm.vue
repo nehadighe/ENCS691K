@@ -98,7 +98,7 @@ export default {
         event.password
       )
         .then(() => {
-          event.user.authenticated = true // adding authentication property
+          event.user.authenticated = true; // adding authentication property
           this.userLogIn(event.user); // sending data to the store
           this.requestLoading = false;
           this.$router.push({ name: "home" });
@@ -128,26 +128,26 @@ export default {
       let username, password;
       username = event.user.username;
       password = event.password;
-      await Auth.signIn(username, password)
-        .then(() => {
-          // should look at the pool of users in the store, and should
-          // get that user to display in the application
-          
-          // adding authentication property: logical issue!
-          // if adding it before, the header will
-          // load first before even going to the
-          // home
-          event.user.authenticated = true
-          this.userLookUp(event.user); // looking up user information
-          this.requestLoading = false;
-          this.$router.push({ name: "home" });
-        })
-        .catch(error => {
-          (this.text = error.message),
-            (this.color = "#900028"),
-            (this.alert = true);
-          this.requestLoading = false;
-        });
+      try {
+        await Auth.signIn(username, password);
+        // should look at the pool of users in the store, and should
+        // get that user to display in the application
+
+        // adding authentication property: logical issue!
+        // if adding it before, the header will
+        // load first before even going to the
+        // home
+        event.user.authenticated = true;
+        // console.log("line 141 - login form", event.user);
+        this.userLookUp(event.user); // looking up user information
+        this.requestLoading = false;
+        this.$router.push({ name: "home" });
+      } catch (error) {
+        (this.text = error.message),
+          (this.color = "#900028"),
+          (this.alert = true);
+        this.requestLoading = false;
+      }
     },
     resetState() {
       this.resetAppState();

@@ -1,5 +1,6 @@
 import {
     authMode,
+    loadUserToState,
     userLookUp,
     userSignUp,
     userLogOut,
@@ -17,6 +18,7 @@ import { resetAppState } from "./resetState"
 
 export default {
     authMode,
+    loadUserToState,
     userLookUp,
     userSignUp,
     userLogOut,

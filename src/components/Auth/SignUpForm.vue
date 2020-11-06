@@ -44,14 +44,14 @@ export default {
   },
   data: () => ({
     themeColor: "#900028",
-    username: "",
     snacktimeout: 8000,
     alert: false,
     text: null,
     color: null,
     requestLoading: false,
     localSignUpState: "register",
-    authUser: {}
+    username: "",
+    authUser: {},
   }),
   methods: {
     ...mapActions(["resetAppState", "userSignUp"]),
@@ -105,15 +105,21 @@ export default {
       try {
         await Auth.confirmSignUp(this.username, event.code);
         // Making API call in the try clause
-        await UserService.post(event.user)
-          .then(() => {})
+        // console.log('line 108 - ', this.authUser)
+        await UserService.post(this.authUser) // there is nothing in event.user
+          .then(() => {
+            this.authUser.authenticated = true;
+            this.userSignUp(this.authUser); // sending data to the store
+            this.requestLoading = false;
+            this.$router.push({ name: "home" });
+          })
           .catch(err => {
-            console.log("line 91 err from API call- ", err);
+            console.log("line 91 err from API call- ", err); // line needed by ESLint
+            (this.text = "An error has occurred, try again later"),
+              (this.color = "#900028"),
+              (this.alert = true);
+            this.requestLoading = false;
           });
-        this.authUser.authenticated = true;
-        this.userSignUp(this.authUser); // sending data to the store
-        this.requestLoading = false;
-        this.$router.push({ name: "home" });
       } catch (error) {
         (this.text = error.message),
           (this.color = "#900028"),
@@ -132,7 +138,7 @@ export default {
         (this.text = err.message),
           (this.color = "#900028"),
           (this.alert = true);
-        console.log("error resending code: ", err);
+        // console.log("error resending code: ", err);
       }
     },
     resetState() {

@@ -8,13 +8,15 @@ export const getAllItems = async (state, data) => {
 }
 
 export const changeItemAvailability = (state, itemId) => {
-    console.log('accessing this state')
-    state.mockItems.map(item => {
+    // console.log('accessing this state')
+    // state.mockItems.map(item => {
+    state.items.map(item => {
         if (item.id == itemId) {
             item.availability = "Sold"
         }
     })
-    state.mockItems = state.mockItems.filter(item => {
+    // state.mockItems = state.mockItems.filter(item => {
+    state.items = state.mockItems.filter(item => {
         return item.id !== itemId
     })
 }

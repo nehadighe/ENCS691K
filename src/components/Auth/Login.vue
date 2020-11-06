@@ -41,10 +41,7 @@
           <v-progress-circular v-if="requestLoading" :size="25" :color="themeColor" indeterminate></v-progress-circular>
         </v-col>
         <!-- <v-col cols="12" md="6" class="d-flex justify-center">
-          <v-btn
-            :ripple="false"
-            @click="resetState()"
-          >Reset State</v-btn>
+          <v-btn :ripple="false" @click="resetState()">Reset State</v-btn>
         </v-col>-->
       </v-row>
     </v-form>

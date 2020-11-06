@@ -3,7 +3,7 @@ import Api from '@/services/Api'
 export default {
     // publish should be changed to post
     post(user) {
-        console.log('is this going through: ', user)
+        // console.log('is this going through: ', user)
         return Api().post('/users/register', user)
     },
     getUserById(id) {
