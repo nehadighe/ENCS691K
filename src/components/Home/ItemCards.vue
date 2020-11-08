@@ -22,7 +22,12 @@
     <v-card-text class>
       <div class="d-flex align-center justify-space-between">
         <div class>
-          <v-chip class :color="availability == 'Active' ? 'green' : 'pink'" label text-color="white">
+          <v-chip
+            class
+            :color="availability == 'Active' ? 'green' : 'pink'"
+            label
+            text-color="white"
+          >
             <v-icon small left>mdi-circle</v-icon>
             <!-- this should be dynamic mano! -->
             {{ availability }}
@@ -31,9 +36,17 @@
         <div class>{{ currentNumberOfBidding }} bids</div>
       </div>
 
-      <div class="my-4 subtitle-1">$ {{ basePrice }} • {{ category }}</div>
+      <div class="my-4 subtitle-1 d-flex flex-row justify-space-between">
+        <div>$ {{ basePrice }} • {{ category }}</div>
+        <div class="d-flex flex-row align-center">
+          {{ userInfo.username }}
+          <v-avatar class="ml-2" color="indigo" size="30">
+            <v-img :src="userInfo.avatar" alt="avatar" />
+          </v-avatar>
+        </div>
+      </div>
 
-      <div class>{{ description }}</div>
+      <div class>{{ summary }}</div>
     </v-card-text>
     <v-card-actions class="d-flex justify-end">
       <v-btn text-right :disabled="disableBidding" :color="darkRed" text @click="bid(id)">Bid</v-btn>
@@ -47,18 +60,19 @@ export default {
   data: () => ({
     cycle: false,
     darkRed: "#900028",
-    disableBidding: false,
+    disableBidding: false
   }),
   methods: {
-    bid (id) {
+    bid(id) {
       this.$emit("bid", id);
-    },
+    }
   },
   props: {
     id: String,
     title: String,
     images: Array,
-    description: String,
+    userInfo: Object,
+    summary: String,
     availability: String,
     category: String,
     basePrice: String, // this should be number

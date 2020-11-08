@@ -136,7 +136,9 @@ export default {
       this.item.availability = "Active";
       this.item.currentNumberOfBidding = 0;
       this.item.basePrice = parseInt(this.item.basePrice);
+      this.item.username =  
       console.log("line 139 - post_item", this.item);
+      // I need to pass the username info
       await ItemService.post(this.item)
         .then(() => {
           this.postItem(this.item);
@@ -155,5 +157,6 @@ export default {
 </script>
 
 <style>
+
 @import "../assets/line.css";
 </style>
