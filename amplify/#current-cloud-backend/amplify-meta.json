@@ -10,6 +10,11 @@
 			"StackName": "amplify-encs691k-dev-155906",
 			"StackId": "arn:aws:cloudformation:us-east-1:109139691401:stack/amplify-encs691k-dev-155906/69238760-fea0-11ea-92d4-0ef7f3f34731",
 			"AmplifyAppId": "d1fsja02a5mzls"
+		},
+		"categories": {
+			"auth": {
+				"encs691kc459d71f": {}
+			}
 		}
 	},
 	"auth": {
@@ -18,11 +23,6 @@
 			"providerPlugin": "awscloudformation",
 			"dependsOn": [],
 			"customAuth": false,
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/amplify-encs691k-dev-155906-deployment/amplify-cfn-templates/auth/encs691kc459d71f-cloudformation-template.yml",
-				"logicalId": "authencs691kc459d71f"
-			},
-			"lastPushTimeStamp": "2020-09-24T20:06:50.188Z",
 			"output": {
 				"AppClientSecret": "174geahdk55kbul9tqdnk5htidkkju3l03c1vkcos9sn69j4ga5j",
 				"UserPoolId": "us-east-1_CoiZss2r3",
@@ -32,7 +32,27 @@
 				"IdentityPoolName": "encs691kc459d71f_identitypool_c459d71f__dev",
 				"UserPoolName": "encs691kc459d71f_userpool_c459d71f"
 			},
-			"lastPushDirHash": "EXUByIrCdOvPd/fgcKUeFjeO/QM="
+			"lastPushTimeStamp": "2020-11-08T04:04:01.307Z",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/amplify-encs691k-dev-155906-deployment/amplify-cfn-templates/auth/encs691kc459d71f-cloudformation-template.yml",
+				"logicalId": "authencs691kc459d71f"
+			}
+		}
+	},
+	"storage": {
+		"s3d3c12c18": {
+			"service": "S3",
+			"providerPlugin": "awscloudformation",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/amplify-encs691k-dev-155906-deployment/amplify-cfn-templates/storage/s3-cloudformation-template.json",
+				"logicalId": "storages3d3c12c18"
+			},
+			"lastPushTimeStamp": "2020-11-08T04:04:01.310Z",
+			"output": {
+				"BucketName": "encs691k-item-images155906-dev",
+				"Region": "us-east-1"
+			},
+			"lastPushDirHash": "u+TpWbMqlSvwyZhEcxAQJ4cbmS0="
 		}
 	}
 }
