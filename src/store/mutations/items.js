@@ -16,7 +16,7 @@ export const changeItemAvailability = (state, itemId) => {
         }
     })
     // state.mockItems = state.mockItems.filter(item => {
-    state.items = state.mockItems.filter(item => {
+    state.items = state.items.filter(item => {
         return item.id !== itemId
     })
 }

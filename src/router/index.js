@@ -8,7 +8,19 @@ const routes = [
   {
     path: '/auth',
     name: 'auth',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Auth.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/Auth.vue'),
+    beforeEnter: (to, from, next) => {
+      if (store.state.authUser.authenticated) {
+        next({
+          path: '/',
+          name: 'home',
+          component: () => import('../views/Home.vue')
+        })
+      }
+      else {
+        next()
+      }
+    }
   },
   {
     path: '/test',

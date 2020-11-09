@@ -4,6 +4,7 @@ src/views/copies/
 src/components/Home/cards.txt
 src/components/Test/autocomplete-copy.txt
 src/components/Test/timer-copy.txt
+src/components/reusables
 src/aws-exports.js
 .env.development.local
 .env.production.local

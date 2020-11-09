@@ -7,11 +7,13 @@
             <div class>
               <v-form ref="form" v-model="valid">
                 <div id="upload">
-                  <div v-if="item.images.length < 1" class="mb-5 dropbox d-flex justify-center align-center">
+                  <div
+                    v-if="item.images.length < 1"
+                    class="mb-5 dropbox dropbox-without-image d-flex justify-center align-center"
+                  >
                     <input
                       type="file"
                       multiple
-                      :name="uploadFieldName"
                       :disabled="isSaving"
                       @change="uploadImage"
                       accept="image/*"
@@ -19,25 +21,41 @@
                     />
                     <div class="pa-2 d-flex flex-row imageContainer">
                       <v-icon small class="white--text">mdi-account-box-multiple</v-icon>
-                      <p class="mb-0 ml-1" v-if="isInitial">Add Images</p>
+                      <p class="mb-0 ml-1">Add Images</p>
                     </div>
-                    <p class="mb-0" v-if="isSaving">Uploading {{ fileCount }} files...</p>
                   </div>
-                  <div v-if="item.images.length > 0" class="mb-5 dropbox d-flex justify-center align-center">
+                  <div
+                    v-if="item.images.length > 0"
+                    class="mb-5 dropbox d-flex justify-center align-center"
+                  >
                     <input
                       type="file"
                       multiple
-                      :name="uploadFieldName"
                       :disabled="isSaving"
                       @change="uploadImage"
                       accept="image/*"
                       class="input-file"
                     />
-                    <div v-for="(item, index) in item.images" :key="index">
-                      <v-img
-                        contain aspect-ratio=".7" :src="image"
-                      />
-                    </div>
+                    <v-row class="pa-5">
+                      <v-col class cols="4" v-for="(item, index) in item.images" :key="index">
+                        <v-img contain aspect-ratio="1" :src="item.path">
+                          <template v-slot:placeholder v-if="isSaving">
+                            <v-row class="fill-height ma-0" align="start" justify="end">
+                              <v-progress-circular :size="20" indeterminate color="grey lighten-5"></v-progress-circular>
+                            </v-row>
+                          </template>
+                          <template v-if="!isSaving">
+                            <v-row class="fill-height ma-0" align="start" justify="end">
+                              <v-btn icon @click="deleteImage(item)">
+                                <v-icon small class="pa-1 white--text">mdi-close-circle</v-icon>
+                              </v-btn>
+                              <!-- <p class="mb-0 white--text">X</p> -->
+                              <!-- <v-progress-circular :size="20" indeterminate color="grey lighten-5"></v-progress-circular> -->
+                            </v-row>
+                          </template>
+                        </v-img>
+                      </v-col>
+                    </v-row>
                   </div>
                 </div>
                 <v-text-field
@@ -119,8 +137,8 @@
                     height="100%"
                   >
                     <!-- <v-carousel-item v-for="(image, i) in foo" :key="i"> -->
-                    <v-carousel-item v-for="(image, i) in item.images" :key="i">
-                      <v-img contain aspect-ratio="1.5" :src="image" />
+                    <v-carousel-item v-for="(item, index) in item.images" :key="index">
+                      <v-img contain aspect-ratio="1.5" :src="item.path" />
                     </v-carousel-item>
                   </v-carousel>
                 </div>
@@ -141,6 +159,16 @@
         </v-col>
       </v-row>
     </v-container>
+    <!-- messaging windows -->
+    <v-snackbar :color="color" :timeout="snacktimeout" v-model="alert">
+      <!-- <v-snackbar :color="bannerColor" timeout="30000" :v-model="bannerAlert"> -->
+      <div class="d-flex flex-row align-center justify-space-between">
+        <p class="mb-0">{{ text }}</p>
+        <v-btn color="white" text @click="alert = false">
+          <v-icon small>mdi-window-close</v-icon>
+        </v-btn>
+      </div>
+    </v-snackbar>
   </div>
 </template>
 
@@ -148,11 +176,10 @@
 // import PostNewItemCard from "@/components/Item/PostNewItemCard.vue";
 import { Storage } from "aws-amplify";
 import { v4 as uuidv4 } from "uuid";
-import ItemService from "@/services/Item";
+// import ItemService from "@/services/Item";
 import { mapState, mapActions } from "vuex";
 
-const STATUS_INITIAL = 0,
-  STATUS_SAVING = 1,
+const STATUS_SAVING = 1,
   STATUS_SUCCESS = 2,
   STATUS_FAILED = 3;
 
@@ -176,26 +203,21 @@ export default {
       description: ""
     },
 
-    foo: [
-      "https://encs691k-item-images155906-dev.s3.amazonaws.com/public/xoo/1bbcd6f2-15ea-42fc-ad5b-201f2be8bf24/airpods.jpg",
-      "https://encs691k-item-images155906-dev.s3.amazonaws.com/public/xoo/1bbcd6f2-15ea-42fc-ad5b-201f2be8bf24/airpods.jpg",
-      "https://encs691k-item-images155906-dev.s3.amazonaws.com/public/xoo/1bbcd6f2-15ea-42fc-ad5b-201f2be8bf24/airpods.jpg"
-    ],
-
     requestLoading: false,
     categories: ["Electronics", "Home Goods"],
 
-    uploadedFiles: [],
-    uploadError: null,
+    // uploading to s3
     currentStatus: null,
-    uploadFieldName: "photos",
-    bucket: "encs691k-item-images155906-dev"
+    bucket: "encs691k-item-images155906-dev",
+
+    // pop up message
+    snacktimeout: 8000,
+    alert: false,
+    text: null,
+    color: null
   }),
   computed: {
     ...mapState(["authUser"]),
-    isInitial() {
-      return this.currentStatus === STATUS_INITIAL;
-    },
     isSaving() {
       return this.currentStatus === STATUS_SAVING;
     },
@@ -213,14 +235,19 @@ export default {
       for (var i = 0; i < event.target.files.length; i++) {
         let file = event.target.files[i];
         var location = `${this.authUser.username}/${this.item.id}/${file.name}`;
+        // var location = `${file.name}`;
         Storage.put(location, file, {
           contentType: file.type
         })
           .then(result => {
-            console.log(result.key);
+            // console.log(result.key);
             // public could be a variable
             var path = `https://${this.bucket}.s3.amazonaws.com/public/${result.key}`;
-            this.item.images.push(path);
+            var imageObj = {
+              id: file.name,
+              path: path
+            };
+            this.item.images.push(imageObj);
             // this.currentStatus = STATUS_SUCCESS;
           })
           .catch(err => {
@@ -228,33 +255,48 @@ export default {
             // this.currentStatus = STATUS_SUCCESS;
           });
       }
-      console.log("line 206-", this.item.images);
+      // console.log("line 206-", this.item.images);
     },
-    reset() {
-      // reset form to initial state
-      this.currentStatus = STATUS_INITIAL;
-      this.uploadedFiles = [];
-      this.uploadError = null;
+    deleteImage(item) {
+      var location = `${this.authUser.username}/${this.item.id}/${item.id}`;
+      this.item.images.splice(this.item.images.indexOf(item), 1);
+      Storage.remove(location).catch(err => {
+        console.log(err);
+      });
     },
     async create() {
       this.requestLoading = true;
-      this.item.images = [
-        "https://encs691k-assets.s3.ca-central-1.amazonaws.com/item_images/test_images/bikes1.jpg",
-        "https://encs691k-assets.s3.ca-central-1.amazonaws.com/item_images/test_images/bikes2.jpg"
-      ];
       this.item.availability = "Active";
       this.item.currentNumberOfBidding = 0;
       this.item.basePrice = parseInt(this.item.basePrice);
-      this.item.username = console.log("line 139 - post_item", this.item);
-      // I need to pass the username info
-      await ItemService.post(this.item)
-        .then(() => {
-          this.postItem(this.item);
-          this.$router.push({ name: "home" });
-        })
-        .catch(err => {
-          console.log("line 146 err from API call- ", err);
-        });
+      this.item.username = this.authUser.username;
+      console.log("line 260 - post_item", this.item);
+
+      // testing portion
+      (this.text = "Your item has been created. Posting it!"),
+        (this.color = "green"),
+        (this.alert = true);
+      this.requestLoading = false;
+
+      // actual implementation
+      // await ItemService.post(this.item)
+        // .then(() => {
+        //   this.postItem(this.item); // saving item to store
+        //   this.$router.push({ name: "home" });
+        //   (this.text = "Your item has been created. Posting it!"),
+        //     (this.color = "green"),
+        //     (this.alert = true);
+        //   this.requestLoading = false;
+        // })
+        // .catch(err => {
+        //   console.log("line 146 err from API call- ", err);
+        //   (this.text = "An occured while creating your item"),
+        //     (this.color = "#900028"),
+        //     (this.alert = true);
+        //   this.requestLoading = false;
+        // });
+
+      // request loading change
       this.requestLoading = false;
     }
   },
@@ -262,7 +304,6 @@ export default {
     // PostNewItemCard
   },
   mounted() {
-    this.reset();
     this.item.id = uuidv4();
   }
 };
@@ -279,11 +320,14 @@ export default {
   border-color: grey;
   border-style: solid;
   border-width: thin;
+}
+
+.dropbox-without-image {
   cursor: pointer;
   transition: ease-in 200ms;
 }
 
-.dropbox:hover {
+.dropbox-without-image:hover {
   transition: ease-in 200ms;
   background-color: #c4c4c4;
 }

@@ -49,12 +49,13 @@ export default {
     rules: {
       required: [v => !!v || "Required."]
     },
+    requestLoading: false,
+    localLoginState: "login",
+    // pop up message
     snacktimeout: 8000,
     alert: false,
     text: null,
     color: null,
-    requestLoading: false,
-    localLoginState: "login"
   }),
   methods: {
     ...mapActions(["resetAppState", "userLookUp"]),
