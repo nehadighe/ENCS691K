@@ -8,7 +8,7 @@
               <v-form ref="form" v-model="valid">
                 <div id="upload">
                   <div
-                    v-if="item.images.length < 1"
+                    v-if="image.length < 1 || isInitial"
                     class="mb-5 dropbox dropbox-without-image d-flex justify-center align-center"
                   >
                     <input
@@ -25,7 +25,7 @@
                     </div>
                   </div>
                   <div
-                    v-if="item.images.length > 0"
+                    v-if="image.length > 0 && !isInitial"
                     class="mb-5 dropbox d-flex justify-center align-center"
                   >
                     <input
@@ -37,8 +37,8 @@
                       class="input-file"
                     />
                     <v-row class="pa-5">
-                      <v-col class cols="4" v-for="(item, index) in item.images" :key="index">
-                        <v-img contain aspect-ratio="1" :src="item.path">
+                      <v-col class cols="4" v-for="(item, index) in image" :key="index">
+                        <v-img contain aspect-ratio="1" :src="item.location">
                           <template v-slot:placeholder v-if="isSaving">
                             <v-row class="fill-height ma-0" align="start" justify="end">
                               <v-progress-circular :size="20" indeterminate color="grey lighten-5"></v-progress-circular>
@@ -60,7 +60,7 @@
                 </div>
                 <v-text-field
                   :color="darkRed"
-                  v-model="item.title"
+                  v-model="title"
                   :rules="rules.required"
                   name="item-title"
                   label="Title"
@@ -68,7 +68,7 @@
                 ></v-text-field>
                 <v-text-field
                   :color="darkRed"
-                  v-model="item.basePrice"
+                  v-model="basePrice"
                   type="number"
                   :rules="rules.required"
                   prepend-inner-icon="mdi-currency-usd"
@@ -81,13 +81,13 @@
                   :items="categories"
                   filled
                   label="Category"
-                  v-model="item.category"
+                  v-model="category"
                   :rules="rules.required"
                 ></v-select>
                 <v-textarea
                   :color="darkRed"
                   :rules="rules.required"
-                  v-model="item.summary"
+                  v-model="summary"
                   filled
                   counter
                   maxlength="100"
@@ -102,7 +102,7 @@
                   filled
                   auto-grow
                   label="Description"
-                  v-model="item.description"
+                  v-model="description"
                   rows="2"
                   row-height="20"
                 ></v-textarea>
@@ -127,7 +127,7 @@
               <div id="inside_items">
                 <p class="mb-4">Preview</p>
                 <!-- carousel -->
-                <div v-if="item.images.length > 0" class="ma-3">
+                <div v-if="image.length > 0" class="ma-3">
                   <v-carousel
                     :continuous="false"
                     :cycle="cycle"
@@ -137,21 +137,21 @@
                     height="100%"
                   >
                     <!-- <v-carousel-item v-for="(image, i) in foo" :key="i"> -->
-                    <v-carousel-item v-for="(item, index) in item.images" :key="index">
-                      <v-img contain aspect-ratio="1.5" :src="item.path" />
+                    <v-carousel-item v-for="(item, index) in image" :key="index">
+                      <v-img contain aspect-ratio="1.5" :src="item.location" />
                     </v-carousel-item>
                   </v-carousel>
                 </div>
                 <div id="header" class="pb-5">
-                  <h2 class>Title: {{item.title}}</h2>
-                  <h3 class>${{item.basePrice}}</h3>
-                  <p class="mb-0">Category: {{item.category}}</p>
+                  <h2 class>Title: {{title}}</h2>
+                  <h3 class>${{basePrice}}</h3>
+                  <p class="mb-0">Category: {{category}}</p>
                 </div>
                 <div id="body">
                   <p class>Summary</p>
-                  <p class="mx-5">{{item.summary}}</p>
+                  <p class="mx-5">{{summary}}</p>
                   <p class>Description</p>
-                  <p class="mx-5">{{item.description}}</p>
+                  <p class="mx-5">{{description}}</p>
                 </div>
               </div>
             </v-card>
@@ -176,10 +176,11 @@
 // import PostNewItemCard from "@/components/Item/PostNewItemCard.vue";
 import { Storage } from "aws-amplify";
 import { v4 as uuidv4 } from "uuid";
-// import ItemService from "@/services/Item";
+import ItemService from "@/services/Item";
 import { mapState, mapActions } from "vuex";
 
-const STATUS_SAVING = 1,
+const STATUS_INITIAL = 0,
+  STATUS_SAVING = 1,
   STATUS_SUCCESS = 2,
   STATUS_FAILED = 3;
 
@@ -193,15 +194,17 @@ export default {
     },
     darkRed: "#900028",
 
+    // Item Values
+    title: "",
+    basePrice: "",
+    summary: "",
+    category: "",
+    description: "",
     item: {
       id: "",
-      title: "",
-      images: [],
-      basePrice: "",
-      summary: "",
-      category: "",
-      description: ""
     },
+
+    image: [], // array of images
 
     requestLoading: false,
     categories: ["Electronics", "Home Goods"],
@@ -218,6 +221,9 @@ export default {
   }),
   computed: {
     ...mapState(["authUser"]),
+    isInitial() {
+      return this.currenStatus === STATUS_INITIAL;
+    },
     isSaving() {
       return this.currentStatus === STATUS_SAVING;
     },
@@ -243,11 +249,17 @@ export default {
             // console.log(result.key);
             // public could be a variable
             var path = `https://${this.bucket}.s3.amazonaws.com/public/${result.key}`;
+
+            // building image object
             var imageObj = {
-              id: file.name,
-              path: path
+              id: uuidv4(),
+              itemId: this.item.id,
+              name: file.name,
+              location: path
             };
-            this.item.images.push(imageObj);
+
+            console.log("line 261 - imageObj", imageObj);
+            this.image.push(imageObj); // local state
             // this.currentStatus = STATUS_SUCCESS;
           })
           .catch(err => {
@@ -258,52 +270,75 @@ export default {
       // console.log("line 206-", this.item.images);
     },
     deleteImage(item) {
-      var location = `${this.authUser.username}/${this.item.id}/${item.id}`;
-      this.item.images.splice(this.item.images.indexOf(item), 1);
-      Storage.remove(location).catch(err => {
-        console.log(err);
-      });
+      var location = `${this.authUser.username}/${this.item.id}/${item.name}`;
+      Storage.remove(location)
+        .then(() => {
+          this.images.splice(this.images.indexOf(item), 1);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     async create() {
       this.requestLoading = true;
+      
+      this.item.title = this.title;
+      this.item.category = this.category;
+      this.item.summary = this.summary;
       this.item.availability = "Active";
       this.item.currentNumberOfBidding = 0;
-      this.item.basePrice = parseInt(this.item.basePrice);
+      this.item.basePrice = parseInt(this.basePrice);
       this.item.username = this.authUser.username;
-      console.log("line 260 - post_item", this.item);
 
       // testing portion
-      (this.text = "Your item has been created. Posting it!"),
-        (this.color = "green"),
-        (this.alert = true);
-      this.requestLoading = false;
+      // (this.text = "Your item has been created. Posting it!"),
+      //   (this.color = "green"),
+      //   (this.alert = true);
+      // this.requestLoading = false;
 
       // actual implementation
-      // await ItemService.post(this.item)
-        // .then(() => {
-        //   this.postItem(this.item); // saving item to store
-        //   this.$router.push({ name: "home" });
-        //   (this.text = "Your item has been created. Posting it!"),
-        //     (this.color = "green"),
-        //     (this.alert = true);
-        //   this.requestLoading = false;
-        // })
-        // .catch(err => {
-        //   console.log("line 146 err from API call- ", err);
-        //   (this.text = "An occured while creating your item"),
-        //     (this.color = "#900028"),
-        //     (this.alert = true);
-        //   this.requestLoading = false;
-        // });
+      // learn graphql (?) -- future
+      // sending data about the images
+      var req = {
+        images: this.image,
+        item: this.item
+      };
+
+      console.log('line 307- request:',req);
+
+      // sending data about the item
+      await ItemService.post(req)
+        .then(() => {
+      //     MIGHT HAVE TO FIND OUT HOW TO DO THE STORE
+      //     this.postItem(this.item); // saving item to store
+          this.$router.push({ name: "home" });
+          (this.text = "Your item has been created. Posting it!"),
+            (this.color = "green"),
+            (this.alert = true);
+          this.requestLoading = false;
+        })
+        .catch(err => {
+          console.log("line 146 err from API call- ", err);
+          (this.text = "An occured while creating your item"),
+            (this.color = "#900028"),
+            (this.alert = true);
+          this.requestLoading = false;
+        });
 
       // request loading change
-      this.requestLoading = false;
+      // this.requestLoading = false
+
+      this.image = [];
+      this.currentStatus = STATUS_INITIAL;
+      this.$refs.form.reset();
     }
   },
   components: {
     // PostNewItemCard
   },
   mounted() {
+    this.currentStatus = STATUS_INITIAL;
+    console.log(this.currentStatus);
     this.item.id = uuidv4();
   }
 };

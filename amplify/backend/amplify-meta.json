@@ -32,7 +32,7 @@
 				"IdentityPoolName": "encs691kc459d71f_identitypool_c459d71f__dev",
 				"UserPoolName": "encs691kc459d71f_userpool_c459d71f"
 			},
-			"lastPushTimeStamp": "2020-11-08T04:04:01.307Z",
+			"lastPushTimeStamp": "2020-11-09T02:44:47.806Z",
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/amplify-encs691k-dev-155906-deployment/amplify-cfn-templates/auth/encs691kc459d71f-cloudformation-template.yml",
 				"logicalId": "authencs691kc459d71f"
@@ -47,7 +47,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/amplify-encs691k-dev-155906-deployment/amplify-cfn-templates/storage/s3-cloudformation-template.json",
 				"logicalId": "storages3d3c12c18"
 			},
-			"lastPushTimeStamp": "2020-11-08T04:04:01.310Z",
+			"lastPushTimeStamp": "2020-11-09T02:44:47.807Z",
 			"output": {
 				"BucketName": "encs691k-item-images155906-dev",
 				"Region": "us-east-1"

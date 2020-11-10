@@ -9,7 +9,7 @@
         <ItemCards
           :id="item.id"
           :name="item.name"
-          :images="item.image"
+          :images="item.Images"
           :summary="item.summary"
           :availability="item.availability"
           :userInfo="item.User"

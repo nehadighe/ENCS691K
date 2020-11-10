@@ -1,10 +1,5 @@
-import _ from "lodash";
-
 export const getAllItems = async (state, data) => {
-    const sortedItems = _.orderBy(data, function (o) {
-        return o.availability
-    }, ['asc']);
-    state.items = sortedItems
+    state.items = data
 }
 
 export const changeItemAvailability = (state, itemId) => {

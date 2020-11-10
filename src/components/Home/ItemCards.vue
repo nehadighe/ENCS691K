@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="3" class="mx-auto my-12" max-width="374">
+  <v-card elevation="3" class="mx-auto my-12" max-width="374" height="500" max-height="500">
     <v-carousel
       :continuous="false"
       :cycle="cycle"
@@ -8,9 +8,9 @@
       delimiter-icon="mdi-circle"
       height="250"
     >
-      <v-carousel-item v-for="(image, i) in images" :key="i">
+      <v-carousel-item v-for="(item, i) in images" :key="i">
         <v-row class="fill-height" align="center" justify="center">
-          <v-img height="250" :src="image" />
+          <v-img height="250" :src="item.location" />
         </v-row>
       </v-carousel-item>
     </v-carousel>
@@ -48,8 +48,8 @@
 
       <div class>{{ summary }}</div>
     </v-card-text>
-    <v-card-actions class="d-flex justify-end">
-      <v-btn text-right :disabled="disableBidding" :color="darkRed" text @click="bid(id)">Bid</v-btn>
+    <v-card-actions class="test-1 d-flex justify-end">
+      <v-btn text-right :disabled="availability != 'Active'" :color="darkRed" text @click="bid(id)">Bid</v-btn>
     </v-card-actions>
   </v-card>
 </template>
