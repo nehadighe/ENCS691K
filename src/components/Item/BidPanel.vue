@@ -45,7 +45,7 @@ export default {
     bid(initialBidState) {
       var event = {
         state: initialBidState,
-        itemPrice: this.itemPrice
+        itemPrice: parseInt(this.itemPrice)
       };
       this.$emit("bid", event);
       this.$refs.form.reset();

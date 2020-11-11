@@ -338,7 +338,6 @@ export default {
   },
   mounted() {
     this.currentStatus = STATUS_INITIAL;
-    console.log(this.currentStatus);
     this.item.id = uuidv4();
   }
 };

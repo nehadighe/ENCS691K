@@ -16,10 +16,10 @@ export const changeItemAvailability = (state, itemId) => {
     })
 }
 
-export const showItem = (state, itemId) => {
+export const showItem = (state, data) => {
     // state.mockItems.map(item => {
     state.items.map(item => {
-        if (item.id == itemId) {
+        if (item.id == data.id) {
             state.detailItem = item
         }
     })
@@ -27,12 +27,12 @@ export const showItem = (state, itemId) => {
 
 // bid is going to be the item: name, image, time
 // biddingAmount
-export const makeBid = (state, userBid) => {
-    // console.log('mutations, bid', userBid)
-    state.bids.push(userBid)
-    state.mockItems.map(item => {
-        if (item.id == userBid.itemId) {
+export const makeBid = (state, data) => {
+    console.log('31- mutations, bid', data)
+    state.items.map(item => {
+        if (item.id == data.itemId) {
             // is this going to work?
+            item.Bids.push(item);
             item.currentNumberOfBidding++;
         }
     })

@@ -2,7 +2,7 @@ import Api from "@/services/Api"
 
 export const getAllItems = async (context) => {
     var result = await Api().get("/items/getAllItems");
-    console.log('line 5, actions- getAllItems', result);
+    // console.log('line 5, actions- getAllItems', result);
     context.commit("getAllItems", result.data);
 }
 
@@ -15,9 +15,9 @@ export const showItem = async (context, itemId) => {
     context.commit("showItem", result.data)
 }
 
-export const makeBid = (context, userBid) => {
+export const makeBid = (context, data) => {
     // console.log('items, action', userBid)
-    context.commit("makeBid", userBid)
+    context.commit("makeBid", data)
 }
 
 export const postItem = (context, item) => {

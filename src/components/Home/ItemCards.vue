@@ -48,7 +48,7 @@
 
       <div class>{{ summary }}</div>
     </v-card-text>
-    <v-card-actions class="test-1 d-flex justify-end">
+    <v-card-actions class="d-flex justify-end">
       <v-btn text-right :disabled="availability != 'Active'" :color="darkRed" text @click="bid(id)">Bid</v-btn>
     </v-card-actions>
   </v-card>
@@ -75,7 +75,7 @@ export default {
     summary: String,
     availability: String,
     category: String,
-    basePrice: String, // this should be number
+    basePrice: Number, // this should be number
     currentNumberOfBidding: Number
   }
 };

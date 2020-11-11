@@ -9,8 +9,8 @@
         delimiter-icon="mdi-circle"
         height="100%"
       >
-        <v-carousel-item v-for="(image, i) in detailItem.image" :key="i">
-          <v-img contain :aspect-ratio="imageDimensions" :src="image" />
+        <v-carousel-item v-for="(item, i) in detailItem.Images" :key="i">
+          <v-img contain :aspect-ratio="imageDimensions" :src="item.location" />
         </v-carousel-item>
       </v-carousel>
     </v-col>
@@ -20,7 +20,8 @@
           <div class="custom-padding-item-detail">
             <div class="text-left d-flex flex-column justify-center">
               <div class="d-flex flex-row justify-space-between align-center">
-                <h1 class>{{ detailItem.name }}</h1>
+                <h1 class>{{ detailItem.title }}</h1>
+                <!-- timer -->
                 <v-card v-if="bids.length > 0" style="padding:8px 15px">
                   <div :class="minutes < 1 ? `one-minute` : null">
                     <span id="minutes">{{ minutes }}</span>
@@ -32,7 +33,7 @@
               <div id="item_information">
                 <h3 class>${{ detailItem.basePrice }}</h3>
                 <p class>{{ detailItem.category }}</p>
-                <p class>{{ detailItem.description }}</p>
+                <p class>{{ detailItem.summary }}</p>
               </div>
             </div>
           </div>
@@ -41,13 +42,23 @@
         <v-col cols="12" class="d-flex flex-column" md="6">
           <div class="mb-3 custom-padding-width-user-engagement">
             <h2 class="text-center text-md-left">
-              <span v-if="bids.length < 1">No</span> User Engagement
+              <span v-if="detailItem.Bids.length < 1">No</span> User Engagement
             </h2>
           </div>
-          <EngagedUsers :bids="bids" />
+          <EngagedUsers :bids="detailItem.Bids" />
         </v-col>
       </v-row>
     </v-container>
+    <!-- messaging windows -->
+    <v-snackbar :color="color" :timeout="snacktimeout" v-model="alert">
+      <!-- <v-snackbar :color="bannerColor" timeout="30000" :v-model="bannerAlert"> -->
+      <div class="d-flex flex-row align-center justify-space-between">
+        <p class="mb-0">{{ text }}</p>
+        <v-btn color="white" text @click="alert = false">
+          <v-icon small>mdi-window-close</v-icon>
+        </v-btn>
+      </div>
+    </v-snackbar>
   </div>
 </template>
 
@@ -64,9 +75,15 @@ export default {
     disableBidding: false,
     darkRed: "#900028",
     buttonCardShow: false,
-    itemId: "",
     timer: null,
-    totalTime: 2 * 60 // This should be dynamic!
+    totalTime: 2 * 60, // This should be dynamic!
+
+    // Message in data
+    // pop up message
+    snacktimeout: 8000,
+    alert: false,
+    text: null,
+    color: null
   }),
   components: {
     BidPanel,
@@ -102,39 +119,50 @@ export default {
   methods: {
     ...mapActions(["showItem", "makeBid", "changeItemAvailability"]),
     async bid(event) {
-      if (event.initialBidState) {
-        // show card
-        this.buttonCardShow = true;
+      if (event.itemPrice < this.detailItem.basePrice) {
+        // Message in methods
+        (this.text = "Cannot bid lower than the base price"),
+          (this.color = "#900028"),
+          (this.alert = true);
+        this.requestLoading = false;
+        return;
       } else {
-        if (this.bids.length < 1) {
-          this.startTimer(this.detailItem.id);
+        if (event.initialBidState) {
+          // show card
+          this.buttonCardShow = true;
+        } else {
+          if (this.bids.length < 1) {
+            console.log("110, starting timer on item: ", this.detailItem.id);
+            // this.startTimer(this.detailItem.id);
+          }
+          // date functions
+          const date = new Date();
+          const currentDate = date.toDateString();
+          const hour = date.getHours();
+          const minute = date.getMinutes();
+          const seconds = date.getSeconds();
+          const time = `${currentDate}, ${hour}:${minute}:${seconds}`;
+          var storeEvent = {
+            itemId: this.detailItem.id,
+            User: this.authUser,
+            amount: event.itemPrice,
+            time: time // this data type has to be changed to datetime
+          };
+          // console.log(event)
+          // API call to Bid entity/table
+          await BidService.makeBid(storeEvent)
+            .then(() => {
+              this.makeBid(storeEvent); // changing store
+            })
+            .catch(() => {
+              (this.text = "An error occured while bidding, please try again!"),
+                (this.color = "#900028"),
+                (this.alert = true);
+              this.requestLoading = false;
+            });
+
+          // this.$refs.form.reset();
         }
-        // date functions
-        const date = new Date();
-        const currentDate = date.toDateString();
-        const hour = date.getHours();
-        const minute = date.getMinutes();
-        const seconds = date.getSeconds();
-        const time = `${currentDate}, ${hour}:${minute}:${seconds}`;
-        var storeEvent = {
-          itemId: this.detailItem.id,
-          username: this.authUser.username,
-          userProfilePicture: this.authUser.avatar,
-          amount: event.itemPrice,
-          time: time // this data type has to be changed to datetime
-        };
-        // console.log(event)
-        this.itemId = this.detailItem.id;
-        // API call to Bid entity/table
-        await BidService.makeBid(storeEvent)
-        .then(() => {
-          this.makeBid(storeEvent);
-        })
-        .catch(err => {
-          console.log("line 134 err from API call- ", err);
-        });
-        
-        // this.$refs.form.reset();
       }
     },
     startTimer() {
@@ -156,7 +184,7 @@ export default {
         // closed
         // this.disableBidding = true;
         // API call to Transation entity/table
-        this.itemSold(this.itemId);
+        this.itemSold();
         clearInterval(this.timer);
       }
     },
@@ -164,14 +192,15 @@ export default {
       return (time < 10 ? "0" : "") + time;
     },
     itemSold() {
-      this.changeItemAvailability(this.itemId);
+      this.changeItemAvailability(this.detailItem.id);
       this.disableBidding = true;
     }
   },
-  mounted() {
+  async mounted() {
     const itemId = this.$route.params.itemId;
     // API call to request the specific Item
-    this.showItem(itemId);
+    await this.showItem(itemId);
+    console.log(this.detailItem);
     // this localBids to handle the data locally
     // without changing the store
     this.localBids = this.bids;

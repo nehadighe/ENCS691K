@@ -16,13 +16,14 @@
         <v-row no-gutters>
           <v-col cols="3">
             <div class="px-3 d-flex justify-center">
-              <v-img contain height="50" :src="item.userProfilePicture" />
+              <v-img contain height="50" :src="item.User.avatar" />
             </div>
           </v-col>
           <v-col cols="9" class>
             <div class="px-3 d-flex flex-column">
               <div class="d-flex flex-row justify-space-between">
-                <p class="mb-0">{{ item.username }}</p>
+                <!-- <p class="mb-0">{{ item.User.username }}</p> -->
+                <p class="mb-0">{{ item.User.username }}</p>
                 <p class="mb-0">Bid: ${{ item.amount }}</p>
               </div>
               <p class="mb-0">{{ item.time }}</p>
@@ -73,8 +74,8 @@ export default {
   props: {
     bids: Array
   },
-  mounted() {
-    // console.log('calling from engaged user mounted',this.bids)
+  mounted(){
+    console.log('78- ', this.bids)
   }
 };
 </script>
