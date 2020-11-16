@@ -19,6 +19,7 @@
       </div>
       <div id="button" class="d-flex justify-end">
         <v-btn
+          v-if="!requestLoading"
           text-right
           class="ml-3"
           :color="darkRed"
@@ -26,6 +27,7 @@
           text
           @click="bid(false)"
         >Bid</v-btn>
+        <v-progress-circular v-if="requestLoading" :size="25" :color="darkRed" indeterminate></v-progress-circular>
       </div>
     </v-card>
   </div>
@@ -49,7 +51,8 @@ export default {
     }
   },
   props: {
-    disablingButton: Boolean
+    disablingButton: Boolean,
+    requestLoading: Boolean
   }
 };
 </script>

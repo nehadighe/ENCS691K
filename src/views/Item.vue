@@ -37,7 +37,7 @@
               </div>
             </div>
           </div>
-          <BidPanel :disablingButton="disableBidding" v-on:bid="bid($event)" />
+          <BidPanel :requestLoading="requestLoading" :disablingButton="disableBidding" v-on:bid="bid($event)" />
         </v-col>
         <v-col cols="12" class="d-flex flex-column" md="6">
           <div class="mb-3 custom-padding-width-user-engagement">
@@ -84,7 +84,8 @@ export default {
     snacktimeout: 8000,
     alert: false,
     text: null,
-    color: null
+    color: null,
+    requestLoading: false
   }),
   components: {
     BidPanel,
@@ -120,6 +121,7 @@ export default {
   methods: {
     ...mapActions(["showItem", "makeBid", "changeItemAvailability"]),
     async bid(event) {
+      this.requestLoading = true;
       if (this.detailItem.bidPrice > event) {
         // Message in methods
         (this.text = "Cannot bid lower than the base price"),
@@ -201,9 +203,10 @@ export default {
         amount: this.detailItem.bidPrice
       };
       console.log("line 214", transaction);
-      await TransactionService.createTransaction(transaction).then(() => {
-        this.changeItemAvailability(this.detailItem.id);
-      });
+      await TransactionService.createTransaction(transaction)
+        .then(() => {
+          this.changeItemAvailability(this.detailItem.id);
+        });
       this.disableBidding = true;
     }
   },
@@ -211,7 +214,7 @@ export default {
     const itemId = this.$route.params.itemId;
     // API call to request the specific Item
     await this.showItem(itemId);
-    console.log("line 223", this.detailItem);
+    // console.log("line 223", this.detailItem);
     // this localBids to handle the data locally
     // without changing the store
     this.localBids = this.bids;

@@ -8,7 +8,7 @@
               <v-form ref="newItem" v-model="valid">
                 <div id="upload">
                   <div
-                    v-if="image.length < 1 || isInitial"
+                    v-if="isInitial"
                     class="mb-5 dropbox dropbox-without-image d-flex justify-center align-center"
                   >
                     <input
@@ -24,8 +24,11 @@
                       <p class="mb-0 ml-1">Add Images</p>
                     </div>
                   </div>
+                  <div v-if="isSaving" class="mb-5 dropbox d-flex justify-center align-center">
+                    <v-progress-circular :size="20" indeterminate :color="darkRed"></v-progress-circular>
+                  </div>
                   <div
-                    v-if="image.length > 0 && !isInitial"
+                    v-if="isSuccess"
                     class="mb-5 dropbox d-flex justify-center align-center"
                   >
                     <input
@@ -39,18 +42,12 @@
                     <v-row class="pa-5">
                       <v-col class cols="4" v-for="(item, index) in image" :key="index">
                         <v-img contain aspect-ratio="1" :src="item.location">
-                          <template v-slot:placeholder v-if="isSaving">
-                            <v-row class="fill-height ma-0" align="start" justify="end">
-                              <v-progress-circular :size="20" indeterminate color="grey lighten-5"></v-progress-circular>
-                            </v-row>
-                          </template>
-                          <template v-if="!isSaving">
+                          <!-- <template v-slot:placeholder> -->
+                          <template>
                             <v-row class="fill-height ma-0" align="start" justify="end">
                               <v-btn icon @click="deleteImage(item)">
                                 <v-icon small class="pa-1 white--text">mdi-close-circle</v-icon>
                               </v-btn>
-                              <!-- <p class="mb-0 white--text">X</p> -->
-                              <!-- <v-progress-circular :size="20" indeterminate color="grey lighten-5"></v-progress-circular> -->
                             </v-row>
                           </template>
                         </v-img>
@@ -95,6 +92,7 @@
                   label="Summary"
                   auto-grow
                   rows="2"
+                  @keyup.enter="[valid ? create() : null]"
                   row-height="20"
                 ></v-textarea>
                 <v-textarea
@@ -222,7 +220,7 @@ export default {
   computed: {
     ...mapState(["authUser"]),
     isInitial() {
-      return this.currenStatus === STATUS_INITIAL;
+      return this.currentStatus === STATUS_INITIAL;
     },
     isSaving() {
       return this.currentStatus === STATUS_SAVING;
@@ -237,7 +235,7 @@ export default {
   methods: {
     ...mapActions(["postItem"]),
     uploadImage() {
-      // this.currentStatus = STATUS_SAVING;
+      this.currentStatus = STATUS_SAVING;
       for (var i = 0; i < event.target.files.length; i++) {
         let file = event.target.files[i];
         var location = `${this.authUser.username}/${this.item.id}/${file.name}`;
@@ -260,11 +258,11 @@ export default {
 
             // console.log("line 261 - imageObj", imageObj);
             this.image.push(imageObj); // local state
-            // this.currentStatus = STATUS_SUCCESS;
+            this.currentStatus = STATUS_SUCCESS;
           })
           .catch(err => {
             console.log(err);
-            // this.currentStatus = STATUS_SUCCESS;
+            this.currentStatus = STATUS_FAILED;
           });
       }
       // console.log("line 206-", this.item.images);
@@ -293,12 +291,6 @@ export default {
       this.item.ttl = new Date();
       this.item.username = this.authUser.username;
 
-      // testing portion
-      // (this.text = "Your item has been created. Posting it!"),
-      //   (this.color = "green"),
-      //   (this.alert = true);
-      // this.requestLoading = false;
-
       // actual implementation
       // learn graphql (?) -- future
       // sending data about the images
@@ -306,8 +298,6 @@ export default {
         images: this.image,
         item: this.item
       };
-
-      // console.log("line 307- request:", req);
 
       // sending data about the item
       await ItemService.post(req)
@@ -317,8 +307,6 @@ export default {
           this.color = "green";
           this.alert = true;
           this.requestLoading = false;
-          // MIGHT HAVE TO FIND OUT HOW TO DO THE STORE
-          // this.postItem(this.item); // saving item to store
           this.$router.push({ name: "home" });
         })
         .catch(err => {
@@ -336,9 +324,6 @@ export default {
       this.currentStatus = STATUS_INITIAL;
       this.$refs.newItem.reset();
     }
-  },
-  components: {
-    // PostNewItemCard
   },
   mounted() {
     this.currentStatus = STATUS_INITIAL;

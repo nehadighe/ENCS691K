@@ -17,7 +17,7 @@ export const changeItemAvailability = (state, itemId) => {
 }
 
 export const showItem = (state, data) => {
-    // state.mockItems.map(item => {
+    // state.detailItem = data
     state.items.map(item => {
         if (item.id == data.id) {
             state.detailItem = item

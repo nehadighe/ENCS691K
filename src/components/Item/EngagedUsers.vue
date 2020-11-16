@@ -75,7 +75,7 @@ export default {
     bids: Array
   },
   mounted(){
-    console.log('78- ', this.bids)
+    // console.log('78- ', this.bids)
   }
 };
 </script>

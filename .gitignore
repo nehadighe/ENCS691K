@@ -1,5 +1,5 @@
 node_modules/
-deploy.sh
+.git-deploy.sh
 src/views/copies/
 src/components/Home/cards.txt
 src/components/Test/autocomplete-copy.txt
