@@ -4,9 +4,7 @@
       <v-col cols="12">
         <div class="d-flex justify-center align-center">
           <div v-if="authMode === 'login'">
-            <LoginForm 
-              
-            />
+            <LoginForm />
           </div>
           <div v-if="authMode === 'signup'">
             <SignUpForm />

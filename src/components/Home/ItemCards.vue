@@ -37,7 +37,11 @@
       </div>
 
       <div class="my-4 subtitle-1 d-flex flex-row justify-space-between">
-        <div>$ {{ basePrice }} • {{ category }}</div>
+        <div>
+          <span v-if="bidPrice === 0">$ {{ basePrice }} •</span>
+          <span v-if="bidPrice != 0">$ {{ bidPrice }} •</span>
+          {{ category }}
+        </div>
         <div class="d-flex flex-row align-center">
           {{ userInfo.username }}
           <v-avatar class="ml-2" color="indigo" size="30">
@@ -49,7 +53,13 @@
       <div class>{{ summary }}</div>
     </v-card-text>
     <v-card-actions class="d-flex justify-end">
-      <v-btn text-right :disabled="availability != 'Active'" :color="darkRed" text @click="bid(id)">Bid</v-btn>
+      <v-btn
+        text-right
+        :disabled="availability != 'Active'"
+        :color="darkRed"
+        text
+        @click="bid(id)"
+      >Bid</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -76,6 +86,7 @@ export default {
     availability: String,
     category: String,
     basePrice: Number, // this should be number
+    bidPrice: Number,
     currentNumberOfBidding: Number
   }
 };

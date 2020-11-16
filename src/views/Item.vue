@@ -22,7 +22,7 @@
               <div class="d-flex flex-row justify-space-between align-center">
                 <h1 class>{{ detailItem.title }}</h1>
                 <!-- timer -->
-                <v-card v-if="bids.length > 0" style="padding:8px 15px">
+                <v-card v-if="detailItem.Bids.length > 0" style="padding:8px 15px">
                   <div :class="minutes < 1 ? `one-minute` : null">
                     <span id="minutes">{{ minutes }}</span>
                     <span id="middle">:</span>
@@ -31,7 +31,7 @@
                 </v-card>
               </div>
               <div id="item_information">
-                <h3 class>${{ detailItem.basePrice }}</h3>
+                <h3 class>${{ detailItem.bidPrice }}</h3>
                 <p class>{{ detailItem.category }}</p>
                 <p class>{{ detailItem.summary }}</p>
               </div>
@@ -65,6 +65,8 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import BidService from "@/services/Bid"; // API
+import TransactionService from "@/services/Transaction"; // API
+import { v4 as uuidv4 } from "uuid";
 import EngagedUsers from "@/components/Item/EngagedUsers.vue";
 import BidPanel from "@/components/Item/BidPanel.vue";
 
@@ -74,7 +76,6 @@ export default {
     cycle: false,
     disableBidding: false,
     darkRed: "#900028",
-    buttonCardShow: false,
     timer: null,
     totalTime: 2 * 60, // This should be dynamic!
 
@@ -119,7 +120,7 @@ export default {
   methods: {
     ...mapActions(["showItem", "makeBid", "changeItemAvailability"]),
     async bid(event) {
-      if (event.itemPrice < this.detailItem.basePrice) {
+      if (this.detailItem.bidPrice > event) {
         // Message in methods
         (this.text = "Cannot bid lower than the base price"),
           (this.color = "#900028"),
@@ -127,42 +128,43 @@ export default {
         this.requestLoading = false;
         return;
       } else {
-        if (event.initialBidState) {
-          // show card
-          this.buttonCardShow = true;
-        } else {
-          if (this.bids.length < 1) {
-            console.log("110, starting timer on item: ", this.detailItem.id);
-            // this.startTimer(this.detailItem.id);
-          }
-          // date functions
-          const date = new Date();
-          const currentDate = date.toDateString();
-          const hour = date.getHours();
-          const minute = date.getMinutes();
-          const seconds = date.getSeconds();
-          const time = `${currentDate}, ${hour}:${minute}:${seconds}`;
-          var storeEvent = {
-            itemId: this.detailItem.id,
-            User: this.authUser,
-            amount: event.itemPrice,
-            time: time // this data type has to be changed to datetime
-          };
-          // console.log(event)
-          // API call to Bid entity/table
-          await BidService.makeBid(storeEvent)
-            .then(() => {
-              this.makeBid(storeEvent); // changing store
-            })
-            .catch(() => {
-              (this.text = "An error occured while bidding, please try again!"),
-                (this.color = "#900028"),
-                (this.alert = true);
-              this.requestLoading = false;
-            });
-
-          // this.$refs.form.reset();
-        }
+        // date functions
+        const date = new Date();
+        const currentDate = date.toDateString();
+        const hour = date.getHours();
+        const minute = date.getMinutes();
+        const seconds = date.getSeconds();
+        const time = `${currentDate}, ${hour}:${minute}:${seconds}`;
+        var storeEvent = {
+          itemId: this.detailItem.id,
+          username: this.authUser.username,
+          amount: event,
+          time: time // this data type has to be changed to datetime
+        };
+        // console.log(event)
+        // API call to Bid entity/table
+        await BidService.makeBid(storeEvent)
+          .then(() => {
+            // console.log(res);
+            if (this.detailItem.Bids.length < 1) {
+              this.startTimer(this.detailItem.id);
+            }
+            delete storeEvent.username;
+            storeEvent.User = this.authUser;
+            // console.log('line 154- ', storeEvent);
+            this.makeBid(storeEvent); // changing store
+            (this.text = "Bid made successfully"),
+              (this.color = "green"),
+              (this.alert = true);
+            this.requestLoading = false;
+          })
+          .catch(err => {
+            console.log(err);
+            (this.text = "An error occured while bidding, please try again!"),
+              (this.color = "#900028"),
+              (this.alert = true);
+            this.requestLoading = false;
+          });
       }
     },
     startTimer() {
@@ -191,8 +193,17 @@ export default {
     padTime(time) {
       return (time < 10 ? "0" : "") + time;
     },
-    itemSold() {
-      this.changeItemAvailability(this.detailItem.id);
+    async itemSold() {
+      var transaction = {
+        id: uuidv4(),
+        itemId: this.detailItem.id,
+        username: this.authUser.username,
+        amount: this.detailItem.bidPrice
+      };
+      console.log("line 214", transaction);
+      await TransactionService.createTransaction(transaction).then(() => {
+        this.changeItemAvailability(this.detailItem.id);
+      });
       this.disableBidding = true;
     }
   },
@@ -200,7 +211,7 @@ export default {
     const itemId = this.$route.params.itemId;
     // API call to request the specific Item
     await this.showItem(itemId);
-    console.log(this.detailItem);
+    console.log("line 223", this.detailItem);
     // this localBids to handle the data locally
     // without changing the store
     this.localBids = this.bids;

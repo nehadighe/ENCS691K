@@ -14,6 +14,7 @@
           :availability="item.availability"
           :userInfo="item.User"
           :basePrice="item.basePrice"
+          :bidPrice="item.bidPrice"
           :category="item.category"
           :currentNumberOfBidding="item.currentNumberOfBidding"
           v-on:bid="bid($event)"

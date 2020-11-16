@@ -139,7 +139,7 @@ export default {
         // load first before even going to the
         // home
         event.user.authenticated = true;
-        // console.log("line 141 - login form", event.user);
+        console.log("line 142 - login form", event.user);
         this.userLookUp(event.user); // looking up user information
         this.requestLoading = false;
         this.$router.push({ name: "home" });

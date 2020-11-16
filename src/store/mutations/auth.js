@@ -6,8 +6,9 @@ export const authMode = (state, authModeAction) => {
 export const userLookUp = (state, userInfo) => {
     // console.log('line 7 store - mutations: userLogin', userInfo)
     // not even going into this function
+    // console.log('line 9- username in mutations', state.user)
     state.user.map((item) => {
-        // console.log('line 9- username in mutations', item.username, index)
+        // console.log('line 11- username in mutations', item.username)
         if (item.username == userInfo.username) { // this is going to the user name
             state.authUser = item // setting the authUser as the item
             state.authUser.authenticated = true // setting the authUser as the item
@@ -28,6 +29,6 @@ export const userLogOut = (state) => {
 }
 
 export const loadUserToState = (state, userData) => {
-    // console.log('line 29, state: mutation- ', userData)
+    // console.log('line 32, state: mutation- ', userData)
     state.user = userData
 }

@@ -5,7 +5,7 @@
         <v-col class cols="12" md="4">
           <v-card class="pa-5">
             <div class>
-              <v-form ref="form" v-model="valid">
+              <v-form ref="newItem" v-model="valid">
                 <div id="upload">
                   <div
                     v-if="image.length < 1 || isInitial"
@@ -201,7 +201,7 @@ export default {
     category: "",
     description: "",
     item: {
-      id: "",
+      id: ""
     },
 
     image: [], // array of images
@@ -258,7 +258,7 @@ export default {
               location: path
             };
 
-            console.log("line 261 - imageObj", imageObj);
+            // console.log("line 261 - imageObj", imageObj);
             this.image.push(imageObj); // local state
             // this.currentStatus = STATUS_SUCCESS;
           })
@@ -281,13 +281,16 @@ export default {
     },
     async create() {
       this.requestLoading = true;
-      
+
       this.item.title = this.title;
       this.item.category = this.category;
+      this.item.description = this.description;
       this.item.summary = this.summary;
       this.item.availability = "Active";
       this.item.currentNumberOfBidding = 0;
       this.item.basePrice = parseInt(this.basePrice);
+      this.item.bidPrice = parseInt(this.basePrice);
+      this.item.ttl = new Date();
       this.item.username = this.authUser.username;
 
       // testing portion
@@ -304,18 +307,19 @@ export default {
         item: this.item
       };
 
-      console.log('line 307- request:',req);
+      // console.log("line 307- request:", req);
 
       // sending data about the item
       await ItemService.post(req)
         .then(() => {
-      //     MIGHT HAVE TO FIND OUT HOW TO DO THE STORE
-      //     this.postItem(this.item); // saving item to store
-          this.$router.push({ name: "home" });
-          (this.text = "Your item has been created. Posting it!"),
-            (this.color = "green"),
-            (this.alert = true);
+          // console.log("line 314 response- ", res);
+          this.text = "Your item has been created. Posting it!";
+          this.color = "green";
+          this.alert = true;
           this.requestLoading = false;
+          // MIGHT HAVE TO FIND OUT HOW TO DO THE STORE
+          // this.postItem(this.item); // saving item to store
+          this.$router.push({ name: "home" });
         })
         .catch(err => {
           console.log("line 146 err from API call- ", err);
@@ -330,7 +334,7 @@ export default {
 
       this.image = [];
       this.currentStatus = STATUS_INITIAL;
-      this.$refs.form.reset();
+      this.$refs.newItem.reset();
     }
   },
   components: {

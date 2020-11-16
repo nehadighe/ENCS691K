@@ -22,7 +22,7 @@ export const getDefaultState = () => {
         //     lastName: 'Reinoso',
         //     authenticated: true,
         // },
-        // authUser: {},
+        authUser: {},
         // mockBids
         // bids: mockBids, // this is where the bids will be held
         bids: [], // this is where the bids will be held

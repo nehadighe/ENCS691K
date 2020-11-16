@@ -28,11 +28,10 @@ export const showItem = (state, data) => {
 // bid is going to be the item: name, image, time
 // biddingAmount
 export const makeBid = (state, data) => {
-    console.log('31- mutations, bid', data)
     state.items.map(item => {
         if (item.id == data.itemId) {
-            // is this going to work?
-            item.Bids.push(item);
+            item.Bids.push(data);
+            item.bidPrice = data.amount
             item.currentNumberOfBidding++;
         }
     })
