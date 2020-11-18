@@ -50,9 +50,6 @@ export default {
     }
   },
   async mounted() {
-    // console.log('line 78, items sorted', this.itemsAvailable)
-
-    // get all the items data from the db as soon as logged in
     if (this.authUser.authenticated) {
       // making sure user is authenticated
       this.getAllItems();

@@ -16,10 +16,10 @@ export const changeItemAvailability = (state, itemId) => {
     })
 }
 
-export const showItem = (state, data) => {
-    // state.detailItem = data
+export const showItem = (state, id) => {
+    // console.log('line 20 data-', id)
     state.items.map(item => {
-        if (item.id == data.id) {
+        if (item.id == id) {
             state.detailItem = item
         }
     })
@@ -30,9 +30,10 @@ export const showItem = (state, data) => {
 export const makeBid = (state, data) => {
     state.items.map(item => {
         if (item.id == data.itemId) {
-            item.Bids.push(data);
+            item.Bids.push(data)
+            item.startBidTime = data.startBidTime
             item.bidPrice = data.amount
-            item.currentNumberOfBidding++;
+            item.currentNumberOfBidding++
         }
     })
 }

@@ -23,11 +23,7 @@
                 <h1 class>{{ detailItem.title }}</h1>
                 <!-- timer -->
                 <v-card v-if="detailItem.Bids.length > 0" style="padding:8px 15px">
-                  <div :class="minutes < 1 ? `one-minute` : null">
-                    <span id="minutes">{{ minutes }}</span>
-                    <span id="middle">:</span>
-                    <span id="seconds">{{ seconds }}</span>
-                  </div>
+                  <Timer :deadline="detailItem.startBidTime" v-on:itemSold="itemSold()" />
                 </v-card>
               </div>
               <div id="item_information">
@@ -37,7 +33,11 @@
               </div>
             </div>
           </div>
-          <BidPanel :requestLoading="requestLoading" :disablingButton="disableBidding" v-on:bid="bid($event)" />
+          <BidPanel
+            :requestLoading="requestLoading"
+            :disablingButton="disableBidding"
+            v-on:bid="bid($event)"
+          />
         </v-col>
         <v-col cols="12" class="d-flex flex-column" md="6">
           <div class="mb-3 custom-padding-width-user-engagement">
@@ -64,20 +64,21 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import { v4 as uuidv4 } from "uuid";
 import BidService from "@/services/Bid"; // API
 import TransactionService from "@/services/Transaction"; // API
-import { v4 as uuidv4 } from "uuid";
 import EngagedUsers from "@/components/Item/EngagedUsers.vue";
 import BidPanel from "@/components/Item/BidPanel.vue";
+import Timer from "@/components/Test/Timer.vue";
 
 export default {
   data: () => ({
-    localBids: [],
     cycle: false,
     disableBidding: false,
     darkRed: "#900028",
     timer: null,
     totalTime: 2 * 60, // This should be dynamic!
+    startBidTime: new Date(), // date
 
     // Message in data
     // pop up message
@@ -89,7 +90,8 @@ export default {
   }),
   components: {
     BidPanel,
-    EngagedUsers
+    EngagedUsers,
+    Timer
   },
   computed: {
     ...mapState(["detailItem", "authUser", "bids"]),
@@ -143,17 +145,18 @@ export default {
           amount: event,
           time: time // this data type has to be changed to datetime
         };
-        // console.log(event)
+        // if the bid.length is less than one
+        // then the startBidTime should
+        if (this.detailItem.Bids.length < 1) {
+          this.startBidTime = date;
+        }
+        storeEvent.startBidTime = this.startBidTime;
         // API call to Bid entity/table
         await BidService.makeBid(storeEvent)
           .then(() => {
             // console.log(res);
-            if (this.detailItem.Bids.length < 1) {
-              this.startTimer(this.detailItem.id);
-            }
             delete storeEvent.username;
             storeEvent.User = this.authUser;
-            // console.log('line 154- ', storeEvent);
             this.makeBid(storeEvent); // changing store
             (this.text = "Bid made successfully"),
               (this.color = "green"),
@@ -169,32 +172,6 @@ export default {
           });
       }
     },
-    startTimer() {
-      // this is probably not the best implementation
-      // two events might be happening at the same time
-      // and one value might just be overwritten
-      // but for now, let's just go with this implementation
-      // this.itemId = id;
-      this.timer = setInterval(() => this.countdown(), 1000);
-    },
-    countdown() {
-      if (this.totalTime >= 1) {
-        this.totalTime--;
-      } else {
-        this.totalTime = 0;
-        // there should be another function here where it
-        // disables the bidding button, or at least
-        // should present a modal that the auction has been
-        // closed
-        // this.disableBidding = true;
-        // API call to Transation entity/table
-        this.itemSold();
-        clearInterval(this.timer);
-      }
-    },
-    padTime(time) {
-      return (time < 10 ? "0" : "") + time;
-    },
     async itemSold() {
       var transaction = {
         id: uuidv4(),
@@ -202,11 +179,9 @@ export default {
         username: this.authUser.username,
         amount: this.detailItem.bidPrice
       };
-      console.log("line 214", transaction);
-      await TransactionService.createTransaction(transaction)
-        .then(() => {
-          this.changeItemAvailability(this.detailItem.id);
-        });
+      await TransactionService.createTransaction(transaction).then(() => {
+        this.changeItemAvailability(this.detailItem.id);
+      });
       this.disableBidding = true;
     }
   },
@@ -214,10 +189,6 @@ export default {
     const itemId = this.$route.params.itemId;
     // API call to request the specific Item
     await this.showItem(itemId);
-    // console.log("line 223", this.detailItem);
-    // this localBids to handle the data locally
-    // without changing the store
-    this.localBids = this.bids;
   }
 };
 </script>

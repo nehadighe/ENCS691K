@@ -288,6 +288,7 @@ export default {
       this.item.currentNumberOfBidding = 0;
       this.item.basePrice = parseInt(this.basePrice);
       this.item.bidPrice = parseInt(this.basePrice);
+      this.item.startBidTime = {}; // nulling the initial object
       this.item.ttl = new Date();
       this.item.username = this.authUser.username;
 

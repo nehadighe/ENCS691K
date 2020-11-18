@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="text-center" v-if="currentTime">
-      <span v-if="days">{{ days }}</span>:<span v-if="hours">{{ hours | formatTime }}:</span><span>{{ minutes | formatTime }}:{{ seconds | formatTime }}</span>
+      <span>{{ minutes | formatTime }}:{{ seconds | formatTime }}</span>
       <br />
     </div>
     <div class="text-center" v-if="!currentTime">Time's Up!</div>
@@ -12,10 +12,7 @@
 export default {
   name: "Timer",
   props: {
-    deadline: {
-      type: String,
-      required: true
-    },
+    deadline: [String, Date],
     speed: {
       type: Number,
       default: 1000
@@ -23,11 +20,12 @@ export default {
   },
   data() {
     return {
-      currentTime: Date.parse(this.deadline) - Date.parse(new Date())
+      currentTime: Date.parse(new Date(Date.parse(this.deadline) + 5 * 60 * 1000)) - Date.parse(new Date()),
+      newTime: null
     };
   },
   mounted() {
-    setTimeout(this.countdown, 1000);
+    setTimeout(this.countdown, this.speed);
   },
   computed: {
     seconds() {
@@ -36,12 +34,6 @@ export default {
     minutes() {
       return Math.floor((this.currentTime / 1000 / 60) % 60);
     },
-    hours() {
-      return Math.floor((this.currentTime / (1000 * 60 * 60)) % 24);
-    },
-    days() {
-      return Math.floor(this.currentTime / (1000 * 60 * 60 * 24));
-    }
   },
   filters: {
     formatTime(value) {
@@ -53,12 +45,16 @@ export default {
   },
   methods: {
     countdown() {
-      this.currentTime = Date.parse(this.deadline) - Date.parse(new Date());
+      this.currentTime = Date.parse(new Date(Date.parse(this.deadline) + 5 * 60 * 1000)) - Date.parse(new Date());
       if (this.currentTime > 0) {
         setTimeout(this.countdown, this.speed);
       } else {
+        this.itemSold();
         this.currentTime = null;
       }
+    },
+    itemSold() {
+      this.$emit("itemSold");
     }
   }
 };

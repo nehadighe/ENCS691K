@@ -10,9 +10,9 @@ export const changeItemAvailability = (context, itemId) => {
     context.commit("changeItemAvailability", itemId)
 }
 
-export const showItem = async (context, itemId) => {
-    var result = await Api().get(`/items/getItemById/${itemId}`)
-    context.commit("showItem", result.data)
+export const showItem = (context, id) => {
+    // console.log('line 14- showItem action', id)
+    context.commit("showItem", id)
 }
 
 export const makeBid = (context, data) => {
