@@ -29,6 +29,6 @@ export const userLogOut = (state) => {
 }
 
 export const loadUserToState = (state, userData) => {
-    // console.log('line 32, state: mutation- ', userData)
+    console.log('line 32, auth: mutation- ', userData)
     state.user = userData
 }

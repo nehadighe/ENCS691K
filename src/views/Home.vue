@@ -8,7 +8,7 @@
         -->
         <ItemCards
           :id="item.id"
-          :name="item.name"
+          :name="item.title"
           :images="item.Images"
           :summary="item.summary"
           :availability="item.availability"
@@ -52,7 +52,8 @@ export default {
   async mounted() {
     if (this.authUser.authenticated) {
       // making sure user is authenticated
-      this.getAllItems();
+      await this.getAllItems();
+      console.log('line 55- home page', this.items)
     } else {
       alert("Need to authenticate");
     }

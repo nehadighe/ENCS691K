@@ -11,8 +11,9 @@ import {
     changeItemAvailability,
     showItem,
     makeBid,
-    postItem,
 } from "./items"
+
+import { getItemsByUsername } from "./user"
 
 import { resetAppState } from "./resetState"
 
@@ -26,6 +27,6 @@ export default {
     changeItemAvailability,
     showItem,
     makeBid,
-    postItem,
+    getItemsByUsername,
     resetAppState
 }

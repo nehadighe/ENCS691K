@@ -133,7 +133,8 @@ export default {
     on: null,
     authenticate: null,
     closeOnContentClick: true,
-    itemsFunction: [{ title: "Log Out", option: "1" }]
+    itemsFunction: [{ title: "Log Out", option: "1" }],
+    path: ""
   }),
   components: {
     // Search
@@ -177,6 +178,7 @@ export default {
         // need to reset authUser as {}
         this.userLogOut();
         this.$router.push({ name: "auth" });
+        this.path = "auth"
       } catch (error) {
         console.log("error signing out: ", error);
       }
@@ -184,7 +186,7 @@ export default {
   },
   mounted() {
     // this.authenticate = user;
-    // console.log("line 127- header mounted function", this.authUser);
+    console.log("line 188- header", this.$route.path);
   }
 };
 </script>

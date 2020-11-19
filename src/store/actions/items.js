@@ -19,8 +19,3 @@ export const makeBid = (context, data) => {
     // console.log('items, action', userBid)
     context.commit("makeBid", data)
 }
-
-export const postItem = (context, item) => {
-    // console.log('line 23- postItem actions', item)
-    context.commit("postItem", item)
-}

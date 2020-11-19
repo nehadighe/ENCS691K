@@ -37,8 +37,3 @@ export const makeBid = (state, data) => {
         }
     })
 }
-
-export const postItem = (state, item) => {
-    // console.log('line 50 - postItem', item)
-    state.items.push(item);
-}
