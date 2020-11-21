@@ -97,10 +97,9 @@
       <v-btn text v-bind="attrs" v-on="on" @click="newItemVue()">
         <v-icon class="icon-size">mdi-plus-circle</v-icon>
       </v-btn>
-      <v-btn text v-bind="attrs" v-on="on" @click="notificationDisplay()">
+      <!-- <v-btn text v-bind="attrs" v-on="on" @click="notificationDisplay()">
         <v-icon class="icon-size">mdi-bell-circle</v-icon>
-        <!-- <v-icon dark right>mdi-chevron-down</v-icon> -->
-      </v-btn>
+      </v-btn> -->
       <v-menu offset-y transition="slide-y-transition">
         <template v-slot:activator="{ on, attrs }">
           <v-btn text v-bind="attrs" v-on="on">

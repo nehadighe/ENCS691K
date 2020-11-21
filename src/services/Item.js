@@ -3,8 +3,6 @@ import Api from '@/services/Api'
 export default {
     // publish should be changed to post
     post(item) {
-        // console.log('line 6- item service api',item)
-        // console.log('line 7 - API call: ', item)
         return Api().post('/items/addItem', item)
     },
     getItemById(id) {
@@ -14,4 +12,8 @@ export default {
     getAllitems() {
         return Api().get('/items/getAllItems')
     },
+    reactivateItem(id) {
+        console.log('line 16- Item Api', id)
+        return Api().post(`/items/reactivateItem/${id}`)
+    }
 }

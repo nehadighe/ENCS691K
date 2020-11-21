@@ -8,7 +8,7 @@
         -->
         <ItemCards
           :id="item.id"
-          :name="item.title"
+          :title="item.title"
           :images="item.Images"
           :summary="item.summary"
           :availability="item.availability"

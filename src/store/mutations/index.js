@@ -13,7 +13,10 @@ import {
     makeBid,
 } from "./items"
 
-import { getItemsByUsername } from "./user"
+import { 
+    getItemsByUsername, 
+    changeUserItemAvailability 
+} from "./user"
 
 import { resetAppState } from "./resetState"
 
@@ -28,5 +31,6 @@ export default {
     showItem,
     makeBid,
     getItemsByUsername,
+    changeUserItemAvailability,
     resetAppState
 }
