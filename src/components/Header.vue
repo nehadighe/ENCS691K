@@ -80,26 +80,39 @@
     </div>
     <!-- User Login -->
     <div v-if="authUser.authenticated" class="d-flex flex-row align-center">
-      <div id="username" class="hidden-sm-and-down">
+      <!-- <div id="username" class="hidden-sm-and-down">
         <v-btn text @click="userVue()" class="user-style">
-          <!-- 
-              avatar: for now, this is going to be static
-              but in teh end, it would be dynamic obtained
-              from the store
-          -->
           <v-avatar color="indigo" size="36">
-            <!-- <v-img src="https://encs691k-assets.s3.amazonaws.com/avatar/Avatar.svg" alt="avatar" /> -->
             <v-img :src="authUser.avatar" alt="avatar" />
           </v-avatar>
           <span class="mx-2">{{ authUser.username }}</span>
         </v-btn>
-      </div>
+      </div> -->
+      <v-menu offset-y transition="slide-y-transition">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn text v-bind="attrs" v-on="on">
+            <div id="username" class="hidden-sm-and-down">
+                <v-avatar color="indigo" size="36">
+                  <v-img :src="authUser.avatar" alt="avatar" />
+                </v-avatar>
+                <span class="mx-2">{{ authUser.username }}</span>
+            </div>
+          </v-btn>
+        </template>
+        <v-list>
+          <div flat v-for="(item, index) in userFunction" :key="index">
+            <v-list-item @click="vListUserFunction(item.option)">
+              <v-list-item-title class="clickButton">{{ item.title }}</v-list-item-title>
+            </v-list-item>
+          </div>
+        </v-list>
+      </v-menu>
       <v-btn text v-bind="attrs" v-on="on" @click="newItemVue()">
         <v-icon class="icon-size">mdi-plus-circle</v-icon>
       </v-btn>
       <!-- <v-btn text v-bind="attrs" v-on="on" @click="notificationDisplay()">
         <v-icon class="icon-size">mdi-bell-circle</v-icon>
-      </v-btn> -->
+      </v-btn>-->
       <v-menu offset-y transition="slide-y-transition">
         <template v-slot:activator="{ on, attrs }">
           <v-btn text v-bind="attrs" v-on="on">
@@ -133,6 +146,11 @@ export default {
     authenticate: null,
     closeOnContentClick: true,
     itemsFunction: [{ title: "Log Out", option: "1" }],
+    userFunction: [
+      { title: "Your Items", option: "1" },
+      { title: "Bought", option: "2" },
+      { title: "Profile", option: "3" } // this might not go
+    ],
     path: ""
   }),
   components: {
@@ -151,13 +169,21 @@ export default {
     newItemVue() {
       this.$router.push({ name: "newItem" });
     },
-    // going to the userVue page
-    userVue() {
-      this.$router.push({ name: "user" });
-    },
     // going to the homeVue page
     homeVue() {
       this.$router.push({ name: "home" });
+    },
+    vListUserFunction(option) {
+      // logic to evaluate which local function to call
+      if (option === "1") {
+        this.$router.push({ name: "userItem" });
+      }
+      if (option === "2") {
+        this.$router.push({ name: "userBoughtItem" });
+      }
+      if (option === "3") {
+        this.$router.push({ name: "userProfile" });
+      }
     },
     vListItemFunction(option) {
       // logic to evaluate which local function to call
@@ -177,7 +203,7 @@ export default {
         // need to reset authUser as {}
         this.userLogOut();
         this.$router.push({ name: "auth" });
-        this.path = "auth"
+        this.path = "auth";
       } catch (error) {
         console.log("error signing out: ", error);
       }
@@ -204,7 +230,7 @@ export default {
 }
 
 .user-style {
-  padding: 25px 10px !important;
+  /* padding: 25px 10px !important; */
 }
 
 .search-area-style {

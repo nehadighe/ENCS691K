@@ -28,9 +28,43 @@ const routes = [
     // }
   },
   {
-    path: '/user',
-    name: 'user',
-    component: () => import(/* webpackChunkName: "about" */ '../views/User.vue'),
+    path: '/user/items',
+    name: 'userItem',
+    component: () => import(/* webpackChunkName: "about" */ '../views/UserItem.vue'),
+    beforeEnter: (to, from, next) => {
+      if (!store.state.authUser.authenticated) {
+        next({
+          path: '/auth',
+          name: 'auth',
+          component: () => import('../views/Auth.vue')
+        })
+      }
+      else {
+        next()
+      }
+    }
+  },
+  {
+    path: '/user/bought',
+    name: 'userBoughtItem',
+    component: () => import(/* webpackChunkName: "about" */ '../views/UserBoughtItem.vue'),
+    beforeEnter: (to, from, next) => {
+      if (!store.state.authUser.authenticated) {
+        next({
+          path: '/auth',
+          name: 'auth',
+          component: () => import('../views/Auth.vue')
+        })
+      }
+      else {
+        next()
+      }
+    }
+  },
+  {
+    path: '/user/profile',
+    name: 'userProfile',
+    component: () => import(/* webpackChunkName: "about" */ '../views/UserProfile.vue'),
     beforeEnter: (to, from, next) => {
       if (!store.state.authUser.authenticated) {
         next({

@@ -14,6 +14,7 @@
             <v-img height="250" :src="item.location">
               <v-fab-transition>
                 <v-btn
+                  v-if="currentNumberOfBidding <= 0"
                   :disable="disableReactivateButton"
                   @click="selectItemById('reactivateItem', id)"
                   class="mt-8 ml-3"
@@ -46,6 +47,7 @@
             <div v-if="transaction != null" class>
               Winning User:
               <v-icon class="icon-size" color="yellow darken-3">mdi-star</v-icon>
+              {{ transaction.User.username }}
             </div>
           </div>
           <div class="d-flex align-center justify-space-between">
@@ -53,23 +55,22 @@
             <div v-if="transaction != null">
               Highest Bid:
               <v-icon class="icon-size" color="green darken-3">mdi-currency-usd</v-icon>
+              {{ transaction.amount }}
             </div>
           </div>
 
           <div class="mt-3">{{ summary }}</div>
         </v-card-text>
 
-        <v-card-actions class="d-flex justify-end">
+        <v-card-actions v-if="currentNumberOfBidding <= 0" class="d-flex justify-end">
           <v-btn
             text-right
-            :disabled="availability != 'Active'"
             :color="darkRed"
             text
             @click="selectItemById('editItem', id)"
           >Edit</v-btn>
           <v-btn
             text-right
-            :disabled="availability != 'Active'"
             :color="darkRed"
             text
             @click="selectItemById('deleteItem', id)"
@@ -132,7 +133,7 @@ export default {
     category: String,
     basePrice: Number, // this should be number
     bidPrice: Number,
-    transaction: Array,
+    transaction: Object,
     ttl: String, // coming back as String from the Database
     currentNumberOfBidding: Number
   },

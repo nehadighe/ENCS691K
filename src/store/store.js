@@ -14,6 +14,7 @@ export const getDefaultState = () => {
         authMode: "signup",
         user: [],
         userItemAvailability: [],
+        userItemBought: [],
         authUser: {},
         bids: [], // this is where the bids will be held
         items: [],

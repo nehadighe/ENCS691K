@@ -15,7 +15,8 @@ import {
 
 import { 
     getItemsByUsername, 
-    changeUserItemAvailability 
+    changeUserItemAvailability,
+    getTransactionByUsername
 } from "./user"
 
 import { resetAppState } from "./resetState"
@@ -32,5 +33,6 @@ export default {
     makeBid,
     getItemsByUsername,
     changeUserItemAvailability,
+    getTransactionByUsername,
     resetAppState
 }
