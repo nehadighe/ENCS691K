@@ -11,6 +11,7 @@ import {
     changeItemAvailability,
     showItem,
     makeBid,
+    deleteItem
 } from "./items"
 
 import { 
@@ -31,6 +32,7 @@ export default {
     changeItemAvailability,
     showItem,
     makeBid,
+    deleteItem,
     getItemsByUsername,
     changeUserItemAvailability,
     getTransactionByUsername,

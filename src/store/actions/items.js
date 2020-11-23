@@ -19,3 +19,8 @@ export const makeBid = (context, data) => {
     // console.log('items, action', userBid)
     context.commit("makeBid", data)
 }
+
+export const deleteItem = async (context, itemId) => {
+    console.log('hello world', itemId)
+    context.commit("deleteItem", itemId)
+}

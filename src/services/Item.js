@@ -13,7 +13,9 @@ export default {
         return Api().get('/items/getAllItems')
     },
     reactivateItem(id) {
-        console.log('line 16- Item Api', id)
         return Api().post(`/items/reactivateItem/${id}`)
+    },
+    deleteItemById(id) {
+        return Api().delete(`/items/deleteItemById/${id}`)
     }
 }

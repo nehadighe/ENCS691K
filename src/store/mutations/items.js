@@ -37,3 +37,12 @@ export const makeBid = (state, data) => {
         }
     })
 }
+
+export const deleteItem = (state, itemId) => {
+    // console.log('line 42-', itemId)
+    state.items.map(item => {
+        if (item.id == itemId) {
+            state.items.splice(state.item.indexOf(item), 1);
+        }
+    })
+}

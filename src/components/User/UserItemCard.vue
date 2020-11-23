@@ -66,8 +66,8 @@
           <v-btn
             text-right
             :color="darkRed"
+            disabled
             text
-            @click="selectItemById('editItem', id)"
           >Edit</v-btn>
           <v-btn
             text-right
@@ -101,18 +101,27 @@ export default {
     snacktimeout: 8000,
     alert: false,
     text: null,
-    color: null
+    color: null,
+    functionType: '',
+    itemId: ''
   }),
   methods: {
     selectItemById(functionType, id) {
-      // console.log("line 80- UserItemCard", functionType, id);
+      this.functionType = functionType;
+      this.itemId = id;
+      if (functionType === "reactivateItem") this.reactivateItemMethod(this.functionType, this.id)
+      else this.$emit(`${functionType}`, id);
+      // if (this.functionType === "reactivateItem") console.log('hello:', this.functionType, this.itemId)
+      // else console.log('hello')
+    },
+    reactivateItemMethod(){
       var date = new Date();
       var ttl = new Date(this.$props.ttl);
       date.setDate(date.getDate() - 1); // subtracting by two
       // console.log("line 86- ", ttl);
       // console.log("line 87- UserItemCard", date.toDateString());
       if (date > ttl) {
-        this.$emit(`${functionType}`, id);
+        this.$emit(`${this.functionType}`, this.itemId);
         (this.text = "Item has been reactivated in the market"),
           (this.color = "green"),
           (this.alert = true);
@@ -137,9 +146,6 @@ export default {
     ttl: String, // coming back as String from the Database
     currentNumberOfBidding: Number
   },
-  mounted() {
-    console.log('line 140- have to test transaction functionality', this.$props.transaction)
-  }
 };
 </script>
 

@@ -34,7 +34,7 @@
     </v-row>
     <v-row class v-if="userItemAvailability.length <= 0">
       <v-col class="d-flex flex-column align-center justify-center">
-        <v-img 
+        <v-img
           src="https://encs691k-assets.s3.ca-central-1.amazonaws.com/images/Golden_Gate_Bridge.svg"
           contain
           height="250"
@@ -54,7 +54,7 @@ import { mapActions, mapState } from "vuex";
 export default {
   name: "UserItemVue",
   data: () => ({
-    buttonState: 'Active',
+    buttonState: "Active",
     disableReactivateButton: false
   }),
   components: {
@@ -64,7 +64,11 @@ export default {
     ...mapState(["authUser", "userItemAvailability"])
   },
   methods: {
-    ...mapActions(["getItemsByUsername", "changeUserItemAvailability"]),
+    ...mapActions([
+      "getItemsByUsername",
+      "changeUserItemAvailability",
+      "deleteItem"
+    ]),
     changeItemStatus(buttonPressed) {
       // console.log(buttonPressed);
       if (this.buttonState != buttonPressed) {
@@ -77,13 +81,33 @@ export default {
     editItem(itemId) {
       console.log("line 62 - editItem", itemId);
     },
-    deleteItem(itemId) {
+    async deleteItem(itemId) {
+      // call the API
+      // console.log("line 82 - useritem view", itemId);
+      // this.deleteItem(itemId);
+      await ItemService.deleteItemById(itemId).then((result) =>{
+        console.log(result)
+      //   this.deleteItem(itemId);
+      //   // (this.text = "Item has been reactivated in the market"),
+      //   //   (this.color = "green"),
+      //   //   (this.alert = true);
+      }).catch(err => {
+        console.log(err)
+      //   // console.log('line 85 - deleteItem error message', err)
+      //   // (this.text = "Already reloaded once, wait 24 hours"),
+      //   //   (this.color = "#900028"),
+      //   //   (this.alert = true);
+      })
+      // modify the store - hash code
       console.log("line 65 - deleteItem", itemId);
     },
     async reactivateItem(itemId) {
       console.log("line 63 - reactivateItem", itemId);
       // check if item has been reactivated before
       //
+
+      // the validation for whether an item is ready for reactivation should
+      // be done over here
       await ItemService.reactivateItem(itemId)
         .then(result => {
           console.log("line 66- reactivateItem success", result);
@@ -97,7 +121,7 @@ export default {
   async mounted() {
     // get all the information all the bids from the specific user
     await this.getItemsByUsername(this.authUser.username);
-    console.log('line 100 - UserItem', this.userItemAvailability)
+    console.log("line 100 - UserItem", this.userItemAvailability);
   }
 };
 </script>

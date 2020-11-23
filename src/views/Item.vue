@@ -124,14 +124,14 @@ export default {
     ...mapActions(["showItem", "makeBid", "changeItemAvailability"]),
     async bid(event) {
       this.requestLoading = true;
-      if (this.detailItem.bidPrice > event) {
-        // Message in methods
-        (this.text = "Cannot bid lower than the base price"),
-          (this.color = "#900028"),
-          (this.alert = true);
-        this.requestLoading = false;
-        return;
-      } else {
+      // console.log(
+      //   "evaluating bids, is event:",
+      //   event,
+      //   " higher than this.detailItem.bidPrice: ",
+      //   this.detailItem.bidPrice
+      // );
+      if (event > this.detailItem.bidPrice) {
+        // console.log("yes it is");
         // date functions
         const date = new Date();
         const currentDate = date.toDateString();
@@ -170,6 +170,13 @@ export default {
               (this.alert = true);
             this.requestLoading = false;
           });
+        return;
+      } else {
+        // console.log("no it is not");
+        this.text = "Cannot bid lower than the base price";
+        this.color = "#900028";
+        this.alert = true;
+        this.requestLoading = false;
       }
     },
     async itemSold() {
