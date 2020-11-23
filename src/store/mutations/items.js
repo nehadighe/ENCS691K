@@ -38,11 +38,7 @@ export const makeBid = (state, data) => {
     })
 }
 
-export const deleteItem = (state, itemId) => {
-    // console.log('line 42-', itemId)
-    state.items.map(item => {
-        if (item.id == itemId) {
-            state.items.splice(state.item.indexOf(item), 1);
-        }
-    })
+export const deleteItemById = (state, item) => {
+    state.items.splice(state.items.indexOf(item), 1);
+    state.userItemAvailability.splice(state.userItemAvailability.indexOf(item), 1);
 }

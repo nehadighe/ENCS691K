@@ -72,22 +72,14 @@
           <v-btn
             text-right
             :color="darkRed"
+            v-if="!requestLoading"
             text
             @click="selectItemById('deleteItem', id)"
           >Delete</v-btn>
+          <v-progress-circular v-if="requestLoading" :size="25" :color="darkRed" indeterminate></v-progress-circular>
         </v-card-actions>
       </div>
     </v-card>
-    <!-- messaging windows -->
-    <v-snackbar :color="color" :timeout="snacktimeout" v-model="alert">
-      <!-- <v-snackbar :color="bannerColor" timeout="30000" :v-model="bannerAlert"> -->
-      <div class="d-flex flex-row align-center justify-space-between">
-        <p class="mb-0">{{ text }}</p>
-        <v-btn color="white" text @click="alert = false">
-          <v-icon small>mdi-window-close</v-icon>
-        </v-btn>
-      </div>
-    </v-snackbar>
   </div>
 </template>
 
@@ -98,39 +90,13 @@ export default {
     cycle: false,
     darkRed: "#900028",
     disableReactivateButton: false,
-    snacktimeout: 8000,
-    alert: false,
-    text: null,
-    color: null,
     functionType: '',
     itemId: ''
   }),
   methods: {
     selectItemById(functionType, id) {
-      this.functionType = functionType;
-      this.itemId = id;
-      if (functionType === "reactivateItem") this.reactivateItemMethod(this.functionType, this.id)
-      else this.$emit(`${functionType}`, id);
-      // if (this.functionType === "reactivateItem") console.log('hello:', this.functionType, this.itemId)
-      // else console.log('hello')
+      this.$emit(`${functionType}`, id);
     },
-    reactivateItemMethod(){
-      var date = new Date();
-      var ttl = new Date(this.$props.ttl);
-      date.setDate(date.getDate() - 1); // subtracting by two
-      // console.log("line 86- ", ttl);
-      // console.log("line 87- UserItemCard", date.toDateString());
-      if (date > ttl) {
-        this.$emit(`${this.functionType}`, this.itemId);
-        (this.text = "Item has been reactivated in the market"),
-          (this.color = "green"),
-          (this.alert = true);
-      } else {
-        (this.text = "Already reloaded once, wait 24 hours"),
-          (this.color = "#900028"),
-          (this.alert = true);
-      }
-    }
   },
   props: {
     id: String,
@@ -143,19 +109,14 @@ export default {
     basePrice: Number, // this should be number
     bidPrice: Number,
     transaction: Object,
-    ttl: String, // coming back as String from the Database
-    currentNumberOfBidding: Number
+    currentNumberOfBidding: Number,
+    requestLoading: Boolean
   },
 };
 </script>
 
 <style>
 @import "../../assets/line.css";
-.one-minute {
-  color: #900028;
-  transition: 0.2s ease-in;
-}
-
 .icon-size {
   font-size: 20px !important;
 }

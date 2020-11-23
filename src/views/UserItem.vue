@@ -27,6 +27,7 @@
           :transaction="item.Transaction"
           :currentNumberOfBidding="item.currentNumberOfBidding"
           v-on:editItem="editItem($event)"
+          :requestLoading="requestLoading"
           v-on:reactivateItem="reactivateItem($event)"
           v-on:deleteItem="deleteItem($event)"
         />
@@ -42,6 +43,16 @@
         <h2>No items {{ buttonState }}</h2>
       </v-col>
     </v-row>
+    <!-- messaging windows -->
+    <v-snackbar :color="color" :timeout="snacktimeout" v-model="alert">
+      <!-- <v-snackbar :color="bannerColor" timeout="30000" :v-model="bannerAlert"> -->
+      <div class="d-flex flex-row align-center justify-space-between">
+        <p class="mb-0">{{ text }}</p>
+        <v-btn color="white" text @click="alert = false">
+          <v-icon small>mdi-window-close</v-icon>
+        </v-btn>
+      </div>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -55,7 +66,12 @@ export default {
   name: "UserItemVue",
   data: () => ({
     buttonState: "Active",
-    disableReactivateButton: false
+    disableReactivateButton: false,
+    requestLoading: false,
+    snacktimeout: 8000,
+    alert: false,
+    text: null,
+    color: null
   }),
   components: {
     UserItemCard
@@ -67,7 +83,7 @@ export default {
     ...mapActions([
       "getItemsByUsername",
       "changeUserItemAvailability",
-      "deleteItem"
+      "deleteItemById"
     ]),
     changeItemStatus(buttonPressed) {
       // console.log(buttonPressed);
@@ -84,44 +100,66 @@ export default {
     async deleteItem(itemId) {
       // call the API
       // console.log("line 82 - useritem view", itemId);
-      // this.deleteItem(itemId);
-      await ItemService.deleteItemById(itemId).then((result) =>{
-        console.log(result)
-      //   this.deleteItem(itemId);
-      //   // (this.text = "Item has been reactivated in the market"),
-      //   //   (this.color = "green"),
-      //   //   (this.alert = true);
-      }).catch(err => {
-        console.log(err)
-      //   // console.log('line 85 - deleteItem error message', err)
-      //   // (this.text = "Already reloaded once, wait 24 hours"),
-      //   //   (this.color = "#900028"),
-      //   //   (this.alert = true);
-      })
-      // modify the store - hash code
-      console.log("line 65 - deleteItem", itemId);
-    },
-    async reactivateItem(itemId) {
-      console.log("line 63 - reactivateItem", itemId);
-      // check if item has been reactivated before
-      //
-
-      // the validation for whether an item is ready for reactivation should
-      // be done over here
-      await ItemService.reactivateItem(itemId)
-        .then(result => {
-          console.log("line 66- reactivateItem success", result);
-          // need to update the state.item.itemId.ttl
+      this.requestLoading = true;
+      console.log(
+        "line 90- useritme this.userItemAvailability",
+        this.userItemAvailability
+      );
+      await ItemService.deleteItemById(itemId)
+        .then(() => {
+          this.userItemAvailability.map(item => {
+            if (item.id === itemId) this.deleteItemById(item);
+          });
+          (this.text = "Your item has been successfully"),
+            (this.color = "green"),
+            (this.alert = true);
+          this.requestLoading = false;
         })
         .catch(err => {
-          console.log("line 68- reactivateItem error", err);
+          console.log(err);
+          (this.text = "Your item cannot be deleted at this time"),
+            (this.color = "#900028"),
+            (this.alert = true);
+          this.requestLoading = false;
         });
+      // modify the store - hash code
+    },
+    reactivateItem(itemId) {
+      console.log("line 63 - reactivateItem", itemId);
+      this.userItemAvailability.map(async item => {
+        if (item.id === itemId) {
+          var date = new Date();
+          var ttl = new Date(item.ttl); // transforming ttl in date
+          date.setDate(date.getDate() - 1); // subtracting by two
+
+          if (date > ttl) {
+            await ItemService.reactivateItem(itemId)
+              .then(result => {
+                console.log("line 139- reactivateItem success", result);
+                // need to update the state.item.itemId.ttl
+                (this.text = "Item has been reactivated in the market"),
+                  (this.color = "green"),
+                  (this.alert = true);
+              })
+              .catch(err => {
+                console.log("line 146- reactivateItem error", err);
+                (this.text = "An error ocurred while reactivating the item"),
+                  (this.color = "green"),
+                  (this.alert = true);
+              });
+          } else {
+            (this.text = "Already reloaded once, wait 24 hours"),
+              (this.color = "#900028"),
+              (this.alert = true);
+          }
+        }
+      });
     }
   },
   async mounted() {
     // get all the information all the bids from the specific user
     await this.getItemsByUsername(this.authUser.username);
-    console.log("line 100 - UserItem", this.userItemAvailability);
+    // console.log("line 100 - UserItem", this.userItemAvailability);
   }
 };
 </script>

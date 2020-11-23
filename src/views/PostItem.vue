@@ -269,9 +269,10 @@ export default {
     },
     deleteImage(item) {
       var location = `${this.authUser.username}/${this.item.id}/${item.name}`;
+      console.log('line 272 - post item, this.images: ', this.image, ' item: ', item)
       Storage.remove(location)
         .then(() => {
-          this.images.splice(this.images.indexOf(item), 1);
+          console.log(this.image.splice(this.image.indexOf(item), 1));
         })
         .catch(err => {
           console.log(err);
