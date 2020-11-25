@@ -27,10 +27,7 @@
                   <div v-if="isSaving" class="mb-5 dropbox d-flex justify-center align-center">
                     <v-progress-circular :size="20" indeterminate :color="darkRed"></v-progress-circular>
                   </div>
-                  <div
-                    v-if="isSuccess"
-                    class="mb-5 dropbox d-flex justify-center align-center"
-                  >
+                  <div v-if="isSuccess" class="mb-5 dropbox d-flex justify-center align-center">
                     <input
                       type="file"
                       multiple
@@ -234,6 +231,12 @@ export default {
   },
   methods: {
     ...mapActions(["postItem"]),
+    setInitialValues() {},
+    bannerMethod(color, text) {
+      this.color = color;
+      this.text = text;
+      this.alert = true;
+    },
     uploadImage() {
       this.currentStatus = STATUS_SAVING;
       for (var i = 0; i < event.target.files.length; i++) {
@@ -269,7 +272,12 @@ export default {
     },
     deleteImage(item) {
       var location = `${this.authUser.username}/${this.item.id}/${item.name}`;
-      console.log('line 272 - post item, this.images: ', this.image, ' item: ', item)
+      console.log(
+        "line 272 - post item, this.images: ",
+        this.image,
+        " item: ",
+        item
+      );
       Storage.remove(location)
         .then(() => {
           console.log(this.image.splice(this.image.indexOf(item), 1));
@@ -305,22 +313,15 @@ export default {
       await ItemService.post(req)
         .then(() => {
           // console.log("line 314 response- ", res);
-          this.text = "Your item has been created. Posting it!";
-          this.color = "green";
-          this.alert = true;
+          this.bannerMethod("green", "Your item has been created. Posting it!");
           this.requestLoading = false;
           this.$router.push({ name: "home" });
         })
         .catch(err => {
           console.log("line 146 err from API call- ", err);
-          (this.text = "An occured while creating your item"),
-            (this.color = "#900028"),
-            (this.alert = true);
+          this.bannerMethod("#900028", "An occured while creating your item");
           this.requestLoading = false;
         });
-
-      // request loading change
-      // this.requestLoading = false
 
       this.image = [];
       this.currentStatus = STATUS_INITIAL;

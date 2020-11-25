@@ -68,6 +68,8 @@ export default {
     buttonState: "Active",
     disableReactivateButton: false,
     requestLoading: false,
+    
+    // message
     snacktimeout: 8000,
     alert: false,
     text: null,
@@ -85,6 +87,11 @@ export default {
       "changeUserItemAvailability",
       "deleteItemById"
     ]),
+    bannerMethod(color, text) {
+      this.color = color;
+      this.text = text;
+      this.alert = true;
+    },
     changeItemStatus(buttonPressed) {
       // console.log(buttonPressed);
       if (this.buttonState != buttonPressed) {
@@ -110,16 +117,12 @@ export default {
           this.userItemAvailability.map(item => {
             if (item.id === itemId) this.deleteItemById(item);
           });
-          (this.text = "Your item has been successfully"),
-            (this.color = "green"),
-            (this.alert = true);
+          this.bannerMethod("green", "Your item has been deleted successfully");
           this.requestLoading = false;
         })
         .catch(err => {
-          console.log(err);
-          (this.text = "Your item cannot be deleted at this time"),
-            (this.color = "#900028"),
-            (this.alert = true);
+          console.log('line 124- useritem deleteItem controller', err);
+          this.bannerMethod("#900028", "Your item cannot be deleted at this time");
           this.requestLoading = false;
         });
       // modify the store - hash code
@@ -134,23 +137,15 @@ export default {
 
           if (date > ttl) {
             await ItemService.reactivateItem(itemId)
-              .then(result => {
-                console.log("line 139- reactivateItem success", result);
+              .then(() => {
                 // need to update the state.item.itemId.ttl
-                (this.text = "Item has been reactivated in the market"),
-                  (this.color = "green"),
-                  (this.alert = true);
+                this.bannerMethod("green", "Item has been reactivated in the market");
               })
-              .catch(err => {
-                console.log("line 146- reactivateItem error", err);
-                (this.text = "An error ocurred while reactivating the item"),
-                  (this.color = "green"),
-                  (this.alert = true);
+              .catch(() => {
+                this.bannerMethod("#900028", "An error ocurred while reactivating the item");
               });
           } else {
-            (this.text = "Already reloaded once, wait 24 hours"),
-              (this.color = "#900028"),
-              (this.alert = true);
+            this.bannerMethod("#900028", "Already reloaded once, wait 24 hours");
           }
         }
       });

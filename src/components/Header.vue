@@ -87,15 +87,15 @@
           </v-avatar>
           <span class="mx-2">{{ authUser.username }}</span>
         </v-btn>
-      </div> -->
+      </div>-->
       <v-menu offset-y transition="slide-y-transition">
         <template v-slot:activator="{ on, attrs }">
           <v-btn text v-bind="attrs" v-on="on">
             <div id="username" class="hidden-sm-and-down">
-                <v-avatar color="indigo" size="36">
-                  <v-img :src="authUser.avatar" alt="avatar" />
-                </v-avatar>
-                <span class="mx-2">{{ authUser.username }}</span>
+              <v-avatar color="indigo" size="36">
+                <v-img :src="authUser.avatar" alt="avatar" />
+              </v-avatar>
+              <span class="mx-2">{{ authUser.username }}</span>
             </div>
           </v-btn>
         </template>
@@ -128,12 +128,22 @@
         </v-list>
       </v-menu>
     </div>
+    <v-snackbar :color="color" :timeout="snacktimeout" v-model="alert">
+      <div class="d-flex flex-row align-center justify-space-between">
+        <p class="mb-0">{{ text }}</p>
+        <v-btn color="white" text @click="alert = false">
+          <v-icon small>mdi-window-close</v-icon>
+        </v-btn>
+      </div>
+    </v-snackbar>
   </v-app-bar>
 </template>
 
 <script>
 import { Auth } from "aws-amplify";
 import { mapActions, mapState } from "vuex";
+import { v4 as uuidv4 } from "uuid";
+import ItemServices from "@/services/Item";
 // import Search from "@/components/Header/Search.vue";
 
 export default {
@@ -151,7 +161,13 @@ export default {
       { title: "Bought", option: "2" },
       { title: "Profile", option: "3" } // this might not go
     ],
-    path: ""
+    path: "",
+
+    // message
+    snacktimeout: 8000,
+    alert: false,
+    text: null,
+    color: null,
   }),
   components: {
     // Search
@@ -165,11 +181,11 @@ export default {
       //   console.log("verifying event", event);
       this.authMode(event);
     },
-    // going to the userVue page
-    newItemVue() {
-      this.$router.push({ name: "newItem" });
+    bannerMethod(color, text) {
+      this.alert = true;
+      this.color = color;
+      this.text = text;
     },
-    // going to the homeVue page
     homeVue() {
       this.$router.push({ name: "home" });
     },
@@ -185,14 +201,44 @@ export default {
         this.$router.push({ name: "userProfile" });
       }
     },
+    async newItemVue() {
+      // would have to implement the ItemService here
+      // to create a new record
+      var item = {
+        Images: [],
+        id: uuidv4(),
+        title:'',
+        category:'',
+        description:'',
+        summary:'',
+        availability:'Pending',
+        currentNumberOfBidding:'',
+        basePrice:'',
+        bidPrice:'',
+        startBidTime:'',
+        ttl:'', // ttl should be enabled
+        username:this.authUser.username
+      };
+      console.log('line 226 - header.vue adding item', item, this.authUser.username)
+      await ItemServices.post(item)
+        .then(data => {
+          console.log('line 226 - header.vue data:', data)
+          // let routeData = this.$router.resolve({
+          //   name: "newItem",
+          //   params: { itemId: item.id }
+          // });
+        })
+        .catch(err => {
+          this.bannerMethod("#900028", err);
+        });
+
+      // this.$router.push({ name: "newItem" });
+    },
     vListItemFunction(option) {
       // logic to evaluate which local function to call
       if (option === "1") {
         this.logOut();
       }
-    },
-    notificationDisplay() {
-      this.resetAppState();
     },
     async logOut() {
       try {
@@ -207,12 +253,8 @@ export default {
       } catch (error) {
         console.log("error signing out: ", error);
       }
-    }
+    },
   },
-  mounted() {
-    // this.authenticate = user;
-    console.log("line 188- header", this.$route.path);
-  }
 };
 </script>
 

@@ -122,16 +122,14 @@ export default {
   },
   methods: {
     ...mapActions(["showItem", "makeBid", "changeItemAvailability"]),
+    bannerMethod(color, text) {
+      this.color = color;
+      this.text = text;
+      this.alert = true;
+    },
     async bid(event) {
       this.requestLoading = true;
-      // console.log(
-      //   "evaluating bids, is event:",
-      //   event,
-      //   " higher than this.detailItem.bidPrice: ",
-      //   this.detailItem.bidPrice
-      // );
       if (event > this.detailItem.bidPrice) {
-        // console.log("yes it is");
         // date functions
         const date = new Date();
         const currentDate = date.toDateString();
@@ -158,24 +156,18 @@ export default {
             delete storeEvent.username;
             storeEvent.User = this.authUser;
             this.makeBid(storeEvent); // changing store
-            (this.text = "Bid made successfully"),
-              (this.color = "green"),
-              (this.alert = true);
+            this.bannerMethod("green", "Bid made successfully");
             this.requestLoading = false;
           })
           .catch(err => {
             console.log(err);
-            (this.text = "An error occured while bidding, please try again!"),
-              (this.color = "#900028"),
-              (this.alert = true);
+            this.bannerMethod("#900028", "An error occured while bidding, please try again!");
             this.requestLoading = false;
           });
         return;
       } else {
         // console.log("no it is not");
-        this.text = "Cannot bid lower than the base price";
-        this.color = "#900028";
-        this.alert = true;
+        this.bannerMethod("#900028", "Cannot bid lower than the base price");
         this.requestLoading = false;
       }
     },

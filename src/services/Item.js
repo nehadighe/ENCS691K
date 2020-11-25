@@ -3,7 +3,10 @@ import Api from '@/services/Api'
 export default {
     // publish should be changed to post
     post(item) {
-        return Api().post('/items/addItem', item)
+        return Api().post('/items/postItem', item)
+    },
+    edit(item) {
+        return Api().post(`/items/editItem/${item}`, item)
     },
     getItemById(id) {
         return Api().get(`/items/getItemById/${id}`)
