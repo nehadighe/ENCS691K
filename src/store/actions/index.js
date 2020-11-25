@@ -9,9 +9,11 @@ import {
 import {
     getAllItems,
     changeItemAvailability,
+    getItemById,
     showItem,
     makeBid,
-    deleteItemById
+    deleteItemById,
+    postItem
 } from "./items"
 
 import { 
@@ -30,10 +32,12 @@ export default {
     userLogOut,
     getAllItems,
     changeItemAvailability,
+    getItemById,
     showItem,
     makeBid,
     getItemsByUsername,
     deleteItemById,
+    postItem,
     changeUserItemAvailability,
     getTransactionByUsername,
     resetAppState

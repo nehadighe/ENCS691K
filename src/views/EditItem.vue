@@ -120,6 +120,16 @@
           <div class="d-flex flex-column align-center">
             <v-card class="pa-7" width="600">
               <div id="inside_items">
+                <v-chip
+                  class="mb-3"
+                  :color="detailItem.availability == 'Active' ? 'green' : 'orange'"
+                  label
+                  text-color="white"
+                >
+                  <v-icon small left>mdi-circle</v-icon>
+                  <!-- this should be dynamic mano! -->
+                  {{ detailItem.availability }}
+                </v-chip>
                 <p class="mb-4">Preview</p>
                 <!-- carousel -->
                 <div v-if="image.length > 0" class="ma-3">
@@ -180,7 +190,7 @@ const STATUS_INITIAL = 0,
   STATUS_FAILED = 3;
 
 export default {
-  name: "NewItem",
+  name: "EditItem",
   data: () => ({
     valid: false,
     cycle: false,
@@ -215,7 +225,7 @@ export default {
     color: null
   }),
   computed: {
-    ...mapState(["authUser"]),
+    ...mapState(["authUser", "detailItem"]),
     isInitial() {
       return this.currentStatus === STATUS_INITIAL;
     },
@@ -230,7 +240,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["postItem"]),
+    ...mapActions(["postItem", "getItemById"]),
     setInitialValues() {},
     bannerMethod(color, text) {
       this.color = color;
@@ -328,9 +338,18 @@ export default {
       this.$refs.newItem.reset();
     }
   },
-  mounted() {
+  async mounted() {
     this.currentStatus = STATUS_INITIAL;
-    this.item.id = uuidv4();
+    console.log("line 332 - making it to the editItem.vue");
+    const itemId = this.$route.params.itemId;
+    // API call to request the specific Item
+    await this.getItemById(itemId);
+    console.log(
+      "line 332- editItem page, variable detailItem",
+      this.detailItem
+    );
+
+    // this.item.id = uuidv4();
   }
 };
 </script>

@@ -79,9 +79,9 @@ const routes = [
     }
   },
   {
-    path: '/item/newItem',
-    name: 'newItem',
-    component: () => import(/* webpackChunkName: "about" */ '../views/PostItem.vue'),
+    path: '/item/editItem/:itemId',
+    name: 'editItem',
+    component: () => import(/* webpackChunkName: "about" */ '../views/EditItem.vue'),
     beforeEnter: (to, from, next) => {
       if (!store.state.authUser.authenticated) {
         next({

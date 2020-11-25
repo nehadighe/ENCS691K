@@ -16,8 +16,14 @@ export const changeItemAvailability = (state, itemId) => {
     })
 }
 
+// this is after creating an item
+export const getItemById = (state, item) => {
+    state.detailItem = item // it's a lot faster to go in memory
+}
+
+// this is for view item
 export const showItem = (state, id) => {
-    // console.log('line 20 data-', id)
+    console.log('line 26 - item mutations getItemById', id)
     state.items.map(item => {
         if (item.id == id) {
             state.detailItem = item
@@ -41,4 +47,8 @@ export const makeBid = (state, data) => {
 export const deleteItemById = (state, item) => {
     state.items.splice(state.items.indexOf(item), 1);
     state.userItemAvailability.splice(state.userItemAvailability.indexOf(item), 1);
+}
+
+export const postItem = (state, item) => {
+    state.items.push(item)
 }

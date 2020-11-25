@@ -167,13 +167,13 @@ export default {
     snacktimeout: 8000,
     alert: false,
     text: null,
-    color: null,
+    color: null
   }),
   components: {
     // Search
   },
   computed: {
-    ...mapState(["authUser"])
+    ...mapState(["authUser", "items"])
   },
   methods: {
     ...mapActions(["resetAppState", "authMode", "userLogOut"]),
@@ -207,26 +207,31 @@ export default {
       var item = {
         Images: [],
         id: uuidv4(),
-        title:'',
-        category:'',
-        description:'',
-        summary:'',
-        availability:'Pending',
-        currentNumberOfBidding:'',
-        basePrice:'',
-        bidPrice:'',
-        startBidTime:'',
-        ttl:'', // ttl should be enabled
-        username:this.authUser.username
+        title: "",
+        category: "",
+        description: "",
+        summary: "",
+        availability: "Pending",
+        currentNumberOfBidding: "",
+        basePrice: "",
+        bidPrice: "",
+        startBidTime: "",
+        ttl: "", // ttl should be enabled
+        username: this.authUser.username
       };
-      console.log('line 226 - header.vue adding item', item, this.authUser.username)
+      console.log(
+        "line 226 - header.vue adding item",
+        item,
+        this.authUser.username
+      );
       await ItemServices.post(item)
         .then(data => {
-          console.log('line 226 - header.vue data:', data)
-          // let routeData = this.$router.resolve({
-          //   name: "newItem",
-          //   params: { itemId: item.id }
-          // });
+          // I am not posting the item inside of the Items state array
+          console.log("line 226 - header.vue data:", data);
+          this.$router.push({
+            name: "editItem",
+            params: { itemId: item.id }
+          });
         })
         .catch(err => {
           this.bannerMethod("#900028", err);
@@ -253,8 +258,11 @@ export default {
       } catch (error) {
         console.log("error signing out: ", error);
       }
-    },
-  },
+    }
+  }
+  // mounted() {
+  //   console.log('line 261 - header.vue page', this.items)
+  // }
 };
 </script>
 
@@ -269,10 +277,6 @@ export default {
 
 .icon-size {
   font-size: 30px !important;
-}
-
-.user-style {
-  /* padding: 25px 10px !important; */
 }
 
 .search-area-style {
