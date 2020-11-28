@@ -34,3 +34,8 @@ export const deleteItemById = async (context, item) => {
 export const postItem = (context, item) => {
     context.commit("postItem", item)
 }
+
+export const savingItem = (context, saving) => {
+    // console.log('store(action) - savingItem', saving)
+    context.commit("savingItem", saving)
+}

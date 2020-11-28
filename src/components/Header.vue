@@ -88,6 +88,13 @@
           <span class="mx-2">{{ authUser.username }}</span>
         </v-btn>
       </div>-->
+      <p
+        id="savingButton"
+        style="margin-bottom:0px;font-weight:600"
+        :ripple="false"
+        :class="[savingStatus === 'Saving...' ? `orange--text` : `green--text`]"
+        text
+      >{{savingStatus}}</p>
       <v-menu offset-y transition="slide-y-transition">
         <template v-slot:activator="{ on, attrs }">
           <v-btn text v-bind="attrs" v-on="on">
@@ -110,9 +117,6 @@
       <v-btn text v-bind="attrs" v-on="on" @click="newItemVue()">
         <v-icon class="icon-size">mdi-plus-circle</v-icon>
       </v-btn>
-      <!-- <v-btn text v-bind="attrs" v-on="on" @click="notificationDisplay()">
-        <v-icon class="icon-size">mdi-bell-circle</v-icon>
-      </v-btn>-->
       <v-menu offset-y transition="slide-y-transition">
         <template v-slot:activator="{ on, attrs }">
           <v-btn text v-bind="attrs" v-on="on">
@@ -173,7 +177,7 @@ export default {
     // Search
   },
   computed: {
-    ...mapState(["authUser", "items"])
+    ...mapState(["authUser", "items", "savingStatus"])
   },
   methods: {
     ...mapActions(["resetAppState", "authMode", "userLogOut"]),
@@ -219,15 +223,9 @@ export default {
         ttl: "", // ttl should be enabled
         username: this.authUser.username
       };
-      console.log(
-        "line 226 - header.vue adding item",
-        item,
-        this.authUser.username
-      );
       await ItemServices.post(item)
-        .then(data => {
+        .then(() => {
           // I am not posting the item inside of the Items state array
-          console.log("line 226 - header.vue data:", data);
           this.$router.push({
             name: "editItem",
             params: { itemId: item.id }
@@ -236,8 +234,6 @@ export default {
         .catch(err => {
           this.bannerMethod("#900028", err);
         });
-
-      // this.$router.push({ name: "newItem" });
     },
     vListItemFunction(option) {
       // logic to evaluate which local function to call
@@ -259,10 +255,10 @@ export default {
         console.log("error signing out: ", error);
       }
     }
+  },
+  mounted() {
+    console.log('line 260 - header.vue', this.savingStatus)
   }
-  // mounted() {
-  //   console.log('line 261 - header.vue page', this.items)
-  // }
 };
 </script>
 

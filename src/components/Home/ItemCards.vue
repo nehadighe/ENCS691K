@@ -2,6 +2,7 @@
   <v-card elevation="3" class="mx-auto my-12" max-width="374" height="500" max-height="500">
     <v-carousel
       :continuous="false"
+      v-if="images.length > 0"
       :cycle="cycle"
       hide-delimiter-background
       show-arrows-on-hover
@@ -15,6 +16,11 @@
       </v-carousel-item>
     </v-carousel>
 
+    <v-img
+      height="250"
+      v-if="images.length <= 0"
+      src="https://encs691k-assets.s3.ca-central-1.amazonaws.com/images/placeholder-img.jpeg"
+    />
     <v-card-title class="d-flex align-cetner justify-space-between">
       <div>{{ title }}</div>
     </v-card-title>
@@ -52,6 +58,7 @@
 
       <div class>{{ summary }}</div>
     </v-card-text>
+
     <v-card-actions class="d-flex justify-end">
       <v-btn
         text-right

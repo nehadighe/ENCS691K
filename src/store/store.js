@@ -19,6 +19,7 @@ export const getDefaultState = () => {
         bids: [], // this is where the bids will be held
         items: [],
         detailItem: {}, // detailItem which will be used to render separate items
+        savingStatus: ""
     }
 }
 

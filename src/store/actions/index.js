@@ -11,6 +11,7 @@ import {
     changeItemAvailability,
     getItemById,
     showItem,
+    savingItem,
     makeBid,
     deleteItemById,
     postItem
@@ -34,6 +35,7 @@ export default {
     changeItemAvailability,
     getItemById,
     showItem,
+    savingItem,
     makeBid,
     getItemsByUsername,
     deleteItemById,

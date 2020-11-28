@@ -139,10 +139,13 @@ export default {
         const time = `${currentDate}, ${hour}:${minute}:${seconds}`;
         var storeEvent = {
           itemId: this.detailItem.id,
-          username: this.authUser.username,
-          amount: event,
+          username: this.authUser.username, // 
+          amount: event, // 
           time: time // this data type has to be changed to datetime
         };
+
+        // `Hi everybody, ${username} has made ${amount} bid on this item ${item}`
+
         // if the bid.length is less than one
         // then the startBidTime should
         if (this.detailItem.Bids.length < 1) {

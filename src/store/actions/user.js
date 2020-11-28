@@ -2,6 +2,7 @@ import Api from "@/services/Api"
 
 export const getItemsByUsername = async (context, username) => {
     var result = await Api().get(`/items/getItemByUsername/${username}`);
+    // console.log('line 5 - user.js user action getItemsByUsername');
     context.commit("getItemsByUsername", result.data)
 }
 

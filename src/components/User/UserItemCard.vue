@@ -2,6 +2,7 @@
   <div>
     <v-card elevation="3" class="mx-auto my-12" max-width="374" height="500" max-height="500">
       <v-carousel
+        v-if="images.length > 0"
         :continuous="false"
         :cycle="cycle"
         hide-delimiter-background
@@ -11,28 +12,36 @@
       >
         <v-carousel-item v-for="(item, i) in images" :key="i">
           <v-row class="fill-height" align="center" justify="center">
-            <v-img height="250" :src="item.location">
-              <v-fab-transition>
-                <v-btn
-                  v-if="currentNumberOfBidding <= 0"
-                  :disable="disableReactivateButton"
-                  @click="selectItemById('reactivateItem', id)"
-                  class="mt-8 ml-3"
-                  :color="darkRed"
-                  fab
-                  dark
-                  x-small
-                  absolute
-                  top
-                  left
-                >
-                  <v-icon>mdi-reload</v-icon>
-                </v-btn>
-              </v-fab-transition>
-            </v-img>
+           
+            <v-img height="250" :src="item.location"/>
           </v-row>
         </v-carousel-item>
       </v-carousel>
+      <!-- in case items do not have any pictures -->
+      <div>
+        <v-fab-transition>
+          <v-btn
+            v-if="currentNumberOfBidding <= 0 && availability == 'Active'"
+            :disable="disableReactivateButton"
+            @click="selectItemById('reactivateItem', id)"
+            class="mt-8"
+            :color="darkRed"
+            fab
+            dark
+            x-small
+            absolute
+            top
+            left
+          >
+            <v-icon>mdi-reload</v-icon>
+          </v-btn>
+        </v-fab-transition>
+        <v-img
+          height="250"
+          v-if="images.length <= 0"
+          src="https://encs691k-assets.s3.ca-central-1.amazonaws.com/images/placeholder-img.jpeg"
+        ></v-img>
+      </div>
       <div style="height:50%" class>
         <div class="d-flex align-center justify-space-between">
           <v-card-title class>
@@ -49,9 +58,23 @@
               <v-icon class="icon-size" color="yellow darken-3">mdi-star</v-icon>
               {{ transaction.User.username }}
             </div>
+            <div v-if="transaction == null">
+              <!-- :color="availability == 'Active' ? 'green' : 'orange'" -->
+              <v-chip
+                class="mb-3"
+                :color="availability == 'Active' ? 'green' : 'orange'"
+                label
+                text-color="white"
+              >
+                <v-icon small left>mdi-circle</v-icon>
+                <!-- this should be dynamic mano! -->
+                {{ availability }}
+              </v-chip>
+            </div>
           </div>
           <div class="d-flex align-center justify-space-between">
             <div class>Base Price: ${{ basePrice }}</div>
+            <!-- so if transaction is done, then show this -->
             <div v-if="transaction != null">
               Highest Bid:
               <v-icon class="icon-size" color="green darken-3">mdi-currency-usd</v-icon>
@@ -63,12 +86,7 @@
         </v-card-text>
 
         <v-card-actions v-if="currentNumberOfBidding <= 0" class="d-flex justify-end">
-          <v-btn
-            text-right
-            :color="darkRed"
-            disabled
-            text
-          >Edit</v-btn>
+          <v-btn text-right :color="darkRed" text @click="selectItemById('editItem', id)">Edit</v-btn>
           <v-btn
             text-right
             :color="darkRed"
@@ -90,13 +108,13 @@ export default {
     cycle: false,
     darkRed: "#900028",
     disableReactivateButton: false,
-    functionType: '',
-    itemId: ''
+    functionType: "",
+    itemId: ""
   }),
   methods: {
     selectItemById(functionType, id) {
       this.$emit(`${functionType}`, id);
-    },
+    }
   },
   props: {
     id: String,

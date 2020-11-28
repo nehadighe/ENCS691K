@@ -110,8 +110,11 @@
                 :color="darkRed"
                 :disabled="!valid"
                 text
-                @click="create()"
-              >Create</v-btn>
+                @click="detailItem.availability != 'Active' ? create() : update('button')"
+              >
+                <span v-if="detailItem.availability == 'Active'">Update</span>
+                <span v-if="detailItem.availability != 'Active'">Create</span>
+              </v-btn>
               <v-progress-circular v-if="requestLoading" :size="25" :color="darkRed" indeterminate></v-progress-circular>
             </div>
           </v-card>
@@ -182,6 +185,8 @@
 import { Storage } from "aws-amplify";
 import { v4 as uuidv4 } from "uuid";
 import ItemService from "@/services/Item";
+import ImageService from "@/services/Image";
+import _ from "lodash";
 import { mapState, mapActions } from "vuex";
 
 const STATUS_INITIAL = 0,
@@ -210,6 +215,7 @@ export default {
     },
 
     image: [], // array of images
+    oldImage: [], // keeping a state of old images
 
     requestLoading: false,
     categories: ["Electronics", "Home Goods"],
@@ -239,9 +245,51 @@ export default {
       return this.currentStatus === STATUS_FAILED;
     }
   },
+  watch: {
+    ...mapActions(["savingItem"]),
+    title() {
+      this.savingStatus = "Saving...";
+      this.savingItem(this.savingStatus);
+      this.debouncedupdateState();
+    },
+    basePrice() {
+      this.savingStatus = "Saving...";
+      this.savingItem(this.savingStatus);
+      this.debouncedupdateState();
+    },
+    summary() {
+      this.savingStatus = "Saving...";
+      this.savingItem(this.savingStatus);
+      this.debouncedupdateState();
+    },
+    category() {
+      this.savingStatus = "Saving...";
+      this.savingItem(this.savingStatus);
+      this.debouncedupdateState();
+    },
+    description() {
+      this.savingStatus = "Saving...";
+      this.savingItem(this.savingStatus);
+      this.debouncedupdateState();
+    }
+  },
+  created() {
+    this.debouncedupdateState = _.debounce(this.saveItem, 500);
+  },
   methods: {
-    ...mapActions(["postItem", "getItemById"]),
-    setInitialValues() {},
+    ...mapActions(["postItem", "getItemById", "editItem", "savingItem"]),
+    setInitialValues() {
+      if (this.detailItem.Images.length > 0)
+        this.currentStatus = STATUS_SUCCESS;
+      else this.currentStatus = STATUS_INITIAL;
+      // these are writing variables and subjected to change
+      this.title = this.detailItem.title;
+      this.basePrice = this.detailItem.basePrice; // this is coming as a 0
+      this.summary = this.detailItem.summary;
+      this.category = this.detailItem.category;
+      this.description = this.detailItem.description;
+      this.image = this.detailItem.Images;
+    },
     bannerMethod(color, text) {
       this.color = color;
       this.text = text;
@@ -256,7 +304,7 @@ export default {
         Storage.put(location, file, {
           contentType: file.type
         })
-          .then(result => {
+          .then(async result => {
             // console.log(result.key);
             // public could be a variable
             var path = `https://${this.bucket}.s3.amazonaws.com/public/${result.key}`;
@@ -269,9 +317,18 @@ export default {
               location: path
             };
 
-            // console.log("line 261 - imageObj", imageObj);
-            this.image.push(imageObj); // local state
-            this.currentStatus = STATUS_SUCCESS;
+            await ImageService.storeImages(imageObj)
+              .then(() => {
+                // console.log("line 322 - inside ImageService", result);
+                this.image.push(imageObj); // local state
+                this.currentStatus = STATUS_SUCCESS;
+              })
+              .catch(() => {
+                this.bannerMethod(
+                  "#900028",
+                  "An error while trying to upload an image"
+                );
+              });
           })
           .catch(err => {
             console.log(err);
@@ -280,33 +337,66 @@ export default {
       }
       // console.log("line 206-", this.item.images);
     },
-    deleteImage(item) {
-      var location = `${this.authUser.username}/${this.item.id}/${item.name}`;
-      console.log(
-        "line 272 - post item, this.images: ",
-        this.image,
-        " item: ",
-        item
-      );
+    deleteImage(image) {
+      var location = `${this.authUser.username}/${this.item.id}/${image.name}`;
       Storage.remove(location)
-        .then(() => {
-          console.log(this.image.splice(this.image.indexOf(item), 1));
+        .then(async () => {
+          await ImageService.deleteImage(image.id)
+            .then(() => {
+              this.image.splice(this.image.indexOf(image), 1);
+            })
+            .catch(() => {
+              this.bannerMethod(
+                "#900028",
+                "An error ocurred while deleting an image"
+              );
+            });
         })
         .catch(err => {
           console.log(err);
         });
     },
-    async create() {
+    saveItem() {
+      this.savingStatus = "Saved";
+      this.savingItem(this.savingStatus);
+      // would have to invoke vuex
+      setTimeout(() => {
+        this.savingStatus = "";
+        this.savingItem(this.savingStatus);
+        // would have to invoke vuex
+        this.update();
+      }, 1000);
+    },
+    update(eventComingFrom) {
+      this.item.id = this.detailItem.id;
+      this.item.title = this.title;
+      this.item.category = this.category;
+      this.item.description = this.description;
+      this.item.summary = this.summary;
+      this.item.basePrice = parseInt(this.basePrice);
+
+      var req = {
+        from: "update",
+        item: this.item
+      };
+      this.itemServiceMethod(req);
+
+      // going home if user clicks on update button
+      if (eventComingFrom == "button") this.$router.push({ name: "home" });
+    },
+    create() {
       this.requestLoading = true;
+
+      // Constructing object to send over the network
 
       this.item.title = this.title;
       this.item.category = this.category;
       this.item.description = this.description;
       this.item.summary = this.summary;
       this.item.availability = "Active";
-      this.item.currentNumberOfBidding = 0;
       this.item.basePrice = parseInt(this.basePrice);
       this.item.bidPrice = parseInt(this.basePrice);
+      this.item.currentNumberOfBidding = 0;
       this.item.startBidTime = {}; // nulling the initial object
       this.item.ttl = new Date();
       this.item.username = this.authUser.username;
@@ -315,41 +405,38 @@ export default {
       // learn graphql (?) -- future
       // sending data about the images
       var req = {
-        images: this.image,
+        from: "create",
         item: this.item
       };
 
       // sending data about the item
-      await ItemService.post(req)
-        .then(() => {
-          // console.log("line 314 response- ", res);
-          this.bannerMethod("green", "Your item has been created. Posting it!");
-          this.requestLoading = false;
-          this.$router.push({ name: "home" });
-        })
-        .catch(err => {
-          console.log("line 146 err from API call- ", err);
-          this.bannerMethod("#900028", "An occured while creating your item");
-          this.requestLoading = false;
-        });
+      this.itemServiceMethod(req);
 
-      this.image = [];
-      this.currentStatus = STATUS_INITIAL;
-      this.$refs.newItem.reset();
+      this.requestLoading = false;
+      this.$router.push({ name: "home" });
+      // this.image = [];
+      // this.currentStatus = STATUS_INITIAL;
+      // this.$refs.newItem.reset();
+    },
+    async itemServiceMethod(req) {
+      // console.log("line 407 - itemServiceMethod req", req);
+      await ItemService.editItem(req)
+        .catch(() => {
+          this.bannerMethod(
+            "#900028",
+            "An error has occurred trying to save the item"
+          );
+        });
     }
   },
   async mounted() {
-    this.currentStatus = STATUS_INITIAL;
-    console.log("line 332 - making it to the editItem.vue");
     const itemId = this.$route.params.itemId;
     // API call to request the specific Item
+    // there should be a safeguard here to indicate that if a certain
+    // user is not the owner of the item, then the editing should not
+    // go through
     await this.getItemById(itemId);
-    console.log(
-      "line 332- editItem page, variable detailItem",
-      this.detailItem
-    );
-
-    // this.item.id = uuidv4();
+    this.setInitialValues();
   }
 };
 </script>

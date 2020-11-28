@@ -5,8 +5,8 @@ export default {
     post(item) {
         return Api().post('/items/postItem', item)
     },
-    edit(item) {
-        return Api().post(`/items/editItem/${item}`, item)
+    editItem(item) {
+        return Api().put('/items/editItem/', item)
     },
     getItemById(id) {
         return Api().get(`/items/getItemById/${id}`)
@@ -20,5 +20,9 @@ export default {
     },
     deleteItemById(id) {
         return Api().delete(`/items/deleteItemById/${id}`)
+    },
+    storeImages(image) {
+        console.log('line 25 - item.js storeImages', image)
+        return Api().post('/images/store', image)
     }
 }

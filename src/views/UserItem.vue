@@ -68,7 +68,7 @@ export default {
     buttonState: "Active",
     disableReactivateButton: false,
     requestLoading: false,
-    
+
     // message
     snacktimeout: 8000,
     alert: false,
@@ -102,16 +102,15 @@ export default {
       this.buttonState = buttonPressed;
     },
     editItem(itemId) {
-      console.log("line 62 - editItem", itemId);
+      this.$router.push({
+        name: "editItem",
+        params: { itemId: itemId }
+      });
     },
     async deleteItem(itemId) {
       // call the API
       // console.log("line 82 - useritem view", itemId);
       this.requestLoading = true;
-      console.log(
-        "line 90- useritme this.userItemAvailability",
-        this.userItemAvailability
-      );
       await ItemService.deleteItemById(itemId)
         .then(() => {
           this.userItemAvailability.map(item => {
@@ -121,8 +120,11 @@ export default {
           this.requestLoading = false;
         })
         .catch(err => {
-          console.log('line 124- useritem deleteItem controller', err);
-          this.bannerMethod("#900028", "Your item cannot be deleted at this time");
+          console.log("line 124- useritem deleteItem controller", err);
+          this.bannerMethod(
+            "#900028",
+            "Your item cannot be deleted at this time"
+          );
           this.requestLoading = false;
         });
       // modify the store - hash code
@@ -139,13 +141,22 @@ export default {
             await ItemService.reactivateItem(itemId)
               .then(() => {
                 // need to update the state.item.itemId.ttl
-                this.bannerMethod("green", "Item has been reactivated in the market");
+                this.bannerMethod(
+                  "green",
+                  "Item has been reactivated in the market"
+                );
               })
               .catch(() => {
-                this.bannerMethod("#900028", "An error ocurred while reactivating the item");
+                this.bannerMethod(
+                  "#900028",
+                  "An error ocurred while reactivating the item"
+                );
               });
           } else {
-            this.bannerMethod("#900028", "Already reloaded once, wait 24 hours");
+            this.bannerMethod(
+              "#900028",
+              "Already reloaded once, wait 24 hours"
+            );
           }
         }
       });
@@ -154,7 +165,7 @@ export default {
   async mounted() {
     // get all the information all the bids from the specific user
     await this.getItemsByUsername(this.authUser.username);
-    // console.log("line 100 - UserItem", this.userItemAvailability);
+    console.log("line 172 - UserItem", this.userItemAvailability);
   }
 };
 </script>

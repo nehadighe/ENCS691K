@@ -52,3 +52,8 @@ export const deleteItemById = (state, item) => {
 export const postItem = (state, item) => {
     state.items.push(item)
 }
+
+export const savingItem = (state, saving) => {
+    // // console.log('store(mutations) - savingItem: ', saving)
+    state.savingStatus = saving
+}

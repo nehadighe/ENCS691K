@@ -1,11 +1,13 @@
 import Api from '@/services/Api'
 
 export default {
-    post(item) {
-        return Api().post('/images/add', item)
+    storeImages(image) {
+        // console.log('line 5 - item.js storeImages', image)
+        return Api().post('/images/store', image)
     },
-    delete(id) {
-        return Api().delete(`/images/delete/${id}`)
+    deleteImage(imageId) {
+        // console.log('line 9 - item.js deleteImage')
+        return Api().delete(`/images/delete/${imageId}`)
     },
     
     // come back to this
