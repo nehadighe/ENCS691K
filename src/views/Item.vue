@@ -127,52 +127,63 @@ export default {
       this.text = text;
       this.alert = true;
     },
-    async bid(event) {
+    bid(event) {
       this.requestLoading = true;
       if (event > this.detailItem.bidPrice) {
         // date functions
-        const date = new Date();
-        const currentDate = date.toDateString();
-        const hour = date.getHours();
-        const minute = date.getMinutes();
-        const seconds = date.getSeconds();
-        const time = `${currentDate}, ${hour}:${minute}:${seconds}`;
-        var storeEvent = {
-          itemId: this.detailItem.id,
-          username: this.authUser.username, // 
-          amount: event, // 
-          time: time // this data type has to be changed to datetime
-        };
-
-        // `Hi everybody, ${username} has made ${amount} bid on this item ${item}`
-
-        // if the bid.length is less than one
-        // then the startBidTime should
-        if (this.detailItem.Bids.length < 1) {
-          this.startBidTime = date;
+        if (this.authUser.username === this.detailItem.User.username) {
+          console.log("You cannot bid on your own item");
+          this.bannerMethod("#900028", "You cannot bid on your own item");
+          this.requestLoading = false;
         }
-        storeEvent.startBidTime = this.startBidTime;
-        // API call to Bid entity/table
-        await BidService.makeBid(storeEvent)
-          .then(() => {
-            // console.log(res);
-            delete storeEvent.username;
-            storeEvent.User = this.authUser;
-            this.makeBid(storeEvent); // changing store
-            this.bannerMethod("green", "Bid made successfully");
-            this.requestLoading = false;
-          })
-          .catch(err => {
-            console.log(err);
-            this.bannerMethod("#900028", "An error occured while bidding, please try again!");
-            this.requestLoading = false;
-          });
-        return;
+        // else console.log('youre not the same person');
+        else this.bidFunction(event)
       } else {
         // console.log("no it is not");
         this.bannerMethod("#900028", "Cannot bid lower than the base price");
         this.requestLoading = false;
       }
+    },
+    async bidFunction(event) {
+      const date = new Date();
+      const currentDate = date.toDateString();
+      const hour = date.getHours();
+      const minute = date.getMinutes();
+      const seconds = date.getSeconds();
+      const time = `${currentDate}, ${hour}:${minute}:${seconds}`;
+      var storeEvent = {
+        itemId: this.detailItem.id,
+        username: this.authUser.username, //
+        amount: event, //
+        time: time // this data type has to be changed to datetime
+      };
+
+      // `Hi everybody, ${username} has made ${amount} bid on this item ${item}`
+
+      // capturing the first bit by comparing
+      // whethe the length is less than 1
+      if (this.detailItem.Bids.length < 1) {
+        this.startBidTime = date;
+      }
+      storeEvent.startBidTime = this.startBidTime;
+      // API call to Bid entity/table
+      await BidService.makeBid(storeEvent)
+        .then(() => {
+          // console.log(res);
+          delete storeEvent.username;
+          storeEvent.User = this.authUser;
+          this.makeBid(storeEvent); // changing store
+          this.bannerMethod("green", "Bid made successfully");
+          this.requestLoading = false;
+        })
+        .catch(err => {
+          console.log(err);
+          this.bannerMethod(
+            "#900028",
+            "An error occured while bidding, please try again!"
+          );
+          this.requestLoading = false;
+        });
     },
     async itemSold() {
       var transaction = {
@@ -181,7 +192,7 @@ export default {
         username: this.authUser.username,
         amount: this.detailItem.bidPrice
       };
-      
+
       await TransactionService.createTransaction(transaction).then(() => {
         this.changeItemAvailability(this.detailItem.id);
       });
@@ -192,6 +203,7 @@ export default {
     const itemId = this.$route.params.itemId;
     // API call to request the specific Item
     await this.showItem(itemId);
+    console.log("line 196", this.detailItem, this.authUser);
   }
 };
 </script>
