@@ -1,8 +1,13 @@
 <template>
-  <v-container class="fill-height">
+  <v-container>
+    <v-row class="">
+      <v-col cols="12">
+        <h1>Your Items</h1>
+      </v-col>
+    </v-row>
     <v-row class>
-      <v-btn @click="changeItemStatus('Active')" class="mr-4">Available</v-btn>
-      <v-btn @click="changeItemStatus('Sold')" class="ml-4">Sold</v-btn>
+      <v-btn :color="typeOfAvailability==='Active' ? '#900028' : 'secondary'" :style="typeOfAvailability === 'Active' ? 'color:white' : null" @click="changeItemStatus('Active')" class="mr-4">Available</v-btn>
+      <v-btn :color="typeOfAvailability==='Sold' ? '#900028' : 'secondary'" :style="typeOfAvailability === 'Sold' ? 'color:white' : null" @click="changeItemStatus('Sold')" class="ml-4">Sold</v-btn>
     </v-row>
     <v-row v-if="userItemAvailability.length > 0" class>
       <v-col
@@ -25,6 +30,7 @@
           :category="item.category"
           :ttl="item.ttl"
           :transaction="item.Transaction"
+          :mode="'yourItem'"
           :currentNumberOfBidding="item.currentNumberOfBidding"
           v-on:editItem="editItem($event)"
           :requestLoading="requestLoading"
@@ -40,7 +46,7 @@
           contain
           height="250"
         />
-        <h2>No items {{ buttonState }}</h2>
+        <h2>No items {{ typeOfAvailability }}</h2>
       </v-col>
     </v-row>
     <!-- messaging windows -->
@@ -65,10 +71,9 @@ import { mapActions, mapState } from "vuex";
 export default {
   name: "UserItemVue",
   data: () => ({
-    buttonState: "Active",
     disableReactivateButton: false,
     requestLoading: false,
-
+    
     // message
     snacktimeout: 8000,
     alert: false,
@@ -79,13 +84,14 @@ export default {
     UserItemCard
   },
   computed: {
-    ...mapState(["authUser", "userItemAvailability"])
+    ...mapState(["authUser", "userItemAvailability", "typeOfAvailability"])
   },
   methods: {
     ...mapActions([
-      "getItemsByUsername",
-      "changeUserItemAvailability",
-      "deleteItemById"
+      "getItemsByUsername", // you're getting all user items from the database
+      "changeUserItemAvailability", // you're changing the items locally
+      "deleteItemById",
+      "setCurrentType"
     ]),
     bannerMethod(color, text) {
       this.color = color;
@@ -93,13 +99,13 @@ export default {
       this.alert = true;
     },
     changeItemStatus(buttonPressed) {
-      // console.log(buttonPressed);
-      if (this.buttonState != buttonPressed) {
+      if (this.typeOfAvailability != buttonPressed) {
         // don't make unnecessary computations
         // console.log("different buttons", this.buttonState);
-        this.changeUserItemAvailability(buttonPressed);
+        // here I am chankging the value of userItemAvailability
+        this.changeUserItemAvailability(buttonPressed); 
+        // here I should change the availability
       }
-      this.buttonState = buttonPressed;
     },
     editItem(itemId) {
       this.$router.push({
@@ -165,7 +171,7 @@ export default {
   async mounted() {
     // get all the information all the bids from the specific user
     await this.getItemsByUsername(this.authUser.username);
-    console.log("line 172 - UserItem", this.userItemAvailability);
+    // console.log("line 172 - UserItem", this.userItemAvailability);
   }
 };
 </script>

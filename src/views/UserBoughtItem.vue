@@ -1,5 +1,10 @@
 <template>
   <v-container>
+    <v-row class>
+      <v-col cols="12">
+        <h1>Items Bought</h1>
+      </v-col>
+    </v-row>
     <v-row v-if="userItemBought.length > 0" class>
       <v-col class v-for="(item,index) in userItemBought" :key="index" cols="12" md="6" lg="4">
         <UserItemCard
@@ -14,6 +19,10 @@
           :category="item.Item.category"
           :ttl="item.Item.ttl"
           :transaction="item.Item.Transaction"
+          :mode="'boughtItem'"
+          :transactionAmount="item.amount"
+          :transactionTime="item.createdAt"
+          :itemOwner="item.Item.User"
           :currentNumberOfBidding="item.Item.currentNumberOfBidding"
           v-on:editItem="editItem($event)"
           v-on:reactivateItem="reactivateItem($event)"
@@ -23,7 +32,7 @@
     </v-row>
     <v-row class v-if="userItemBought.length <= 0">
       <v-col class="d-flex flex-column align-center justify-center">
-        <v-img 
+        <v-img
           src="https://encs691k-assets.s3.ca-central-1.amazonaws.com/images/Golden_Gate_Bridge.svg"
           contain
           height="250"
@@ -51,6 +60,7 @@ export default {
   },
   async mounted() {
     await this.getTransactionByUsername(this.authUser.username);
+    // console.log("line 52 - user bought items", this.userItemBought);
   }
 };
 </script>

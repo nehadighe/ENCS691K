@@ -54,7 +54,7 @@ export default {
     authUser: {},
   }),
   methods: {
-    ...mapActions(["resetAppState", "userSignUp"]),
+    ...mapActions(["resetAppState", "userSignUp", "setCurrentRoute"]),
     async signUp(event) {
       this.requestLoading = true;
       if (!event.valid) {
@@ -112,6 +112,7 @@ export default {
             this.userSignUp(this.authUser); // sending data to the store
             this.requestLoading = false;
             this.$router.push({ name: "home" });
+            this.setCurrentRoute("/");
           })
           .catch(err => {
             console.log("line 91 err from API call- ", err); // line needed by ESLint

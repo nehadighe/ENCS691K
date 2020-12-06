@@ -181,6 +181,7 @@ export default {
         username: this.authUser.username,
         amount: this.detailItem.bidPrice
       };
+      
       await TransactionService.createTransaction(transaction).then(() => {
         this.changeItemAvailability(this.detailItem.id);
       });

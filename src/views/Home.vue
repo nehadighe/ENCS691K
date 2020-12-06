@@ -41,19 +41,22 @@ export default {
   methods: {
     ...mapActions([
       "getAllItems",
+      "setCurrentRoute"
     ]),
     bid(event) {
       this.$router.push({ 
         name: "item",
         params: { itemId: event }
       });
+      this.setCurrentRoute(`/item/${event}`)
     }
   },
   async mounted() {
+    // console.log('line 53', this.authUser)
     if (this.authUser.authenticated) {
       // making sure user is authenticated
       await this.getAllItems();
-      console.log('line 55- home page', this.items)
+      // console.log('line 55- home page', this.items)
     } else {
       alert("Need to authenticate");
     }

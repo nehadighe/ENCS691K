@@ -80,14 +80,6 @@
     </div>
     <!-- User Login -->
     <div v-if="authUser.authenticated" class="d-flex flex-row align-center">
-      <!-- <div id="username" class="hidden-sm-and-down">
-        <v-btn text @click="userVue()" class="user-style">
-          <v-avatar color="indigo" size="36">
-            <v-img :src="authUser.avatar" alt="avatar" />
-          </v-avatar>
-          <span class="mx-2">{{ authUser.username }}</span>
-        </v-btn>
-      </div>-->
       <p
         id="savingButton"
         style="margin-bottom:0px;font-weight:600"
@@ -165,7 +157,6 @@ export default {
       { title: "Bought", option: "2" },
       { title: "Profile", option: "3" } // this might not go
     ],
-    path: "",
 
     // message
     snacktimeout: 8000,
@@ -177,10 +168,15 @@ export default {
     // Search
   },
   computed: {
-    ...mapState(["authUser", "items", "savingStatus"])
+    ...mapState(["authUser", "items", "savingStatus", "currentRoute"])
   },
   methods: {
-    ...mapActions(["resetAppState", "authMode", "userLogOut"]),
+    ...mapActions([
+      "resetAppState",
+      "authMode",
+      "userLogOut",
+      "setCurrentRoute"
+    ]),
     authModeLocal(event) {
       //   console.log("verifying event", event);
       this.authMode(event);
@@ -191,18 +187,26 @@ export default {
       this.text = text;
     },
     homeVue() {
-      this.$router.push({ name: "home" });
+      if (this.currentRoute === "/") console.log("same route");
+      else this.$router.push({ name: "home" });
+      this.setCurrentRoute("/");
     },
     vListUserFunction(option) {
       // logic to evaluate which local function to call
       if (option === "1") {
-        this.$router.push({ name: "userItem" });
+        if (this.currentRoute === "userItem") console.log("same route");
+        else this.$router.push({ name: "userItem" });
+        this.setCurrentRoute("userItem");
       }
       if (option === "2") {
-        this.$router.push({ name: "userBoughtItem" });
+        if (this.currentRoute === "userBoughtItem") console.log("same route");
+        else this.$router.push({ name: "userBoughtItem" });
+        this.setCurrentRoute("userBoughtItem");
       }
       if (option === "3") {
-        this.$router.push({ name: "userProfile" });
+        if (this.currentRoute === "userProfile") console.log("same route");
+        else this.$router.push({ name: "userProfile" });
+        this.setCurrentRoute("userProfile");
       }
     },
     async newItemVue() {
@@ -226,10 +230,14 @@ export default {
       await ItemServices.post(item)
         .then(() => {
           // I am not posting the item inside of the Items state array
-          this.$router.push({
-            name: "editItem",
-            params: { itemId: item.id }
-          });
+          if (this.currentRoute === "editItem") console.log("same route");
+          else {
+            this.$router.push({
+              name: "editItem",
+              params: { itemId: item.id }
+            });
+          }
+          this.setCurrentRoute("editItem");
         })
         .catch(err => {
           this.bannerMethod("#900028", err);
@@ -249,15 +257,17 @@ export default {
         // this.resetAppState();
         // need to reset authUser as {}
         this.userLogOut();
-        this.$router.push({ name: "auth" });
-        this.path = "auth";
+        console.log('line 260', this.currentRoute)
+        if (this.currentRoute === "auth") console.log("same route");
+        else this.$router.push({ name: "auth" });
+        this.setCurrentRoute("auth");
       } catch (error) {
         console.log("error signing out: ", error);
       }
     }
   },
   mounted() {
-    console.log('line 260 - header.vue', this.savingStatus)
+    // console.log('line 277', this.authUser, this.currentRoute)
   }
 };
 </script>

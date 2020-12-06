@@ -56,6 +56,8 @@
                   :color="darkRed"
                   v-model="title"
                   :rules="rules.required"
+                  counter
+                  maxlength="15"
                   name="item-title"
                   label="Title"
                   filled
@@ -92,6 +94,16 @@
                   @keyup.enter="[valid ? create() : null]"
                   row-height="20"
                 ></v-textarea>
+                <!-- <quill-editor
+                  id="quill-container"
+                  v-model="summary"
+                  class="editor"
+                  :rules="rules"
+                  required
+                  ref="myTextEditor"
+                  :value="body"
+                  @change="onQuillEditorChange($event)"
+                />-->
                 <v-textarea
                   :color="darkRed"
                   filled
@@ -157,9 +169,10 @@
                 </div>
                 <div id="body">
                   <p class>Summary</p>
-                  <p class="mx-5">{{summary}}</p>
+                  <pre style="font-family:Avenir, Helvetica, Arial, sans-serif"><p class="mx-5">{{summary}}</p></pre>
                   <p class>Description</p>
-                  <p class="mx-5">{{description}}</p>
+                  <pre style="font-family:Avenir, Helvetica, Arial, sans-serif">
+<p class="mx-5">{{description}}</p></pre>
                 </div>
               </div>
             </v-card>
@@ -420,13 +433,12 @@ export default {
     },
     async itemServiceMethod(req) {
       // console.log("line 407 - itemServiceMethod req", req);
-      await ItemService.editItem(req)
-        .catch(() => {
-          this.bannerMethod(
-            "#900028",
-            "An error has occurred trying to save the item"
-          );
-        });
+      await ItemService.editItem(req).catch(() => {
+        this.bannerMethod(
+          "#900028",
+          "An error has occurred trying to save the item"
+        );
+      });
     }
   },
   async mounted() {

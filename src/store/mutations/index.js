@@ -23,6 +23,8 @@ import {
     getTransactionByUsername
 } from "./user"
 
+import { setCurrentRoute } from './route'
+
 import { resetAppState } from "./resetState"
 
 export default {
@@ -42,5 +44,6 @@ export default {
     getItemsByUsername,
     changeUserItemAvailability,
     getTransactionByUsername,
+    setCurrentRoute,
     resetAppState
 }
