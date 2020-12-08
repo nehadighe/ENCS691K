@@ -23,7 +23,6 @@ export const getItemById = (state, item) => {
 
 // this is for view item
 export const showItem = (state, id) => {
-    console.log('line 26 - item mutations getItemById', id)
     state.items.map(item => {
         if (item.id == id) {
             state.detailItem = item
@@ -34,14 +33,19 @@ export const showItem = (state, id) => {
 // bid is going to be the item: name, image, time
 // biddingAmount
 export const makeBid = (state, data) => {
-    state.items.map(item => {
-        if (item.id == data.itemId) {
-            item.Bids.push(data)
-            item.startBidTime = data.startBidTime
-            item.bidPrice = data.amount
-            item.currentNumberOfBidding++
-        }
-    })
+    state.detailItem.Bids.push(data)
+    state.detailItem.startBidTime = data.startBidTime
+    state.detailItem.bidPrice = data.amount
+    state.detailItem.currentNumberOfBidding++
+    // state.items.map(item => {
+    //     if (item.id == data.itemId) {
+    //         item.Bids.push(data)
+    //         item.startBidTime = data.startBidTime
+    //         item.bidPrice = data.amount
+    //         item.currentNumberOfBidding++
+    //     }
+    // })
+    console.log('line 46', state.detailItem)
 }
 
 export const deleteItemById = (state, item) => {

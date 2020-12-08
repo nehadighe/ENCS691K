@@ -135,11 +135,6 @@ export default {
     functionType: "",
     itemId: ""
   }),
-  filters: {
-    moment(date) {
-      return moment.utc(date).format("MMMM Do YYYY, h:mm:ss a");
-    }
-  },
   methods: {
     selectItemById(functionType, id) {
       this.$emit(`${functionType}`, id);

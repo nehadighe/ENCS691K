@@ -23,7 +23,9 @@
                 <h1 class>{{ detailItem.title }}</h1>
                 <!-- timer -->
                 <v-card v-if="detailItem.Bids.length > 0" style="padding:8px 15px">
-                  <Timer :deadline="detailItem.startBidTime" v-on:itemSold="itemSold()" />
+                  <!-- <Timer :deadline="this.detailItem.startBidTime" v-on:itemSold="itemSold()" /> -->
+                  <Timer :deadline="moment(this.detailItem.startBidTime).format()" v-on:itemSold="itemSold()" />
+                  <!-- <p class="mb-0">timer</p> -->
                 </v-card>
               </div>
               <div id="item_information">
@@ -70,6 +72,7 @@ import TransactionService from "@/services/Transaction"; // API
 import EngagedUsers from "@/components/Item/EngagedUsers.vue";
 import BidPanel from "@/components/Item/BidPanel.vue";
 import Timer from "@/components/Test/Timer.vue";
+import moment from "moment";
 
 export default {
   data: () => ({
@@ -77,7 +80,6 @@ export default {
     disableBidding: false,
     darkRed: "#900028",
     timer: null,
-    totalTime: 2 * 60, // This should be dynamic!
     startBidTime: new Date(), // date
 
     // Message in data
@@ -95,14 +97,6 @@ export default {
   },
   computed: {
     ...mapState(["detailItem", "authUser", "bids"]),
-    minutes() {
-      const minutes = Math.floor(this.totalTime / 60);
-      return this.padTime(minutes);
-    },
-    seconds() {
-      const seconds = this.totalTime - this.minutes * 60;
-      return this.padTime(seconds);
-    },
     imageDimensions() {
       switch (this.$vuetify.breakpoint.name) {
         case "xs":
@@ -121,7 +115,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["showItem", "makeBid", "changeItemAvailability"]),
+    ...mapActions([
+      "showItem",
+      "makeBid",
+      "changeItemAvailability",
+      "getItemById"
+    ]),
     bannerMethod(color, text) {
       this.color = color;
       this.text = text;
@@ -137,7 +136,7 @@ export default {
           this.requestLoading = false;
         }
         // else console.log('youre not the same person');
-        else this.bidFunction(event)
+        else this.bidFunction(event);
       } else {
         // console.log("no it is not");
         this.bannerMethod("#900028", "Cannot bid lower than the base price");
@@ -158,14 +157,14 @@ export default {
         time: time // this data type has to be changed to datetime
       };
 
-      // `Hi everybody, ${username} has made ${amount} bid on this item ${item}`
-
       // capturing the first bit by comparing
-      // whethe the length is less than 1
+      // whether the length is less than 1
       if (this.detailItem.Bids.length < 1) {
-        this.startBidTime = date;
+        console.log('line 162 - inside condition')
+        this.startBidTime = moment(date).utc().format();
       }
       storeEvent.startBidTime = this.startBidTime;
+      console.log('line 166-', storeEvent)
       // API call to Bid entity/table
       await BidService.makeBid(storeEvent)
         .then(() => {
@@ -184,6 +183,8 @@ export default {
           );
           this.requestLoading = false;
         });
+      this.requestLoading = false;
+      console.log('line 187',this.startBidTime)
     },
     async itemSold() {
       var transaction = {
@@ -197,13 +198,21 @@ export default {
         this.changeItemAvailability(this.detailItem.id);
       });
       this.disableBidding = true;
+    },
+    moment(date) {
+      return moment.utc(date);
     }
   },
   async mounted() {
     const itemId = this.$route.params.itemId;
     // API call to request the specific Item
-    await this.showItem(itemId);
-    console.log("line 196", this.detailItem, this.authUser);
+    // await this.showItem(itemId); // stale data
+    await this.getItemById(itemId);
+    console.log("line 198 detailItem", this.detailItem);
+    console.log("line 199 startBidTime", this.detailItem.startBidTime);
+    if(this.detailItem.startBidTime != null) {
+      console.log('line 212 startBidTime with moment', moment(this.detailItem.startBidTime).format())
+    }
   }
 };
 </script>

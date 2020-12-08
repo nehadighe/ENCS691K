@@ -290,7 +290,7 @@ export default {
     this.debouncedupdateState = _.debounce(this.saveItem, 500);
   },
   methods: {
-    ...mapActions(["postItem", "getItemById", "editItem", "savingItem"]),
+    ...mapActions(["postItem", "getItemById", "editItem", "savingItem", "setCurrentRoute"]),
     setInitialValues() {
       if (this.detailItem.Images.length > 0)
         this.currentStatus = STATUS_SUCCESS;
@@ -395,7 +395,10 @@ export default {
       this.itemServiceMethod(req);
 
       // going home if user clicks on update button
-      if (eventComingFrom == "button") this.$router.push({ name: "home" });
+      if (eventComingFrom == "button") {
+        this.$router.push({ name: "home" });
+        this.setCurrentRoute("/")
+      }
     },
     create() {
       this.requestLoading = true;
