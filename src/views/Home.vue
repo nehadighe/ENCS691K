@@ -50,12 +50,15 @@ export default {
     ItemCards
   },
   computed: {
-    ...mapState(["authUser", "items", "mockItems", "currentRoute"])
+    ...mapState(["authUser", "items", "mockItems", "currentRoute", "visited", "items"])
   },
   methods: {
     ...mapActions([
       "getAllItems",
-      "setCurrentRoute"
+      "getItemById",
+      "setCurrentRoute",
+      "pushItemIdToVisitedArr",
+      "changeUserHasVisitedItem"
     ]),
     async newItemVue() {
       // would have to implement the ItemService here
@@ -91,23 +94,35 @@ export default {
           this.bannerMethod("#900028", err);
         });
     },
-    bid(event) {
-      this.$router.push({ 
+    async bid(event) {
+      // if (!this.visited.includes(event)) console.log('hello world')
+      // if (!this.visited.includes(event)) this.pushItemIdToVisitedArr(event)
+      // else console.log('this is inside of the visited array')
+      if (!this.visited.includes(event)) {
+        this.changeUserHasVisitedItem(false);
+        // this.userHasVisitedItem = false;
+        console.log(
+          "line 227- does visited include item.id",
+          this.visited.includes(event)
+        );
+        this.pushItemIdToVisitedArr(event); // add it if it's not included
+      } else {
+        this.changeUserHasVisitedItem(true);
+        console.log(
+          "line 230- does visited include item.id",
+          this.visited.includes(event)
+        );
+      }
+      await this.getItemById(event);
+      this.$router.push({
         name: "item",
         params: { itemId: event }
       });
-      this.setCurrentRoute(`/item/${event}`)
+      this.setCurrentRoute(`/item/${event}`);
     }
   },
-  async mounted() {
-    // console.log('line 53', this.authUser)
-    if (this.authUser.authenticated) {
-      // making sure user is authenticated
-      await this.getAllItems();
-      // console.log('line 55- home page', this.items)
-    } else {
-      alert("Need to authenticate");
-    }
+  async mounted(){
+    await this.getAllItems();
   }
 };
 </script>

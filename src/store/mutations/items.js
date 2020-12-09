@@ -19,6 +19,7 @@ export const changeItemAvailability = (state, itemId) => {
 // this is after creating an item
 export const getItemById = (state, item) => {
     state.detailItem = item // it's a lot faster to go in memory
+    state.detailItem.visited = true
 }
 
 // this is for view item
@@ -37,15 +38,7 @@ export const makeBid = (state, data) => {
     state.detailItem.startBidTime = data.startBidTime
     state.detailItem.bidPrice = data.amount
     state.detailItem.currentNumberOfBidding++
-    // state.items.map(item => {
-    //     if (item.id == data.itemId) {
-    //         item.Bids.push(data)
-    //         item.startBidTime = data.startBidTime
-    //         item.bidPrice = data.amount
-    //         item.currentNumberOfBidding++
-    //     }
-    // })
-    console.log('line 46', state.detailItem)
+    console.log('line 41 - item mutations', state.detailItem)
 }
 
 export const deleteItemById = (state, item) => {
@@ -58,6 +51,5 @@ export const postItem = (state, item) => {
 }
 
 export const savingItem = (state, saving) => {
-    // // console.log('store(mutations) - savingItem: ', saving)
     state.savingStatus = saving
 }

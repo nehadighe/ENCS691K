@@ -58,7 +58,7 @@ export default {
     color: null,
   }),
   methods: {
-    ...mapActions(["resetAppState", "userLookUp", "setCurrentRoute"]),
+    ...mapActions(["resetAppState", "userLookUp", "setCurrentRoute", "getAllItems"]),
     forgotPassword() {
       this.localLoginState = "forgotPass";
     },
@@ -142,6 +142,7 @@ export default {
         console.log("line 142 - login form", event.user);
         this.userLookUp(event.user); // looking up user information
         this.requestLoading = false;
+        await this.getAllItems();
         this.$router.push({ name: "home" });
         this.setCurrentRoute("/");
       } catch (error) {

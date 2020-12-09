@@ -23,7 +23,11 @@ import {
     getTransactionByUsername
 } from "./user"
 
-import { setCurrentRoute } from './route'
+import { 
+    setCurrentRoute, 
+    pushItemIdToVisitedArr,
+    changeUserHasVisitedItem
+} from './route'
 
 import { resetAppState } from "./resetState"
 
@@ -44,6 +48,8 @@ export default {
     getItemsByUsername,
     changeUserItemAvailability,
     getTransactionByUsername,
+    pushItemIdToVisitedArr,
+    changeUserHasVisitedItem,
     setCurrentRoute,
     resetAppState
 }

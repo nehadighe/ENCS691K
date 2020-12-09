@@ -23,8 +23,25 @@
                 <h1 class>{{ detailItem.title }}</h1>
                 <!-- timer -->
                 <v-card v-if="detailItem.Bids.length > 0" style="padding:8px 15px">
-                  <!-- <Timer :deadline="this.detailItem.startBidTime" v-on:itemSold="itemSold()" /> -->
-                  <Timer :deadline="moment(this.detailItem.startBidTime).format()" v-on:itemSold="itemSold()" />
+                  <!-- <Timer :deadline="moment(this.detailItem.startBidTime).format()" /> -->
+                  <Timer
+                    :deadline="moment(this.detailItem.startBidTime).format()"
+                    :itemName="this.detailItem.title"
+                    :itemId="this.detailItem.id"
+                  />
+                  <!-- <Timer
+                    :deadline="moment(this.detailItem.startBidTime).format()"
+                    :userHasVisitedItem="this.userHasVisitedItem"
+                    :itemName="this.detailItem.title"
+                    :itemId="this.detailItem.id"
+                  /> -->
+                  <!-- <Timer
+                    :deadline="moment(this.detailItem.startBidTime).format()"
+                    :itemName="this.detailItem.title"
+                    :username="this.authUser.username"
+                    :itemId="this.detailItem.id"
+                    :itemBidPrice="this.detailItem.bidPrice"
+                  />-->
                   <!-- <p class="mb-0">timer</p> -->
                 </v-card>
               </div>
@@ -66,9 +83,7 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import { v4 as uuidv4 } from "uuid";
 import BidService from "@/services/Bid"; // API
-import TransactionService from "@/services/Transaction"; // API
 import EngagedUsers from "@/components/Item/EngagedUsers.vue";
 import BidPanel from "@/components/Item/BidPanel.vue";
 import Timer from "@/components/Test/Timer.vue";
@@ -81,6 +96,7 @@ export default {
     darkRed: "#900028",
     timer: null,
     startBidTime: new Date(), // date
+    userHasVisitedItem: null,
 
     // Message in data
     // pop up message
@@ -96,7 +112,7 @@ export default {
     Timer
   },
   computed: {
-    ...mapState(["detailItem", "authUser", "bids"]),
+    ...mapState(["detailItem", "authUser", "bids", "visited"]),
     imageDimensions() {
       switch (this.$vuetify.breakpoint.name) {
         case "xs":
@@ -119,7 +135,8 @@ export default {
       "showItem",
       "makeBid",
       "changeItemAvailability",
-      "getItemById"
+      "getItemById",
+      "pushItemIdToVisitedArr"
     ]),
     bannerMethod(color, text) {
       this.color = color;
@@ -159,12 +176,25 @@ export default {
 
       // capturing the first bit by comparing
       // whether the length is less than 1
-      if (this.detailItem.Bids.length < 1) {
-        console.log('line 162 - inside condition')
-        this.startBidTime = moment(date).utc().format();
-      }
-      storeEvent.startBidTime = this.startBidTime;
-      console.log('line 166-', storeEvent)
+      console.log(
+        "line 165- before the this.detailItem.Bids.length < 1",
+        this.detailItem.Bids.length
+      );
+      if (
+        this.detailItem.Bids.length < 1 &&
+        this.detailItem.startBidTime == null
+      ) {
+        console.log("line 167 - inside of hte Bids.length logic");
+        this.startBidTime = moment(date)
+          .utc()
+          .format();
+        storeEvent.startBidTime = this.startBidTime;
+      } else storeEvent.startBidTime = this.detailItem.startBidTime;
+      console.log(
+        "line 173 - this should not be changing-->",
+        this.detailItem.startBidTime
+      );
+      console.log("line 174-", storeEvent);
       // API call to Bid entity/table
       await BidService.makeBid(storeEvent)
         .then(() => {
@@ -184,35 +214,30 @@ export default {
           this.requestLoading = false;
         });
       this.requestLoading = false;
-      console.log('line 187',this.startBidTime)
-    },
-    async itemSold() {
-      var transaction = {
-        id: uuidv4(),
-        itemId: this.detailItem.id,
-        username: this.authUser.username,
-        amount: this.detailItem.bidPrice
-      };
-
-      await TransactionService.createTransaction(transaction).then(() => {
-        this.changeItemAvailability(this.detailItem.id);
-      });
-      this.disableBidding = true;
+      // console.log('line 187',this.startBidTime)
     },
     moment(date) {
       return moment.utc(date);
     }
   },
-  async mounted() {
-    const itemId = this.$route.params.itemId;
-    // API call to request the specific Item
-    // await this.showItem(itemId); // stale data
-    await this.getItemById(itemId);
-    console.log("line 198 detailItem", this.detailItem);
-    console.log("line 199 startBidTime", this.detailItem.startBidTime);
-    if(this.detailItem.startBidTime != null) {
-      console.log('line 212 startBidTime with moment', moment(this.detailItem.startBidTime).format())
-    }
+  mounted() {
+    console.log(
+      "line 198 -- mounted() item",
+      this.authUser.username,
+      "startBidTime",
+      this.detailItem.startBidTime
+    );
+    // if (!this.visited.includes(this.detailItem.id)) {
+    //   this.userHasVisitedItem=false
+    //   console.log('line 227- does visited include item.id',this.visited.includes(this.detailItem.id))
+    //   this.pushItemIdToVisitedArr(this.detailItem.id) // add it if it's not included
+    // } else {
+    //   this.userHasVisitedItem=true
+    //   console.log('line 230- does visited include item.id',this.visited.includes(this.detailItem.id))
+    // }
+    // somewhere around here it should be recorded that the user
+    // has arrived in the item once
+    // item.map
   }
 };
 </script>

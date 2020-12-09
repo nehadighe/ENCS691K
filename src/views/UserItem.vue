@@ -136,7 +136,6 @@ export default {
       // modify the store - hash code
     },
     reactivateItem(itemId) {
-      console.log("line 63 - reactivateItem", itemId);
       this.userItemAvailability.map(async item => {
         if (item.id === itemId) {
           var date = new Date();

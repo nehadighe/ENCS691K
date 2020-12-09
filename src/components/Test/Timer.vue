@@ -1,6 +1,5 @@
 <template>
   <div>
-    hello {{ currentTime }}
     <div class="text-center" v-if="currentTime > 0">
       <span>{{ minutes | formatTime }}:{{ seconds | formatTime }}</span>
       <br />
@@ -10,6 +9,10 @@
 </template>
 
 <script>
+// import moment from "moment";
+import { mapState, mapActions } from "vuex";
+import { v4 as uuidv4 } from "uuid";
+import TransactionService from "@/services/Transaction"; // API
 import moment from "moment";
 
 export default {
@@ -19,7 +22,13 @@ export default {
     speed: {
       type: Number,
       default: 1000
-    }
+    },
+    // rollback would be to remove all these variables
+    itemName: String,
+    itemId: String,
+    // userHasVisitedItem: Boolean
+    // username: String,
+    // itemBidPrice: Number
   },
   data() {
     return {
@@ -30,6 +39,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(["detailItem", "authUser", "userHasVisitedItem"]),
     seconds() {
       return Math.floor((this.currentTime / 1000) % 60);
     },
@@ -46,40 +56,45 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["changeItemAvailability"]),
     countdown() {
       // adding five minutes to deadline and subtracting to current time
       this.currentTime =
         Date.parse(new Date(Date.parse(this.$props.deadline) + 1 * 60 * 1000)) -
         Date.parse(new Date());
-      // there is an issue with the timer
-      // it errors out
-      // but also need to visualize the deadline as a
       console.log(
-        "line 54 - 5 minute interval",
-        moment(
-          // issue is laying here
-          // there is a sudden drop in time calculation
-          new Date(Date.parse(this.$props.deadline) + 1 * 60 * 1000)
-        ).format("MMMM D, YYYY, h:mm:ss a")
+        this.$props.itemName,
+        "timer is going down for item:",
+        this.itemId,
+        this.currentTime
+        // "for this amount:",
+        // this.$props.itemBidPrice
       );
-      console.log(
-        "line 55 - current time moment",
-        moment(new Date()).format("MMMM D, YYYY, h:mm:ss a")
-      );
-      console.log("line 56 - is this.currenTime > 0", this.currentTime > 0);
       if (this.currentTime > 0) {
-        console.log("line 51 - yes it is, time should count down");
         setTimeout(this.countdown, this.speed);
       } else if (this.currentTime == 0) {
-        // this.itemSold();
-        console.log("line 54 - no, it should execute the sale now");
-        this.currentTime = null;
-      } else {
-        console.log("time is negative");
+        console.log(
+          "execute transaction for item:",
+          this.$props.itemName,
+          this.$props.itemId
+        );
+        // this would also be considered as rollback
+        // this.itemSold(); // this line would execute the transaction
+        this.currentTime = 0;
       }
     },
-    itemSold() {
-      this.$emit("itemSold");
+    async itemSold() {
+      // emit an event saying that the timer has stopped for the item
+      var transaction = {
+        id: uuidv4(),
+        itemId: this.$props.itemId, // this is the same ID as the
+        username: this.$props.username,
+        amount: this.$props.itemBidPrice
+      };
+
+      await TransactionService.createTransaction(transaction).then(() => {
+        this.changeItemAvailability(this.detailItem.id);
+      });
     }
   },
   mounted() {
@@ -97,15 +112,14 @@ export default {
       "this.currentTime date.parse",
       Date.parse(new Date())
     );
-
-    // giving me exact date
-    // console.log('getting into timer: this.currentTime', moment(new Date()).format("MMMM D, YYYY, h:mm:ss a"), 'this.deadline', moment(new Date(Date.parse(this.$props.deadline) + 2 * 60 * 1000)).format("MMMM D, YYYY, h:mm:ss a"))
-    // console.log('getting into timer: this.currentTime', new Date()), 'this.deadline', moment(new Date(Date.parse(this.$props.deadline) + 2 * 60 * 1000)).format("MMMM D, YYYY, h:mm:ss a"))
-
-    // gave me a weird date in 1969
-    // console.log('getting into timer: this.currentTime', moment(this.currentTime).format("MMMM D, YYYY, h:mm:ss a"), 'this.deadline', moment(new Date(Date.parse(this.$props.deadline) + 2 * 60 * 1000)).format("MMMM D, YYYY, h:mm:ss a"))
-    // console.log('getting into timer: this.currentTime', moment(this.currentTime).format("MMMM D, YYYY, h:mm:ss a"), 'this.deadline', this.$props.deadline)
-    setTimeout(this.countdown, this.speed);
+    // if the user has NOT visited the item, set the timer
+    console.log('line 116 -', this.userHasVisitedItem)
+    if (!this.userHasVisitedItem) {
+      console.log('line 118- mounted() setTimeout')
+      setTimeout(this.countdown, this.speed);
+    } else {
+      console.log('line 121- mounted() DONT setTimeout')
+    }
   }
 };
 </script>

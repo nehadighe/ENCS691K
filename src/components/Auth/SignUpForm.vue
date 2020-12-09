@@ -54,7 +54,7 @@ export default {
     authUser: {},
   }),
   methods: {
-    ...mapActions(["resetAppState", "userSignUp", "setCurrentRoute"]),
+    ...mapActions(["resetAppState", "userSignUp", "setCurrentRoute", "getAllItems"]),
     async signUp(event) {
       this.requestLoading = true;
       if (!event.valid) {
@@ -107,10 +107,11 @@ export default {
         // Making API call in the try clause
         // console.log('line 108 - ', this.authUser)
         await UserService.post(this.authUser) // there is nothing in event.user
-          .then(() => {
+          .then(async () => {
             this.authUser.authenticated = true;
             this.userSignUp(this.authUser); // sending data to the store
             this.requestLoading = false;
+            await this.getAllItems();
             this.$router.push({ name: "home" });
             this.setCurrentRoute("/");
           })

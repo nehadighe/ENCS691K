@@ -1,3 +1,5 @@
+import { getDefaultState } from "../store"
+
 export const authMode = (state, authModeAction) => {
     // console.log('store - mutation: authModeAction', authModeAction)
     state.authMode = authModeAction
@@ -26,6 +28,7 @@ export const userSignUp = (state, userInfo) => {
 
 export const userLogOut = (state) => {
     state.authUser = {}
+    Object.assign(state, getDefaultState())
 }
 
 export const loadUserToState = (state, userData) => {

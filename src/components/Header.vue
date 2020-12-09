@@ -187,9 +187,10 @@ export default {
       this.text = text;
     },
     homeVue() {
-      if (this.currentRoute === "/") console.log("same route");
-      else this.$router.push({ name: "home" });
-      this.setCurrentRoute("/");
+      this.$router.push({ name: "home" }).catch(() => {console.log('hello world')});
+      // if (this.currentRoute === "/") console.log("same route");
+      // else this.$router.push({ name: "home" });
+      // this.setCurrentRoute("/");
     },
     vListUserFunction(option) {
       // logic to evaluate which local function to call
@@ -257,7 +258,6 @@ export default {
         // this.resetAppState();
         // need to reset authUser as {}
         this.userLogOut();
-        console.log('line 260', this.currentRoute)
         if (this.currentRoute === "auth") console.log("same route");
         else this.$router.push({ name: "auth" });
         this.setCurrentRoute("auth");
