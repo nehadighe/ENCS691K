@@ -108,7 +108,7 @@ export default {
     } else {
       alert("Need to authenticate");
     }
-  }
+  },
 };
 </script>
 

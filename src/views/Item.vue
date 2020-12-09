@@ -23,7 +23,15 @@
                 <h1 class>{{ detailItem.title }}</h1>
                 <!-- timer -->
                 <v-card v-if="detailItem.Bids.length > 0" style="padding:8px 15px">
-                  <Timer :deadline="detailItem.startBidTime" v-on:itemSold="itemSold()" />
+                  <!-- <Timer :deadline="detailItem.startBidTime" v-on:itemSold="itemSold()" /> -->
+                  <Timer
+                    :deadline="detailItem.startBidTime"
+                    :itemName="this.detailItem.title"
+                    :username="this.authUser.username"
+                    :itemId="this.detailItem.id"
+                    :itemBidPrice="this.detailItem.bidPrice"
+                    v-on:itemSold="itemSold()"
+                  />
                 </v-card>
               </div>
               <div id="item_information">
@@ -70,6 +78,7 @@ import TransactionService from "@/services/Transaction"; // API
 import EngagedUsers from "@/components/Item/EngagedUsers.vue";
 import BidPanel from "@/components/Item/BidPanel.vue";
 import Timer from "@/components/Test/Timer.vue";
+import moment from "moment";
 
 export default {
   data: () => ({
@@ -121,7 +130,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["showItem", "makeBid", "changeItemAvailability"]),
+    ...mapActions([
+      "showItem",
+      "makeBid",
+      "changeItemAvailability",
+      "getItemById"
+    ]),
     bannerMethod(color, text) {
       this.color = color;
       this.text = text;
@@ -137,7 +151,7 @@ export default {
           this.requestLoading = false;
         }
         // else console.log('youre not the same person');
-        else this.bidFunction(event)
+        else this.bidFunction(event);
       } else {
         // console.log("no it is not");
         this.bannerMethod("#900028", "Cannot bid lower than the base price");
@@ -162,14 +176,22 @@ export default {
 
       // capturing the first bit by comparing
       // whethe the length is less than 1
-      if (this.detailItem.Bids.length < 1) {
-        this.startBidTime = date;
-      }
-      storeEvent.startBidTime = this.startBidTime;
+      if (
+        this.detailItem.Bids.length < 1 &&
+        this.detailItem.startBidTime == null
+      ) {
+        this.startBidTime = moment(date)
+          .utc()
+          .format();
+        storeEvent.startBidTime = this.startBidTime;
+      } else storeEvent.startBidTime = this.detailItem.startBidTime;
+      console.log(
+        "line 187 - this should not be changing-->",
+        this.detailItem.startBidTime
+      );
       // API call to Bid entity/table
       await BidService.makeBid(storeEvent)
         .then(() => {
-          // console.log(res);
           delete storeEvent.username;
           storeEvent.User = this.authUser;
           this.makeBid(storeEvent); // changing store
@@ -186,6 +208,7 @@ export default {
         });
     },
     async itemSold() {
+      console.log("line 199 - item.vue itemSold()");
       var transaction = {
         id: uuidv4(),
         itemId: this.detailItem.id,
@@ -202,9 +225,10 @@ export default {
   async mounted() {
     const itemId = this.$route.params.itemId;
     // API call to request the specific Item
-    await this.showItem(itemId);
+    await this.getItemById(itemId);
     console.log("line 196", this.detailItem, this.authUser);
-  }
+    console.log("line 196", this.detailItem.startBidTime);
+  },
 };
 </script>
 

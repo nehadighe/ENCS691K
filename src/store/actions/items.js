@@ -9,7 +9,6 @@ export const getAllItems = async (context) => {
 // this is after creating an item
 export const getItemById = async (context, id) => {
     var result = await Api().get(`/items/getItemById/${id}`);
-    // console.log('line 14- showItem action', id)
     context.commit("getItemById", result.data)
 }
 
