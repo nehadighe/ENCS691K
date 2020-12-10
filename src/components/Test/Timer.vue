@@ -30,18 +30,25 @@ export default {
   data() {
     return {
       currentTime:
-        Date.parse(new Date(Date.parse(this.deadline) + 1 * 60 * 1000)) -
+        Date.parse(new Date(Date.parse(this.deadline) + 5 * 60 * 1000)) -
         Date.parse(new Date()),
-      newTime: null
+      newTime: null,
+      timeOut: null
     };
   },
   mounted() {
     // if this is modified, then the timer will not show
     // in there is one timer that would show back to the view
-    setTimeout(this.countdown, this.speed);
+    // first timer is here to start the counter when there's a number available
+    // this.countdown();
+    this.timeOut = setTimeout(this.countdown, this.speed)
+    // console.log('spinning of timeOut',this.timeOut);
   },
   beforeDestroy() {
-    console.log("end of timer");
+    console.log('beforeMount')
+    // when you stop the timer, you're stopping the current time
+    // clearTimeout(this.timeOut); // so you're stopping the timer here
+    clearTimeout(this.secondTimer); // so you're stopping the timer here
   },
   computed: {
     ...mapState(["detailItem", "authUser"]),
@@ -66,11 +73,12 @@ export default {
     // arrives into the item
     countdown() {
       this.currentTime =
-        Date.parse(new Date(Date.parse(this.deadline) + 1 * 60 * 1000)) -
+        Date.parse(new Date(Date.parse(this.deadline) + 5 * 60 * 1000)) -
         Date.parse(new Date());
       console.log("timer going down", this.currentTime);
       if (this.currentTime > 0) {
-        setTimeout(this.countdown, this.speed);
+        this.secondTimer = setTimeout(this.countdown, this.speed);
+        // console.log('second timer', this.secondTimer)
       } else if (this.currentTime == 0) {
         console.log("executing transaction after timer goes off");
         this.itemSold();
