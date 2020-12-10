@@ -23,7 +23,7 @@
           text-right
           class="ml-3"
           :color="darkRed"
-          :disabled="!valid || disablingButton"
+          :disabled="!valid || disableBidding"
           text
           @click="bid(false)"
         >Bid</v-btn>
@@ -34,6 +34,8 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   data: () => ({
     valid: true,
@@ -43,6 +45,9 @@ export default {
     },
     itemPrice: ""
   }),
+  computed: {
+    ...mapState(["disableBidding"])
+  },
   methods: {
     bid() {
       var event = parseInt(this.itemPrice);
@@ -51,7 +56,6 @@ export default {
     }
   },
   props: {
-    disablingButton: Boolean,
     requestLoading: Boolean
   }
 };

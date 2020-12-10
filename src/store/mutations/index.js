@@ -14,7 +14,9 @@ import {
     savingItem,
     makeBid,
     deleteItemById,
-    postItem
+    postItem,
+    setUpdatedBids,
+    disableBidding
 } from "./items"
 
 import { 
@@ -39,6 +41,8 @@ export default {
     showItem,
     savingItem,
     makeBid,
+    setUpdatedBids,
+    disableBidding,
     deleteItemById,
     postItem,
     getItemsByUsername,

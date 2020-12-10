@@ -17,6 +17,7 @@ export const getDefaultState = () => {
         userItemBought: [],
         authUser: {},
         bids: [], // this is where the bids will be held
+        disableBidding: false,
         items: [],
         detailItem: {}, // detailItem which will be used to render separate items
         savingStatus: "",

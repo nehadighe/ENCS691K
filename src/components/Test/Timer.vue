@@ -66,25 +66,24 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["changeItemAvailability"]),
+    ...mapActions(["changeItemAvailability", "disableBidding"]),
     // this countdown is being executed as many times as the user
     // arrives into the item
     countdown() {
       this.currentTime =
         Date.parse(new Date(Date.parse(this.deadline) + 1 * 60 * 1000)) -
         Date.parse(new Date());
-      console.log(
-        "timer going down",
-        this.currentTime,
-        this.$props.username,
-        this.$props.itemName
-      );
+      // console.log(
+      //   "timer going down",
+      //   this.currentTime,
+      //   this.$props.username,
+      //   this.$props.itemName
+      // );
       if (this.currentTime > 0) {
         this.secondTimer = setTimeout(this.countdown, this.speed);
         // console.log('second timer', this.secondTimer)
       } else if (this.currentTime == 0) {
-        console.log("executing transaction after timer goes off");
-        this.itemSold();
+        // this.itemSold();
         this.currentTime = null;
       }
     },
@@ -97,8 +96,10 @@ export default {
       // need to get the item with most sale
       // make api call to retrieve highest query
       // this highest bid would have the correct properties
+      this.disableBidding(true)
+
       const highestBid = await ItemService.getItemHighestBid(this.$props.itemId);
-      console.log('line 101 -', highestBid.data)
+      console.log('line 101 - winning user', highestBid.data)
 
       var transaction = {
         id: uuidv4(),

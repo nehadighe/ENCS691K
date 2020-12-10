@@ -25,7 +25,6 @@ export default {
         return Api().post('/images/store', image)
     },
     getItemHighestBid(id) {
-        console.log('line 28 - service getting highest Bid', id)
         return Api().get(`/bids/getItemHighestBid/${id}`)
-    }
+    },
 }

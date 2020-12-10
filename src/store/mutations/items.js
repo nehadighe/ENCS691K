@@ -14,7 +14,6 @@ export const changeItemAvailability = (state, itemId) => {
     state.items = state.items.filter(item => {
         return item.id !== itemId
     })
-    console.log('line 17 - item mutations', state.items)
 }
 
 // this is after creating an item
@@ -41,6 +40,11 @@ export const makeBid = (state, data) => {
     state.detailItem.currentNumberOfBidding++
 }
 
+export const setUpdatedBids = (state, data) => {
+    state.detailItem.Bids = data
+    console.log('line 46 - item mutations setUpdatedBids', state.detailItem.Bids)
+}
+
 export const deleteItemById = (state, item) => {
     state.items.splice(state.items.indexOf(item), 1);
     state.userItemAvailability.splice(state.userItemAvailability.indexOf(item), 1);
@@ -51,6 +55,10 @@ export const postItem = (state, item) => {
 }
 
 export const savingItem = (state, saving) => {
-    // // console.log('store(mutations) - savingItem: ', saving)
     state.savingStatus = saving
+}
+
+export const disableBidding = (state, condition) => {
+    state.disableBidding = condition
+    console.log('line 59 - disableBidding', state.disableBidding)
 }

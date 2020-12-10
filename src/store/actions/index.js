@@ -12,13 +12,14 @@ import {
     getItemById,
     showItem,
     savingItem,
-    makeBid,
+    makeBid, 
+    setUpdatedBids,
     deleteItemById,
     postItem
 } from "./items"
 
-import { 
-    getItemsByUsername, 
+import {
+    getItemsByUsername,
     changeUserItemAvailability,
     getTransactionByUsername
 } from "./user"
@@ -39,6 +40,7 @@ export default {
     showItem,
     savingItem,
     makeBid,
+    setUpdatedBids,
     getItemsByUsername,
     deleteItemById,
     postItem,

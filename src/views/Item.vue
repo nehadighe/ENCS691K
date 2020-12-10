@@ -88,6 +88,7 @@ export default {
     timer: null,
     totalTime: 2 * 60, // This should be dynamic!
     startBidTime: new Date(), // date
+    bidTimer: null,
 
     // Message in data
     // pop up message
@@ -134,7 +135,8 @@ export default {
       "showItem",
       "makeBid",
       "changeItemAvailability",
-      "getItemById"
+      "getItemById",
+      "setUpdatedBids"
     ]),
     bannerMethod(color, text) {
       this.color = color;
@@ -221,11 +223,13 @@ export default {
       });
       this.disableBidding = true;
     },
-    // async getBids() {
-    //   await BidService.getBidsByItemId(
-    //     // change 
-    //   )
-    // }
+    getBids() {
+      console.log("is there something");
+      // BidService.getBidsByItemId(this.detailItem.id).then(res => {
+      //   console.log("line 227 - getBids()", res);
+      //   // this.getUpdatedBids(res)
+      // });
+    }
   },
   async created() {
     const itemId = this.$route.params.itemId;
@@ -233,14 +237,24 @@ export default {
     await this.getItemById(itemId);
     console.log("line 230 - detailItem", this.detailItem, this.authUser);
   },
-  mounted(){
+  // I thought about having this beforeMount but users would not
+  // be able to access the detailItem vue after auction
+  // beforeMount(){
+  // if (this.detailItem.transaction)
+  // },
+  async mounted() {
     // get the most Bid data.
     // set a timer inside of this item vue to get all the bids
-    // console.log('items', this.items)
-    // setTimeout(this.getBids, 10000);
+    const self = this;
+    this.bidTimer = setInterval(function() {
+      BidService.getBidsByItemId(self.detailItem.id).then(res => {
+        self.setUpdatedBids(res.data);
+      });
+    }, 5000);
   },
-  beforeDestroy(){
+  beforeDestroy() {
     // stop timer when leaving the vue
+    clearTimeout(this.bidTimer);
   }
 };
 </script>

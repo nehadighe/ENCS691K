@@ -26,6 +26,11 @@ export const makeBid = (context, data) => {
     context.commit("makeBid", data)
 }
 
+// data will be obtained from res
+export const setUpdatedBids = (context, data) => {
+    context.commit("setUpdatedBids", data)
+}
+
 export const deleteItemById = async (context, item) => {
     context.commit("deleteItemById", item)
 }
@@ -37,4 +42,8 @@ export const postItem = (context, item) => {
 export const savingItem = (context, saving) => {
     // console.log('store(action) - savingItem', saving)
     context.commit("savingItem", saving)
+}
+
+export const disableBidding = (context, condition) => {
+    context.commit("disableBidding", condition)
 }
