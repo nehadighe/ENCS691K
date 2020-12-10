@@ -103,7 +103,7 @@ export default {
     Timer
   },
   computed: {
-    ...mapState(["detailItem", "authUser", "bids"]),
+    ...mapState(["detailItem", "authUser", "bids", "items"]),
     minutes() {
       const minutes = Math.floor(this.totalTime / 60);
       return this.padTime(minutes);
@@ -220,16 +220,28 @@ export default {
         this.changeItemAvailability(this.detailItem.id);
       });
       this.disableBidding = true;
-    }
+    },
+    // async getBids() {
+    //   await BidService.getBidsByItemId(
+    //     // change 
+    //   )
+    // }
   },
   async created() {
-    console.log('created from item.vue')
     const itemId = this.$route.params.itemId;
     // API call to request the specific Item
     await this.getItemById(itemId);
-    console.log("line 196", this.detailItem, this.authUser);
-    console.log("line 196", this.detailItem.startBidTime);
+    console.log("line 230 - detailItem", this.detailItem, this.authUser);
   },
+  mounted(){
+    // get the most Bid data.
+    // set a timer inside of this item vue to get all the bids
+    // console.log('items', this.items)
+    // setTimeout(this.getBids, 10000);
+  },
+  beforeDestroy(){
+    // stop timer when leaving the vue
+  }
 };
 </script>
 

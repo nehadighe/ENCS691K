@@ -98,11 +98,10 @@ export default {
     }
   },
   async beforeMount() {
-    console.log('hello world from beforeMount')
     if (this.authUser.authenticated) {
       // making sure user is authenticated
       await this.getAllItems();
-      // console.log('line 55- home page', this.items)
+      // console.log('line 105- home page', this.items)
     } else {
       alert("Need to authenticate");
     }

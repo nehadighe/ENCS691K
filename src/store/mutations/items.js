@@ -35,16 +35,6 @@ export const showItem = (state, id) => {
 // bid is going to be the item: name, image, time
 // biddingAmount
 export const makeBid = (state, data) => {
-    console.log('line 38 - mutations whats going on', data)
-    // state.items.map(item => {
-    //     console.log('looking for matches',item.id, data.itemId)
-    //     if (item.id == data.itemId) {
-    //         item.Bids.push(data)
-    //         item.startBidTime = data.startBidTime
-    //         item.bidPrice = data.amount
-    //         item.currentNumberOfBidding++
-    //     }
-    // })
     state.detailItem.Bids.push(data)
     state.detailItem.startBidTime = data.startBidTime
     state.detailItem.bidPrice = data.amount
