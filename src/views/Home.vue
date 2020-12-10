@@ -53,10 +53,7 @@ export default {
     ...mapState(["authUser", "items", "mockItems", "currentRoute"])
   },
   methods: {
-    ...mapActions([
-      "getAllItems",
-      "setCurrentRoute"
-    ]),
+    ...mapActions(["getAllItems", "setCurrentRoute"]),
     async newItemVue() {
       // would have to implement the ItemService here
       // to create a new record
@@ -76,7 +73,7 @@ export default {
         username: this.authUser.username
       };
       await ItemServices.post(item)
-        .then(() => {
+        .then(async () => {
           // I am not posting the item inside of the Items state array
           if (this.currentRoute === "editItem") console.log("same route");
           else {
@@ -84,6 +81,7 @@ export default {
               name: "editItem",
               params: { itemId: item.id }
             });
+            await this.getItemById(event);
           }
           this.setCurrentRoute("editItem");
         })
@@ -92,15 +90,15 @@ export default {
         });
     },
     bid(event) {
-      this.$router.push({ 
+      this.$router.push({
         name: "item",
         params: { itemId: event }
       });
-      this.setCurrentRoute(`/item/${event}`)
+      this.setCurrentRoute(`/item/${event}`);
     }
   },
-  async mounted() {
-    // console.log('line 53', this.authUser)
+  async beforeMount() {
+    console.log('hello world from beforeMount')
     if (this.authUser.authenticated) {
       // making sure user is authenticated
       await this.getAllItems();
@@ -108,7 +106,7 @@ export default {
     } else {
       alert("Need to authenticate");
     }
-  },
+  }
 };
 </script>
 

@@ -168,10 +168,9 @@ export default {
       });
     }
   },
-  async mounted() {
+  async created() {
     // get all the information all the bids from the specific user
     await this.getItemsByUsername(this.authUser.username);
-    // console.log("line 172 - UserItem", this.userItemAvailability);
   }
 };
 </script>

@@ -58,7 +58,7 @@ export default {
   methods: {
     ...mapActions(["getTransactionByUsername"])
   },
-  async mounted() {
+  async created() {
     await this.getTransactionByUsername(this.authUser.username);
     // console.log("line 52 - user bought items", this.userItemBought);
   }

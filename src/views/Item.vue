@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-8">
+  <div style="margin-top:6rem">
     <v-col cols="12" class="d-flex justify-center">
       <v-carousel
         :continuous="false"
@@ -222,7 +222,8 @@ export default {
       this.disableBidding = true;
     }
   },
-  async mounted() {
+  async created() {
+    console.log('created from item.vue')
     const itemId = this.$route.params.itemId;
     // API call to request the specific Item
     await this.getItemById(itemId);

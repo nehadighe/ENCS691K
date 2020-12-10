@@ -30,7 +30,7 @@ export default {
   data() {
     return {
       currentTime:
-        Date.parse(new Date(Date.parse(this.deadline) + 5 * 60 * 1000)) -
+        Date.parse(new Date(Date.parse(this.deadline) + 1 * 60 * 1000)) -
         Date.parse(new Date()),
       newTime: null,
       timeOut: null
@@ -73,9 +73,9 @@ export default {
     // arrives into the item
     countdown() {
       this.currentTime =
-        Date.parse(new Date(Date.parse(this.deadline) + 5 * 60 * 1000)) -
+        Date.parse(new Date(Date.parse(this.deadline) + 1 * 60 * 1000)) -
         Date.parse(new Date());
-      console.log("timer going down", this.currentTime);
+      console.log("timer going down", this.currentTime, this.$props.username, this.$props.itemName);
       if (this.currentTime > 0) {
         this.secondTimer = setTimeout(this.countdown, this.speed);
         // console.log('second timer', this.secondTimer)

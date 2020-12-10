@@ -2,7 +2,7 @@
   <v-app>
     <div id="app">
       <Header />
-      <router-view />
+      <router-view style="margin-top:4rem" />
     </div>
   </v-app>
 </template>

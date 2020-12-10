@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar :color="headerColor" dark>
+  <v-app-bar :color="headerColor" dark fixed>
     <!-- v-left-icon -->
     <div class="d-flex align-center justify-start clickButton" @click="homeVue()">
       <div>
@@ -155,7 +155,6 @@ export default {
     userFunction: [
       { title: "Your Items", option: "1" },
       { title: "Bought", option: "2" },
-      { title: "Profile", option: "3" } // this might not go
     ],
 
     // message
@@ -276,6 +275,11 @@ export default {
 @import "../assets/line.css";
 @import "../assets/colors.css";
 @import "../assets/font.css";
+
+.header {
+  position: fixed;
+  z-index: 1;
+}
 
 .clickButton {
   cursor: pointer;
